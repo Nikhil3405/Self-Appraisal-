@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface Honor {
   title: string;
@@ -11,10 +11,30 @@ interface Honor {
 interface Category2JProps {
   initialData: Honor[];
   onFormDataChangeAction: (data: Honor[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
-export default function Category2J({ initialData, onFormDataChangeAction }: Category2JProps) {
+export default function Category2J({ initialData, onFormDataChangeAction,
+  loginType,
+  employeeId,
+  onCommitteeScoreChange,
+ }: Category2JProps) {
   const [honors, setHonors] = useState<Honor[]>(initialData);
+  
+    const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
+    useEffect(() => {
+          if (initialData?.length) {
+            setHonors(initialData);
+          }
+        }, [initialData]);
+      
+        useEffect(() => {
+          if (employeeId) {
+            console.log(`Loading data for employee ID: ${employeeId}`);
+          }
+        }, [employeeId]);
 
   const getTotalScore = () =>
     honors.reduce((total, item) => total + Number(item.score), 0);
@@ -24,10 +44,12 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
     field: keyof Honor,
     value: string | number
   ) => {
+    if (loginType === "hod") return;
     const updated = [...honors];
     const newValue = field === "score" ? Number(value) : value;
 
-    if (field === "score") {
+    if (field === "score" && !isNaN(Number(newValue))) {
+
       const oldScore = Number(honors[index].score);
       const newTotal = getTotalScore() - oldScore + Number(newValue);
       if (newTotal > 5) return; // Max total score
@@ -39,17 +61,32 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = honors.filter((_, i) => i !== index);
     setHonors(updated);
     onFormDataChangeAction(updated);
   };
 
   const addRow = () => {
+    if (loginType !== "hod" && getTotalScore() < 5) {
+
     setHonors([
       ...honors,
       { title: "", date: "", conferredBy: "", unpaid: "Yes", score: "" },
     ]);
+  }
   };
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 5) {
+      alert("Committee total score cannot exceed 5.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
+
 
   const totalScore = getTotalScore();
 
@@ -82,6 +119,7 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={row.title}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "title", e.target.value)
                   }
@@ -92,6 +130,7 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="date"
                   value={row.date}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "date", e.target.value)
                   }
@@ -102,6 +141,7 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={row.conferredBy}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "conferredBy", e.target.value)
                   }
@@ -111,6 +151,7 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <select
                   value={row.unpaid}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "unpaid", e.target.value)
                   }
@@ -123,6 +164,7 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="number"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   min={0}
                   max={5}
                   value={row.score}
@@ -133,11 +175,16 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
                 />
               </td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                    type="button"
+                    onClick={() => deleteRow(index)}
+                    disabled={loginType === "hod" || loginType === "committee"}
+                    className={`bg-red-500 text-white px-2 py-1 rounded ${
+                      loginType === "hod" || loginType === "committee"
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -148,9 +195,9 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
       <button
         type="button"
         onClick={addRow}
-        disabled={totalScore >= 5}
+        disabled={loginType === "hod" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          totalScore >= 5 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"||totalScore >= 5 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row
@@ -158,6 +205,19 @@ export default function Category2J({ initialData, onFormDataChangeAction }: Cate
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {totalScore} / 5
       </p>
+      {loginType === "committee" && (
+        <div className="mt-4">
+          <label className="block mb-1 font-semibold text-yellow-600">
+            Committee Total Score (out of 5):
+          </label>
+          <input
+            type="number"
+            value={committeeTotalScore}
+            onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+            className="w-32 px-2 py-1 border border-yellow-400 rounded"
+          />
+        </div>
+      )}
     </div>
   );
 }

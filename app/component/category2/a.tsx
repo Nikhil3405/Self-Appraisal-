@@ -80,7 +80,7 @@ export default function Category2A({ initialData, onFormDataChangeAction,
   const totalScore = getTotalScore();
 
   const handleCommitteeTotalScoreChange = (value: string) => {
-    if (Number(value) > 10) {
+    if (Number(value) > 20) {
       alert("Committee total score cannot exceed 10.");
       return;
     }

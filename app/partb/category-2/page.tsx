@@ -22,47 +22,76 @@ interface ActivityRecord {
   activityType: string;
   maxScore: number;
   score: string;
+  ActivityDetails?: string;
+  ActivityType?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: number;
 }
 interface CommitteeActivity {
   activityType: string;
   score: number;
+  ActivityType?: string;
+  SelfAppraisalScore?: number;
 }
 interface ArticleContribution {
   articleDetails: string;
   articleDate: string;
   maxScore: number;
   score: string;
+  ArticleDetails?: string;
+  DatePublished?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: string;
 }
 interface OutreachResponsibility {
   responsibility: string;
   maxScore: number;
   score: string;
+  Responsibility?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: string;
 }
 interface SeminarWorkshop {
   details: string;
   date: string;
   maxScore: number;
   score: string;
+  EventDetails?: string;
+  EventDate?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: string;
 }
 interface ResourceParticipation {
   details: string;
   date: string;
   maxScore: number;
   score: string;
+  EventDetails?: string;
+  EventDate?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: string;
 }
 interface OutreachActivity {
   details: string;
   date: string;
   maxScore: number;
   score: string;
+  ActivityDetails?: string;
+  ActivityDate?: string;
+  MaxScore?: number;
+  SelfAppraisalScore?: string;
 }
 interface ProfessionalBodyActivity {
   activityType: string;
   score: string;
+  ActivityType?: string;
+  SelfAppraisalScore?: string;
 }
 interface Fellowship {
   details: string;
   score: string;
+  Awards?: string;
+  SelfAppraisalScore?: string;
 }
 interface Honor {
   title: string;
@@ -70,6 +99,11 @@ interface Honor {
   conferredBy: string;
   unpaid: string; // Yes or No
   score: string;
+  HonorTitle?: string;
+  ConferredDate?: string;
+  ConferredBy?: string;
+  IsPaid?: string;
+  SelfAppraisalScore?: string;
 }
 interface FacultyInfo {
   eid: string;
@@ -79,13 +113,13 @@ interface FacultyInfo {
 }
 interface FetchedDraftData {
   activityrecords: ActivityRecord[];
-  committeeresponsibilities: CommitteeActivity[];
+  committeeResponsibilities: CommitteeActivity[];
   articles: ArticleContribution[];
-  outreachresponsibilities: OutreachResponsibility[];
-  seminarworkshops: SeminarWorkshop[];
-  resourceparticipations: ResourceParticipation[];
-  outreachantivities: OutreachActivity[];
-  professionalbodies: ProfessionalBodyActivity[];
+  outreachResponsibilities: OutreachResponsibility[];
+  seminars: SeminarWorkshop[];
+  resourceParticipations: ResourceParticipation[];
+  outreachActivities: OutreachActivity[];
+  professionalBodies: ProfessionalBodyActivity[];
   fellowships: Fellowship[];
   honors: Honor[];
 }
@@ -115,6 +149,7 @@ export default function ParentPage() {
   const [committeeScoreJ, setCommitteeScoreJ] = useState<string>("");
   const [employeeId, setEmployeeId] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>("");
+  const [hasFetched, setHasFetched] = useState(false);
   const category = "category-2";
   useEffect(() => {
     const storedData = sessionStorage.getItem("record");
@@ -192,13 +227,16 @@ export default function ParentPage() {
     setDraftCategoryI([]);
     setDraftCategoryJ([]);
   };
+
   const fetchFacultyData = async (employeeId: string, academicYear: string) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/fetchData/category-2?employeeId=${employeeId}&academicYear=${academicYear}`);
       if (res.ok) {
         const json = await res.json();
-        processFetchedData(json, setDraftCategoryA,
+        processFetchedData(
+          json,
+          setDraftCategoryA,
           setDraftCategoryB,
           setDraftCategoryC,
           setDraftCategoryD,
@@ -209,7 +247,7 @@ export default function ParentPage() {
           setDraftCategoryI,
           setDraftCategoryJ,
         );
-        console.log("json:", json);
+        console.log("json for employeeId " + employeeId + " academicYear " + academicYear + ":", json);
       } else {
         toast.error("Failed to fetch faculty data");
         resetAllData();
@@ -222,7 +260,13 @@ export default function ParentPage() {
       setLoading(false);
     }
   };
-
+  
+  if (!hasFetched && (facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee") && employeeId && academicYear) {
+    setHasFetched(true);
+    fetchFacultyData(employeeId, academicYear);
+  }
+  
+  
   useEffect(() => {
     const fetchDraft = async () => {
       if (!facultyInfo) return;
@@ -299,7 +343,7 @@ export default function ParentPage() {
     const parseEntry = (entry: FetchedDraftData) => {
       // Process Category A (Teaching Activities)
       if (entry.activityrecords && Array.isArray(entry.activityrecords)) {
-        entry.activityrecords.forEach((item: any) => {
+        entry.activityrecords.forEach((item: ActivityRecord) => {
           const activity: ActivityRecord = {
             activityDetails: item.ActivityDetails || item.activityDetails || "",
             activityType: item.ActivityType || item.activityType || "",
@@ -310,21 +354,21 @@ export default function ParentPage() {
         });
       }
       // Process Category B (Committee Responsibilities)
-      if (entry.committeeresponsibilities && Array.isArray(entry.committeeresponsibilities)) {
-        entry.committeeresponsibilities.forEach((item: any) => {
+      if (entry.committeeResponsibilities && Array.isArray(entry.committeeResponsibilities)) {
+        entry.committeeResponsibilities.forEach((item: CommitteeActivity) => {
           const committee: CommitteeActivity = {
             activityType: item.ActivityType || item.activityType || "",
-            score: Number(item.Score) || 0,
+            score: Number(item.SelfAppraisalScore || item.score || 0),
           };
           committeeResponsibilities.push(committee);
         });
       }
       // Process Category C (Articles)
       if (entry.articles && Array.isArray(entry.articles)) {
-        entry.articles.forEach((item: any) => {
+        entry.articles.forEach((item: ArticleContribution) => {
           const article: ArticleContribution = {
             articleDetails: item.ArticleDetails || item.articleDetails || "",
-            articleDate: item.ArticleDate || item.articleDate || "",
+            articleDate: item.DatePublished? item.DatePublished.split("T")[0] : item.articleDate || "",
             maxScore: item.MaxScore || item.maxScore || 5,
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -332,8 +376,8 @@ export default function ParentPage() {
         });
       }
       // Process Category D (Outreach Responsibilities)
-      if (entry.outreachresponsibilities && Array.isArray(entry.outreachresponsibilities)) {
-        entry.outreachresponsibilities.forEach((item: any) => {
+      if (entry.outreachResponsibilities && Array.isArray(entry.outreachResponsibilities)) {
+        entry.outreachResponsibilities.forEach((item: OutreachResponsibility) => {
           const outreach: OutreachResponsibility = {
             responsibility: item.Responsibility || item.responsibility || "",
             maxScore: item.MaxScore || item.maxScore || 5,
@@ -343,11 +387,11 @@ export default function ParentPage() {
         });
       }
       // Process Category E (Seminar Workshops)
-      if (entry.seminarworkshops && Array.isArray(entry.seminarworkshops)) {
-        entry.seminarworkshops.forEach((item: any) => {
+      if (entry.seminars && Array.isArray(entry.seminars)) {
+        entry.seminars.forEach((item: SeminarWorkshop) => {
           const seminar: SeminarWorkshop = {
-            details: item.Details || item.details || "",
-            date: item.Date || item.date || "",
+            details: item.EventDetails || item.details || "",
+            date: item.EventDate? item.EventDate.split("T")[0] : item.date || "",
             maxScore: item.MaxScore || item.maxScore || 5,
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -355,11 +399,11 @@ export default function ParentPage() {
         });
       }
       // Process Category F (Resource Participations)
-      if (entry.resourceparticipations && Array.isArray(entry.resourceparticipations)) {
-        entry.resourceparticipations.forEach((item: any) => {
+      if (entry.resourceParticipations && Array.isArray(entry.resourceParticipations)) {
+        entry.resourceParticipations.forEach((item: ResourceParticipation) => {
           const resource: ResourceParticipation = {
-            details: item.Details || item.details || "",
-            date: item.Date || item.date || "",
+            details: item.EventDetails || item.details || "",
+            date: item.EventDate? item.EventDate.split("T")[0] : item.date || "",
             maxScore: item.MaxScore || item.maxScore || 5,
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -367,11 +411,11 @@ export default function ParentPage() {
         });
       }
       // Process Category G (Outreach Activities)
-      if (entry.outreachantivities && Array.isArray(entry.outreachantivities)) {
-        entry.outreachantivities.forEach((item: any) => {
+      if (entry.outreachActivities && Array.isArray(entry.outreachActivities)) {
+        entry.outreachActivities.forEach((item: OutreachActivity) => {
           const outreach: OutreachActivity = {
-            details: item.Details || item.details || "",
-            date: item.Date || item.date || "",
+            details: item.ActivityDetails || item.details || "",
+            date: item.ActivityDate? item.ActivityDate.split("T")[0] : item.date || "",
             maxScore: item.MaxScore || item.maxScore || 5,
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -379,8 +423,8 @@ export default function ParentPage() {
         });
       }
       // Process Category H (Professional Bodies)
-      if (entry.professionalbodies && Array.isArray(entry.professionalbodies)) {
-        entry.professionalbodies.forEach((item: any) => {
+      if (entry.professionalBodies && Array.isArray(entry.professionalBodies)) {
+        entry.professionalBodies.forEach((item: ProfessionalBodyActivity) => {
           const professional: ProfessionalBodyActivity = {
             activityType: item.ActivityType || item.activityType || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
@@ -390,9 +434,9 @@ export default function ParentPage() {
       }
       // Process Category I (Fellowships)
       if (entry.fellowships && Array.isArray(entry.fellowships)) {
-        entry.fellowships.forEach((item: any) => {
+        entry.fellowships.forEach((item: Fellowship) => {
           const fellow: Fellowship = {
-            details: item.Details || item.details || "",
+            details: item.Awards || item.details || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           fellowships.push(fellow);
@@ -400,12 +444,12 @@ export default function ParentPage() {
       }
       // Process Category J (Honors)
       if (entry.honors && Array.isArray(entry.honors)) {
-        entry.honors.forEach((item: any) => {
+        entry.honors.forEach((item: Honor) => {
           const honor: Honor = {
-            title: item.Title || item.title || "",
-            date: item.Date || item.date || "",
-            conferredBy: item.ConferencedBy || item.conferredBy || "",
-            unpaid: item.Unpaid || item.unpaid || "No",
+            title: item.HonorTitle || item.title || "",
+            date: item.ConferredDate? item.ConferredDate.split("T")[0] : item.date || "",
+            conferredBy: item.ConferredBy || item.conferredBy || "",
+            unpaid: item.IsPaid || item.unpaid || "No",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           honors.push(honor);
@@ -485,6 +529,7 @@ export default function ParentPage() {
       if (!loading) {
         const finalCategory2Data = {
           score:totalScore,
+          academicYear,
           activityrecords: draftCategoryA,
           committeeResponsibilities: draftCategoryB,
           articles: draftCategoryC,
@@ -509,6 +554,7 @@ export default function ParentPage() {
       draftCategoryH,
       draftCategoryI,
       draftCategoryJ,
+      academicYear,
      ]);
      const totalCommitteeScore = Number(committeeScoreA) + Number(committeeScoreB) + Number(committeeScoreC) + 
      Number(committeeScoreD) + Number(committeeScoreE) + Number(committeeScoreF) + Number(committeeScoreG) + 
@@ -570,7 +616,7 @@ export default function ParentPage() {
                         onFormDataChangeAction={handleFormDataUpdateA}
                         onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
                       />
-                      {/* <Category2B
+                      <Category2B
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryB}
                         onFormDataChangeAction={handleFormDataUpdateB}
@@ -582,48 +628,48 @@ export default function ParentPage() {
                         onFormDataChangeAction={handleFormDataUpdateC}
                         onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
                       />
-                      <CategoryD
+                      <Category2D
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryD}
                         onFormDataChangeAction={handleFormDataUpdateD}
                         onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
                       />
-                      <CategoryE
+                      <Category2E
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryE}
                         onFormDataChangeAction={handleFormDataUpdateE}
                         onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
                       />
-                      <CategoryF
+                      <Category2F
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryF}
                         onFormDataChangeAction={handleFormDataUpdateF}
                         onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
                       />
-                      <CategoryG
+                      <Category2G
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryG}
                         onFormDataChangeAction={handleFormDataUpdateG}
                         onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
                       />
-                      <CategoryH
+                      <Category2H
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryH}
                         onFormDataChangeAction={handleFormDataUpdateH}
                         onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
                       />
-                      <CategoryI
+                      <Category2I
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryI}
                         onFormDataChangeAction={handleFormDataUpdateI}
                         onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
                       />
-                      <CategoryJ
+                      <Category2J
                         loginType={facultyInfo.loginType}
                         initialData={draftCategoryJ || { score: "" }}
                         onFormDataChangeAction={handleFormDataUpdateJ}
                         onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
-                      /> */}
+                      />
                       </>
                     )}
                   </>
@@ -631,61 +677,61 @@ export default function ParentPage() {
             {/* <div className="mt-8" /> */}
             {facultyInfo.loginType === "faculty" && (
           <>
-          <Category2A
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryA}
-            onFormDataChangeAction={handleFormDataUpdateA}
-            // selectedAcademicYear={academicYear}
-          />
-          {/* <CategoryB
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryB}
-            onFormDataChangeAction={handleFormDataUpdateB}
-          />
-          <CategoryC
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryC}
-            onFormDataChangeAction={handleFormDataUpdateC}
-          />
-          <CategoryD
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryD}
-            onFormDataChangeAction={handleFormDataUpdateD}
-          />
-          <CategoryE
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryE}
-            onFormDataChangeAction={handleFormDataUpdateE}
-          />
-          <CategoryF
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryF}
-            onFormDataChangeAction={handleFormDataUpdateF}
-          />
-          <CategoryG
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryG}
-            onFormDataChangeAction={handleFormDataUpdateG}
-          />
-          <CategoryH
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryH}
-            onFormDataChangeAction={handleFormDataUpdateH}
+            <Category2A
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryA}
+              onFormDataChangeAction={handleFormDataUpdateA}
+              // selectedAcademicYear={academicYear}
             />
-          <CategoryI
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryI}
-            onFormDataChangeAction={handleFormDataUpdateI}
-          />
-          <CategoryJ
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryJ || { score: "" }}
-            onFormDataChangeAction={handleFormDataUpdateJ}
-          /> */}
-      </>
+            <Category2B
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryB}
+              onFormDataChangeAction={handleFormDataUpdateB}
+            />
+            <Category2C
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryC}
+              onFormDataChangeAction={handleFormDataUpdateC}
+            />
+            <Category2D
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryD}
+              onFormDataChangeAction={handleFormDataUpdateD}
+            />
+            <Category2E
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryE}
+              onFormDataChangeAction={handleFormDataUpdateE}
+            />
+            <Category2F
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryF}
+              onFormDataChangeAction={handleFormDataUpdateF}
+            />
+            <Category2G
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryG}
+              onFormDataChangeAction={handleFormDataUpdateG}
+            />
+            <Category2H
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryH}
+              onFormDataChangeAction={handleFormDataUpdateH}
+              />
+            <Category2I
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryI}
+              onFormDataChangeAction={handleFormDataUpdateI}
+            />
+            <Category2J
+              loginType={facultyInfo.loginType}
+              initialData={draftCategoryJ || { score: "" }}
+              onFormDataChangeAction={handleFormDataUpdateJ}
+            />
+            </>
+          )}
+        </>
     )}
-  </>
-)}
             <hr className="my-4" />
             <p className="mb-6">
               <strong>Combined Total Score: </strong>
@@ -697,17 +743,23 @@ export default function ParentPage() {
                   <p className="mb-6">
                   <strong>Committee Total Score: </strong>
                   <span className="text-yellow-600 text-xl font-semibold">
-                    {totalCommitteeScore} / 300
+                    {totalCommitteeScore} / 100
                   </span>
                   </p>
                 )}
             <div className="flex justify-between items-center mt-8">
   {/* Save Draft button on the left */}
   <button
-    type="button"
-    className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
-    onClick={() => saveDraft(true)}
-  >
+                  type="button"
+                  className={`text-white px-6 py-2 rounded ${
+                    facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"
+                      ?  "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
+                      :"bg-yellow-500 hover:bg-yellow-600"
+                  }`}
+                  onClick={() => saveDraft(true)}
+                  disabled={facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"}
+
+                >
     Save Draft
   </button>
 
@@ -716,7 +768,7 @@ export default function ParentPage() {
     <Link href="/partb/category-1"> {/* Replace with your correct previous page URL */}
       <button
         type="button"
-        className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600"
+        className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
       >
         Back
       </button>

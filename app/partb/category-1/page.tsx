@@ -259,7 +259,6 @@ export default function ParentPage() {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setFacultyInfo(parsedData);
-
       if (parsedData.loginType === "hod" || parsedData.loginType === "committee") {
         fetchFacultyList(parsedData.branch);
       }
@@ -271,12 +270,7 @@ export default function ParentPage() {
 
   const saveDraft = async (showToast = true) => {
     if (!facultyInfo) return;
-  
-    if (facultyInfo.loginType !== "faculty") {
-      toast.info("Only faculty members can save drafts.");
-      return;
-    }
-  
+
     if (!academicYear) {
       toast.error("Please select an academic year before saving.");
       return;
@@ -330,6 +324,7 @@ export default function ParentPage() {
   };
 
   const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    sessionStorage.setItem("employeeId", e.target.value);
     setSelectedFaculty(e.target.value);
     if (e.target.value && academicYear) {
       fetchFacultyData(e.target.value, academicYear);
@@ -1062,8 +1057,14 @@ export default function ParentPage() {
               <div className="flex justify-between items-center mt-8">
                 <button
                   type="button"
-                  className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
+                  className={`text-white px-6 py-2 rounded ${
+                    facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"
+                      ?  "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
+                      :"bg-yellow-500 hover:bg-yellow-600"
+                  }`}
                   onClick={() => saveDraft(true)}
+                  disabled={facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"}
+
                 >
                   Save Draft
                 </button>
@@ -1073,7 +1074,6 @@ export default function ParentPage() {
                     className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
                     onClick={async () => {
                       await saveDraft(false);
-                      sessionStorage.setItem("employeeId", facultyInfo?facultyInfo.eid:"");
                       sessionStorage.setItem("academicYear", academicYear);
                       sessionStorage.setItem("committteeScore1", String(totalCommitteeScore));
                       router.push('/partb/category-2');

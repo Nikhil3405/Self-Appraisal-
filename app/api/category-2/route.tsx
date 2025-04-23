@@ -9,6 +9,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const { employeeId,
+            academicYear,
             activityrecords,
             committeeResponsibilities,
             articles,
@@ -26,8 +27,8 @@ export async function POST(req: Request) {
             for (const a of activityrecords) {
                 await sql.query`
                     INSERT INTO FacultyActivities
-                          (ActivityDetails,ActivityType,SelfAppraisalScore,EmployeeID)
-                    VALUES (${a.activityDetails}, ${a.activityType}, ${a.score},${employeeId})
+                          (ActivityDetails,ActivityType,SelfAppraisalScore,EmployeeID,academicyear)
+                    VALUES (${a.activityDetails}, ${a.activityType}, ${a.score},${employeeId},${academicYear})
                 `;
             }
         }
@@ -37,8 +38,8 @@ export async function POST(req: Request) {
             for (const cr of committeeResponsibilities) {
                 await sql.query`
                     INSERT INTO AcademicResponsibilities 
-                    (activityType,SelfAppraisalScore,EmployeeID)
-                    VALUES (${cr.activityType}, ${cr.score}, ${employeeId})
+                    (activityType,SelfAppraisalScore,EmployeeID,academicyear)
+                    VALUES (${cr.activityType}, ${cr.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -48,8 +49,8 @@ export async function POST(req: Request) {
             for (const ac of articles) {
                 await sql.query`
                     INSERT INTO ArticleContributions 
-                    (ArticleDetails,DatePublished,SelfAppraisalScore,EmployeeID)                 
-      VALUES (${ac.articleDetails}, ${ac.articleDate}, ${ac.score}, ${employeeId})
+                    (ArticleDetails,DatePublished,SelfAppraisalScore,EmployeeID,academicyear)                 
+      VALUES (${ac.articleDetails}, ${ac.articleDate}, ${ac.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -59,8 +60,8 @@ export async function POST(req: Request) {
             for (const et of outreachResponsibilities) {
                 await sql.query`
                     INSERT INTO AcademicOutreaches 
-      (Responsibility,SelfAppraisalScore,EmployeeID)
-                    VALUES (${et.responsibility}, ${et.score}, ${employeeId})
+      (Responsibility,SelfAppraisalScore,EmployeeID,academicyear)
+                    VALUES (${et.responsibility}, ${et.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -70,8 +71,8 @@ export async function POST(req: Request) {
             for (const sm of seminars) {
                 await sql.query`
                     INSERT INTO EventsArranged
-      (EventDetails,EventDate,SelfAppraisalScore,EmployeeID)
-                          VALUES (${sm.details}, ${sm.date}, ${sm.score}, ${employeeId})
+      (EventDetails,EventDate,SelfAppraisalScore,EmployeeID,academicyear)
+                          VALUES (${sm.details}, ${sm.date}, ${sm.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -81,8 +82,8 @@ export async function POST(req: Request) {
             for (const rp of resourceParticipations) {
                 await sql.query`
                     INSERT INTO ResourcePersonActivities
-      (EventDetails,EventDate,SelfAppraisalScore,EmployeeID)
-      VALUES (${rp.details}, ${rp.date}, ${rp.score}, ${employeeId})
+      (EventDetails,EventDate,SelfAppraisalScore,EmployeeID,academicyear)
+      VALUES (${rp.details}, ${rp.date}, ${rp.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -92,8 +93,8 @@ export async function POST(req: Request) {
             for (const oa of outreachActivities) {
                 await sql.query`
                     INSERT INTO OutreachActivities
-                    (ActivityDetails,ActivityDate,SelfAppraisalScore,EmployeeID)
-      VALUES (${oa.details}, ${oa.date},${oa.score}, ${employeeId})
+                    (ActivityDetails,ActivityDate,SelfAppraisalScore,EmployeeID,academicyear)
+      VALUES (${oa.details}, ${oa.date},${oa.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -103,8 +104,8 @@ export async function POST(req: Request) {
             for (const pb of professionalBodies) {
                 await sql.query`
                     INSERT INTO ProfessionalBodyMemberships
-      (activityType,SelfAppraisalScore,EmployeeID)
-      VALUES (${pb.activityType}, ${pb.score}, ${employeeId})
+      (activityType,SelfAppraisalScore,EmployeeID,academicyear)
+      VALUES (${pb.activityType}, ${pb.score}, ${employeeId},${academicYear})
                 `;
             }
         }
@@ -114,8 +115,8 @@ export async function POST(req: Request) {
             for (const fs of fellowships) {
                 await sql.query`
 INSERT INTO FellowshipsAwards 
-(Awards, SelfAppraisalScore,EmployeeID)
-      VALUES (${fs.details},${fs.score},${employeeId})
+(Awards, SelfAppraisalScore,EmployeeID,academicyear)
+      VALUES (${fs.details},${fs.score},${employeeId},${academicYear})
                 `;
             }
         }
@@ -125,8 +126,8 @@ INSERT INTO FellowshipsAwards
             for (const hr of honors) {
                 await sql.query`
 INSERT INTO HonorsConferred 
-(HonorTitle, ConferredDate, ConferredBy, IsPaid, SelfAppraisalScore,EmployeeID)
-                    VALUES (${hr.title},${hr.date},${hr.conferredBy},${hr.unpaid}, ${hr.score},${employeeId})
+(HonorTitle, ConferredDate, ConferredBy, IsPaid, SelfAppraisalScore,EmployeeID,academicyear)
+                    VALUES (${hr.title},${hr.date},${hr.conferredBy},${hr.unpaid}, ${hr.score},${employeeId},${academicYear})
                 `;
             }
         }
