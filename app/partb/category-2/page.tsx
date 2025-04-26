@@ -155,15 +155,21 @@ export default function ParentPage() {
     const storedData = sessionStorage.getItem("record");
     const employeeId = sessionStorage.getItem("employeeId");
     const academicYear = sessionStorage.getItem("academicYear");
-    if (storedData && employeeId && academicYear) {
+    if (storedData) {
       setFacultyInfo(JSON.parse(storedData)); // Parse the stored data
-      setEmployeeId(employeeId); // Set the employee ID
-      setAcademicYear(academicYear); // Set the academic year
-    } else {
-      router.push("/");
+    } 
+    if(employeeId){
+      setEmployeeId(employeeId);
+    }
+    if(academicYear){
+      setAcademicYear(academicYear);
+    }
+    else if(!storedData || !employeeId || !academicYear){
+      alert("Some error occured");
     }
   }, [router]);
-  
+  console.log("Employee ID: ", employeeId);
+  console.log("Academic Year: ", academicYear);
   const saveDraft = async (showToast=true) => {
     if (!facultyInfo) return;
   
@@ -563,25 +569,37 @@ export default function ParentPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row items-start space-x-2">
-        <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
+      <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
           <Link href="/facultyhome">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Home
             </button>
           </Link>
+          {facultyInfo && facultyInfo.loginType === "faculty" && (
+            <>
           <Link href="/faculty_part_a">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Part-A
             </button>
           </Link>
           <Link href="/partb/category-1">
-          <button
-            className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-          >
-            Part-B
-          </button>
+        <button
+          className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+        >
+          Part-B
+        </button>
+        </Link>
+        </>
+        )}
+        {facultyInfo && facultyInfo.loginType !== "faculty" && (
+          <>
+          <Link href="/partc">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Part-C
+            </button>
           </Link>
-          
+        </>
+        )}
         </div>
 
         <ToastContainer position="top-right" autoClose={3000} />
@@ -605,9 +623,7 @@ export default function ParentPage() {
                 {(facultyInfo.loginType === "hod" || facultyInfo.loginType === "committee") && (
                   <>
                     {!academicYear ? (
-                      <div className="text-center p-8 text-gray-500">
-                        Please select a faculty member and academic year to view their data.
-                      </div>
+                      router.push("/partb/category-1")
                     ) : (
                       <>
                       <Category2A
@@ -778,7 +794,7 @@ export default function ParentPage() {
   className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
   onClick={async () => {
     await saveDraft(false); // silent save
-    sessionStorage.setItem("committteeScore2", String(totalCommitteeScore));
+    sessionStorage.setItem("committeeScore2", String(totalCommitteeScore));
     router.push('/partb/category-3');
   }}
 >Next</button>

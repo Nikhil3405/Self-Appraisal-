@@ -1,9 +1,6 @@
 'use client'
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import jsPDF from 'jspdf';
-import Navbar from '../navbar/page';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 interface FacultyAppraisal {
   facultyName: string;
@@ -52,28 +49,11 @@ const initialAppraisal: FacultyAppraisal = {
   date: '',
   hodName: ''
 };
-interface FacultyInfo {
-    eid:string;
-    name: string;
-    branch: string;
-    role: string;
-    designation: string;
-  }
+
 export default function FacultyAppraisalForm() {
   const [appraisal, setAppraisal] = useState<FacultyAppraisal>(initialAppraisal);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    // Retrieve faculty details from session storage
-    const storedData = sessionStorage.getItem("record");
-    if (storedData) {
-      setFacultyInfo(JSON.parse(storedData));
-    } else {
-      router.push("/login"); // Redirect if no data found
-    }
-  }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -114,75 +94,340 @@ export default function FacultyAppraisalForm() {
     alert("Form submitted successfully!");
   };
 
-  const generateReport = () => {
-    const doc = new jsPDF();
-    const lineHeight = 7;
-    let yPos = 15;
+  const generateReport = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      // Create a new PDF document
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-    // Report Title
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text('HOD EVALUATION REPORT', 105, yPos, { align: 'center' });
-    yPos += 15;
+      // Page dimensions
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 15;
+      const contentWidth = pageWidth - (margin * 2);
+      let y = margin;
 
-    // Faculty Information
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Faculty Name: ${appraisal.facultyName}`, 20, yPos);
-    doc.text(`Designation: ${appraisal.designation}`, 20, yPos + lineHeight);
-    doc.text(`Department: ${appraisal.department}`, 20, yPos + lineHeight * 2);
-    yPos += lineHeight * 4;
+      // Helper functions
+      const addFormHeader = () => {
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("FACULTY SELF-APPRAISAL", pageWidth / 2, y, { align: "center" });
+        y += 8;
 
-    // Evaluation Sections
-    const sections = [
-      { title: 'Claims Verification', content: appraisal.hodComments.claimsVerified },
-      { title: 'Academic Attitude', content: appraisal.hodComments.academicAttitude },
-      { title: 'Intelligence & Learning', content: appraisal.hodComments.intelligence },
-      { title: 'Additional Responsibilities', content: appraisal.hodComments.additionalResponsibilities.join('\n') },
-      { title: 'Discipline & Amenability', content: appraisal.hodComments.amenability },
-      { title: 'Regularity & Punctuality', content: appraisal.hodComments.regularity },
-      { title: 'Integrity & Morality', content: appraisal.hodComments.integrity },
-      { title: 'Trustworthiness', content: appraisal.hodComments.trustworthiness },
-      { title: 'Score Information', content: `Quoted Score: ${appraisal.hodComments.scoreQuoted}\nActual Score: ${appraisal.hodComments.actualScore}` },
-      { title: 'Recommendation', content: appraisal.hodComments.recommendation },
-    ];
+        doc.text("PART - C", pageWidth / 2, y, { align: "center" });
+        y += 8;
 
-    sections.forEach((section, index) => {
-      if (yPos > 260) {
-        doc.addPage();
-        yPos = 15;
+        doc.setFontSize(12);
+        doc.text("(To be filled by HoD)", pageWidth / 2, y, { align: "center" });
+        y += 15;
+      };
+
+      const addLine = (text: string, isHeader = false) => {
+        if (isHeader) {
+          doc.setFont("helvetica", "bold");
+        } else {
+          doc.setFont("helvetica", "normal");
+        }
+
+        const textLines = doc.splitTextToSize(text, contentWidth);
+        doc.text(textLines, margin, y);
+        y += textLines.length * 7;
+      };
+
+      const addFormField = (label: string, value: string, indent = 0) => {
+        // Check if we need a new page
+        if (y > pageHeight - 20) {
+          doc.addPage();
+          y = margin;
+        }
+
+        doc.setFont("helvetica", "normal");
+        doc.text(label, margin + indent, y);
+
+        // Draw underline for the field
+        const labelWidth = doc.getTextWidth(label);
+        const lineStart = margin + indent + labelWidth + 2;
+        const lineEnd = pageWidth - margin;
+        doc.setLineWidth(0.1);
+        doc.line(lineStart, y, lineEnd, y);
+
+        // Add the value text slightly above the line
+        if (value) {
+          doc.text(value, lineStart + 2, y - 1);
+        }
+
+        y += 8;
+      };
+
+      const addNumberedSection = (num: number, text: string, value: string) => {
+        // Check if we need a new page
+        if (y > pageHeight - 30) {
+          doc.addPage();
+          y = margin;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`${num}.`, margin, y);
+
+        doc.setFont("helvetica", "normal");
+        const textWidth = doc.getTextWidth(`${num}. `);
+        doc.text(text, margin + textWidth, y);
+        y += 8;
+
+        // Add lines for writing
+        doc.setLineWidth(0.1);
+        for (let i = 0; i < 3; i++) {
+          if (value && i === 0) {
+            doc.text(value, margin + 5, y - 2);
+          }
+          doc.line(margin, y, pageWidth - margin, y);
+          y += 8;
+        }
+
+        y += 4; // Add some spacing between sections
+      };
+
+      const addTableRow = (cells: string[], heights: number[] = [], isBold = false) => {
+        const startY = y;
+        const cellWidth = contentWidth / cells.length;
+
+        if (isBold) {
+          doc.setFont("helvetica", "bold");
+        } else {
+          doc.setFont("helvetica", "normal");
+        }
+
+        // Calculate row height based on the cell with the most text
+        let maxHeight = 8;
+        cells.forEach((cell, index) => {
+          const textLines = doc.splitTextToSize(cell, cellWidth - 4);
+          const cellHeight = textLines.length * 7;
+          maxHeight = Math.max(maxHeight, cellHeight);
+        });
+
+        if (heights.length > 0) {
+          maxHeight = Math.max(...heights);
+        }
+
+        // Draw cells
+        cells.forEach((cell, index) => {
+          const x = margin + (cellWidth * index);
+          doc.rect(x, y, cellWidth, maxHeight);
+
+          const textLines = doc.splitTextToSize(cell, cellWidth - 4);
+          const textY = y + 5;
+          doc.text(textLines, x + 2, textY);
+        });
+
+        y += maxHeight;
+        return maxHeight;
+      };
+
+      // Start building the PDF
+      addFormHeader();
+
+      // Faculty information section
+      addFormField("Name of the faculty member:", appraisal.facultyName);
+
+      // Split line for designation and department
+      doc.text("Designation:", margin, y);
+      const designationWidth = doc.getTextWidth("Designation:");
+      let lineStart = margin + designationWidth + 2;
+      let lineEnd = pageWidth / 2 - 5;
+      doc.setLineWidth(0.1);
+      doc.line(lineStart, y, lineEnd, y);
+      if (appraisal.designation) {
+        doc.text(appraisal.designation, lineStart + 2, y - 1);
       }
 
-      doc.setFont('helvetica', 'bold');
-      doc.text(`${index + 1}. ${section.title}:`, 20, yPos);
-      doc.setFont('helvetica', 'normal');
-      const splitText = doc.splitTextToSize(section.content, 170);
-      doc.text(splitText, 25, yPos + 5);
-      yPos += (splitText.length * lineHeight) + 10;
-    });
+      doc.text("Department:", pageWidth / 2, y);
+      const departmentWidth = doc.getTextWidth("Department:");
+      lineStart = pageWidth / 2 + departmentWidth + 2;
+      lineEnd = pageWidth - margin;
+      doc.line(lineStart, y, lineEnd, y);
+      if (appraisal.department) {
+        doc.text(appraisal.department, lineStart + 2, y - 1);
+      }
+      y += 15;
 
-    // Signature Section
-    doc.addPage();
-    yPos = 50;
-    doc.setFontSize(14);
-    doc.text('HOD Certification', 105, yPos, { align: 'center' });
-    yPos += 20;
+      // Numbered sections
+      addNumberedSection(1, "Are the Reporting Officer claims with the evidence made in part-A covered.",
+        appraisal.hodComments.claimsVerified);
+      doc.setFont("helvetica", "normal");
+      doc.text("If not, the extent of the unfound facts.", margin + 5, y - 12);
 
-    doc.setFontSize(12);
-    doc.text(`I hereby certify that the above evaluation of ${appraisal.facultyName}`, 20, yPos);
-    yPos += lineHeight;
-    doc.text(`is accurate to the best of my knowledge.`, 20, yPos);
-    yPos += 20;
+      addNumberedSection(2, "State of attitude of the Faculty towards academics:",
+        appraisal.hodComments.academicAttitude);
 
-    // Signature Line
-    doc.text(`Date: ${appraisal.date}`, 20, yPos);
-    doc.text('Signature:', 20, yPos + 20);
-    doc.setLineWidth(0.5);
-    doc.line(40, yPos + 25, 100, yPos + 25);
-    doc.setFont('helvetica', 'bold');
-    doc.text(appraisal.hodName, 45, yPos + 30);
+      addNumberedSection(3, "Intelligence, devotion, hardworking and desire of learning:",
+        appraisal.hodComments.intelligence);
 
-    doc.save(`hod-report-${appraisal.facultyName}.pdf`);
+      addNumberedSection(4, "Does the faculty has carried out any additional responsibilities? Mention.",
+        appraisal.hodComments.additionalResponsibilities.join(", "));
+
+      // Add the responsibility subitems
+      if (appraisal.hodComments.additionalResponsibilities.length > 0) {
+        y -= 24; // Move back up to write inside the section
+
+        doc.text("(i)", margin + 10, y);
+        lineStart = margin + 20;
+        lineEnd = pageWidth - margin;
+        doc.line(lineStart, y, lineEnd, y);
+        if (appraisal.hodComments.additionalResponsibilities[0]) {
+          doc.text(appraisal.hodComments.additionalResponsibilities[0], lineStart + 2, y - 1);
+        }
+        y += 8;
+
+        doc.text("(ii)", margin + 10, y);
+        lineStart = margin + 20;
+        lineEnd = pageWidth - margin;
+        doc.line(lineStart, y, lineEnd, y);
+        if (appraisal.hodComments.additionalResponsibilities[1]) {
+          doc.text(appraisal.hodComments.additionalResponsibilities[1], lineStart + 2, y - 1);
+        }
+        y += 16;
+      }
+
+      addNumberedSection(5, "Amenability to discipline and attitude towards subordinates:",
+        appraisal.hodComments.amenability);
+
+      addNumberedSection(6, "Regularity and punctuality:",
+        appraisal.hodComments.regularity);
+
+      addNumberedSection(7, "Integrity and Morality:",
+        appraisal.hodComments.integrity);
+
+      // Check if we need a page break
+      if (y > pageHeight - 80) {
+        doc.addPage();
+        y = margin;
+      }
+
+      addNumberedSection(8, "Admonition of employee due to negligence in work. If yes, give details:",
+        appraisal.hodComments.admonition);
+
+      addNumberedSection(9, "Trust worthiness and handling confidential matters:",
+        appraisal.hodComments.trustworthiness);
+
+      // Section 10 - Minimum points
+      doc.setFont("helvetica", "bold");
+      doc.text("10.", margin, y);
+
+      doc.setFont("helvetica", "normal");
+      const textWidth = doc.getTextWidth("10. ");
+      doc.text("Whether the Faculty achieved minimum point:", margin + textWidth, y);
+      y += 8;
+
+      // Yes/No with scoring
+      doc.text("Yes/ No: ", margin + 5, y);
+      doc.text(appraisal.hodComments.minimumPointAchieved || "", margin + 25, y);
+      doc.text("[Score: ", margin + 40, y);
+      doc.text(appraisal.hodComments.scoreQuoted || "", margin + 55, y);
+      doc.text("quoted by the employee]", margin + 70, y);
+      y += 8;
+
+      doc.text("[Actual score: ", margin + 40, y);
+      doc.text(appraisal.hodComments.actualScore || "", margin + 70, y);
+      doc.text("by the HoD/committee]", margin + 85, y);
+      y += 10;
+
+      // Add grading table
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("11.    Overall Grading (Category I + Category II + Category III)", margin, y);
+      y += 8;
+
+      // Create table header
+      addTableRow(["Grading", "Actual Score for", "", "", ""], [10], true);
+      addTableRow(["", "Assistant Professor", "Associate Professor", "Professor"], [10], true);
+
+      // Table rows
+      const tableData = [
+        ["Outstanding (A)", "90 to 100", "90 to 100", "90 to 100"],
+        ["Excellent (B)", "80 to 89", "80 to 89", "80 to 89"],
+        ["Very Good (C)", "70 to 79", "70 to 79", "70 to 79"],
+        ["Good (D)", "60 to 79", "60 to 79", "60 to 79"],
+        ["Satisfactory (E)", "40 to 59", "40 to 59", "40 to 59"],
+        ["Not Satisfactory (F)", "<60", "<65", "<70"]
+      ];
+
+      tableData.forEach(row => {
+        addTableRow(row);
+      });
+
+      y += 5;
+
+      // Section 12 - Remarks
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("12.", margin, y);
+
+      doc.setFont("helvetica", "normal");
+      doc.text("Any other remarks:", margin + 10, y);
+      y += 8;
+
+      // Add lines for writing remarks
+      doc.setLineWidth(0.1);
+      for (let i = 0; i < 2; i++) {
+        if (appraisal.hodComments.remarks && i === 0) {
+          doc.text(appraisal.hodComments.remarks, margin + 5, y - 2);
+        }
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 8;
+      }
+      y += 5;
+
+      // Section 13 - Recommendation
+      doc.setFont("helvetica", "bold");
+      doc.text("13.", margin, y);
+
+      doc.setFont("helvetica", "normal");
+      const recommendationText = "Recommended/ Recommended conditionally/ Not recommended for increment/staff promotion.";
+      doc.text(recommendationText, margin + 10, y);
+
+      // Highlight the selected recommendation
+      if (appraisal.hodComments.recommendation) {
+        let position;
+        if (appraisal.hodComments.recommendation === "Recommended") {
+          position = margin + 10 + 6;
+        } else if (appraisal.hodComments.recommendation === "Recommended conditionally") {
+          position = margin + 10 + doc.getTextWidth("Recommended/ ") + 6;
+        } else {
+          position = margin + 10 + doc.getTextWidth("Recommended/ Recommended conditionally/ ") + 6;
+        }
+
+        // Underline the selected option
+        const textWidth = doc.getTextWidth(appraisal.hodComments.recommendation);
+        doc.setLineWidth(0.5);
+        doc.line(position, y + 1, position + textWidth, y + 1);
+      }
+
+      y += 20;
+
+      // Date and signature
+      doc.text("Date:", margin, y);
+      if (appraisal.date) {
+        doc.text(appraisal.date, margin + 20, y);
+      }
+
+      doc.text("Name & Signature of HOD", pageWidth - margin - 50, y);
+      if (appraisal.hodName) {
+        doc.text(appraisal.hodName, pageWidth - margin - 45, y - 10);
+      }
+
+      // Save the PDF
+      const fileName = `faculty-appraisal-${appraisal.facultyName.replace(/\s+/g, '-')}.pdf`;
+      doc.save(fileName);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("An error occurred while generating the PDF");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const resetForm = () => {
@@ -191,49 +436,14 @@ export default function FacultyAppraisalForm() {
   };
 
   return (
-<div className="min-h-screen">
-
-      <Navbar />
-
-      <div className="flex flex-col md:flex-row items-start space-x-2">
-        {/* Sidebar Menu */}
-        <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-          <Link href="/facultyhome">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Home
-            </button>
-          </Link>
-          <Link href="/faculty_part_a">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Part-A
-            </button>
-          </Link>
-          <Link href="/partb/category-1">
-        <button
-          className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-        >
-          Part-B
-        </button>
-        </Link>
-        {facultyInfo && facultyInfo.role === "hod" && (
-          <>
-          <Link href="/partc">
-            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Part-C
-            </button>
-          </Link>
-          <Link href="/viewreport">
-          <button className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-            View Report
-          </button>
-        </Link>
-        </>
-        )}
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl">
-<div className="bg-indigo-600 text-white px-6 py-4">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-blue-600 text-white px-6 py-4">
           <h1 className="text-2xl font-bold uppercase tracking-wide">Faculty Self-Appraisal</h1>
+          <div className="mt-2 flex justify-between items-center">
             <h2 className="text-lg font-medium">Part - C</h2>
+            <span className="text-sm bg-blue-700 px-3 py-1 rounded-full">HOD Section</span>
+          </div>
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-8">
@@ -248,7 +458,7 @@ export default function FacultyAppraisalForm() {
                   name="facultyName"
                   value={appraisal.facultyName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter faculty name"
                 />
               </div>
@@ -259,7 +469,7 @@ export default function FacultyAppraisalForm() {
                   name="designation"
                   value={appraisal.designation}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter designation"
                 />
               </div>
@@ -270,7 +480,7 @@ export default function FacultyAppraisalForm() {
                   name="department"
                   value={appraisal.department}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter department"
                 />
               </div>
@@ -344,7 +554,7 @@ export default function FacultyAppraisalForm() {
                     name={section.name}
                     value={section.value}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     rows={3}
                     placeholder="Enter details..."
                   />
@@ -357,7 +567,7 @@ export default function FacultyAppraisalForm() {
                           type="text"
                           value={resp}
                           onChange={(e) => handleResponsibilityChange(i, e.target.value)}
-                          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder={`Responsibility ${i + 1}`}
                         />
                       </div>
@@ -383,7 +593,7 @@ export default function FacultyAppraisalForm() {
                       value="Yes"
                       checked={appraisal.hodComments.minimumPointAchieved === 'Yes'}
                       onChange={handleInputChange}
-                      className="form-radio h-4 w-4 text-indigo-600"
+                      className="form-radio h-4 w-4 text-blue-600"
                     />
                     <span>Yes</span>
                   </label>
@@ -394,7 +604,7 @@ export default function FacultyAppraisalForm() {
                       value="No"
                       checked={appraisal.hodComments.minimumPointAchieved === 'No'}
                       onChange={handleInputChange}
-                      className="form-radio h-4 w-4 text-indigo-600"
+                      className="form-radio h-4 w-4 text-blue-600"
                     />
                     <span>No</span>
                   </label>
@@ -435,7 +645,7 @@ export default function FacultyAppraisalForm() {
                 name="hodComments.remarks"
                 value={appraisal.hodComments.remarks}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={3}
                 placeholder="Enter remarks..."
               />
@@ -456,7 +666,7 @@ export default function FacultyAppraisalForm() {
                       value={option}
                       checked={appraisal.hodComments.recommendation === option}
                       onChange={handleInputChange}
-                      className="form-radio h-4 w-4 text-indigo-600"
+                      className="form-radio h-4 w-4 text-blue-600"
                     />
                     <span>{option}</span>
                   </label>
@@ -474,7 +684,7 @@ export default function FacultyAppraisalForm() {
                 name="date"
                 value={appraisal.date}
                 onChange={handleInputChange}
-                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="space-y-2">
@@ -497,16 +707,17 @@ export default function FacultyAppraisalForm() {
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <button
               type="submit"
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
             >
               Submit Form
             </button>
             <button
               type="button"
               onClick={generateReport}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+              disabled={isGeneratingPDF}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-400"
             >
-              Generate Report
+              {isGeneratingPDF ? "Generating PDF..." : "Generate Report"}
             </button>
             <button
               type="button"
@@ -518,7 +729,6 @@ export default function FacultyAppraisalForm() {
           </div>
         </form>
       </div>
-    </div>
     </div>
   );
 }

@@ -176,7 +176,7 @@ interface FacultyInfo {
   eid: string;
   name: string;
   branch: string;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee" ;
 }
 interface FetchedDraftData {
   teachingactivities: TeachingActivity[];
@@ -233,7 +233,10 @@ export default function ParentPage() {
   const [committeeScoreM, setCommitteeScoreM] = useState<string>("");
   const category = "category-1";
 
-
+  if(facultyInfo?.loginType === "faculty"){
+    sessionStorage.setItem("employeeId", facultyInfo.eid);
+    console.log("Faculty ID: ", facultyInfo.eid);
+  }
   useEffect(() => {
     const fetchFacultyList = async (branch: string) => {
       try {
@@ -250,6 +253,7 @@ export default function ParentPage() {
     
         const data = await response.json();
         setFacultyList(data);
+        console.log("facultyList", data);
       } catch (error) {
         console.error("Error fetching faculty list:", error);
       }
@@ -259,7 +263,7 @@ export default function ParentPage() {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setFacultyInfo(parsedData);
-      if (parsedData.loginType === "hod" || parsedData.loginType === "committee") {
+      if (parsedData.loginType === "hod" || parsedData.loginType === "committee" || parsedData.loginType === "principal") {
         fetchFacultyList(parsedData.branch);
       }
     } else {
@@ -324,7 +328,9 @@ export default function ParentPage() {
   };
 
   const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    sessionStorage.setItem("employeeId", e.target.value);
+    if(facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "hod" ){
+    sessionStorage.setItem("employeeId", e.target.value);}
+    console.log("Faculty ID: ", e.target.value);
     setSelectedFaculty(e.target.value);
     if (e.target.value && academicYear) {
       fetchFacultyData(e.target.value, academicYear);
@@ -335,6 +341,7 @@ export default function ParentPage() {
 
   const handleAcademicYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedYear = e.target.value;
+    console.log("Academic Year: ", selectedYear);
     setAcademicYear(selectedYear);
     if (selectedFaculty && selectedYear) {
       fetchFacultyData(selectedFaculty, selectedYear);
@@ -779,22 +786,37 @@ export default function ParentPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row items-start space-x-2">
-        <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
+      <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
           <Link href="/facultyhome">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Home
             </button>
           </Link>
+          {facultyInfo && facultyInfo.loginType === "faculty" && (
+            <>
           <Link href="/faculty_part_a">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Part-A
             </button>
           </Link>
           <Link href="/partb/category-1">
-            <button className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center">
-              Part-B
+        <button
+          className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+        >
+          Part-B
+        </button>
+        </Link>
+        </>
+        )}
+        {facultyInfo && facultyInfo.loginType !== "faculty" && (
+          <>
+          <Link href="/partc">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Part-C
             </button>
           </Link>
+        </>
+        )}
         </div>
 
         <ToastContainer position="top-right" autoClose={3000} />
@@ -802,7 +824,7 @@ export default function ParentPage() {
         <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-6xl mb-4">
   <div className="flex flex-col md:flex-row md:space-x-8">
     {/* Faculty Selection */}
-    {(facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee") && (
+    {(facultyInfo?.loginType !=="faculty") && (
       <div className="w-full md:w-1/2 mb-4 md:mb-0">
         <h2 className="text-xl font-semibold text-indigo-600 mb-4">
           Faculty Selection:
@@ -866,7 +888,7 @@ export default function ParentPage() {
               {facultyInfo && (
   <>
     {/* For HOD or Committee: Check both faculty and academic year */}
-    {(facultyInfo.loginType === "hod" || facultyInfo.loginType === "committee") && (
+    {(facultyInfo.loginType !== "faculty") && (
       <>
         {!selectedFaculty || !academicYear ? (
           <div className="text-center p-8 text-gray-500">
@@ -1069,18 +1091,30 @@ export default function ParentPage() {
                   Save Draft
                 </button>
                 <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
-                    onClick={async () => {
+                <button
+                  type="button"
+                  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
+                  onClick={async () => {
+                    try {
                       await saveDraft(false);
-                      sessionStorage.setItem("academicYear", academicYear);
-                      sessionStorage.setItem("committteeScore1", String(totalCommitteeScore));
+                      
+                      if (academicYear) {
+                        sessionStorage.setItem("academicYear", academicYear);
+                      }
+                      
+                      if (typeof totalCommitteeScore === "number") {
+                        sessionStorage.setItem("committeeScore1", String(totalCommitteeScore));
+                      }
+
                       router.push('/partb/category-2');
-                    }}
-                  >
-                    Next
-                  </button>
+                    } catch (error) {
+                      console.error("Error during draft save or navigation:", error);
+                    }
+                  }}
+                >
+                  Next
+                </button>
+
                 </div>
               </div>
             </div>

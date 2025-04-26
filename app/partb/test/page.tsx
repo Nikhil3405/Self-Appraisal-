@@ -1,205 +1,193 @@
 "use client";
-import CategoryA from "@/app/component/category1/a";
-import CategoryB from "@/app/component/category1/b";
-import CategoryC from "@/app/component/category1/c";
-import CategoryD from "@/app/component/category1/d";
-import CategoryE from "@/app/component/category1/e";
-import CategoryF from "@/app/component/category1/f";
-import CategoryG from "@/app/component/category1/g";
-import CategoryH from "@/app/component/category1/h";
-import CategoryI from "@/app/component/category1/i";
-import CategoryJ from "@/app/component/category1/j";
-import CategoryK from "@/app/component/category1/k";
-import CategoryL from "@/app/component/category1/l";
-import CategoryM from "@/app/component/category1/m";
+
 import Navbar from "@/app/navbar/page";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-
-interface TeachingActivity {
-  academicYear: string;
-  semester: string;
-  courseCode: string;
-  level: string;
-  mode: string;
-  classesPerWeek: string;
-  score: string;
+import Category3A from "../../component/category3/a";
+import Category3B from "../../component/category3/b";
+import Category3C from "../../component/category3/c";
+import Category3D from "../../component/category3/d";
+import Category3E from "../../component/category3/e";
+import Category3F from "../../component/category3/f";
+import Category3G from "../../component/category3/g";
+import Category3H from "../../component/category3/h";
+import Category3I from "../../component/category3/i";
+import Category3J from "../../component/category3/j";
+import Category3K from "../../component/category3/k";
+import Category3L from "../../component/category3/l";
+import Category3N from "../../component/category3/n";
+import Category3M from "../../component/category3/m";
+import Category3O from "../../component/category3/o";
+import TeacherDocumentUpload from "../../component/category3/p"
+interface PublishedPaper {
+  title: string;
+  journalName: string;
+  issnIsbn: string;
+  peerReviewed: string;
+  coAuthors: number;
+  mainAuthor: string;
+  journalType: "Q1" | "Q2" | "Q3" | "Q4" | "OTHERS" | " ";
+  score: number;
 }
-interface StudentPerformance {
-  course: string;
-  courseCode: string;
-  studentsRegistered: string;
-  studentsPassed: string;
-  notEligible: string;
-  passPercentage: string;
-  score: string;
+interface BookChapter {
+  title: string;
+  publisherDetails: string;
+  issnIsbn: string;
+  coAuthors: number;
+  isMainAuthor: string;
+  score: number;
 }
-interface RemedialClass {
-  semester: string;
-  type: string;
-  course: string;
-  courseCode: string;
-  classtype: string;
-  numberOfClasses: string;
-  hoursSpent: string;
-  score: string;
+interface AuthoredBook {
+  title: string;
+  publisherDetails: string;
+  issnIsbn: string;
+  coAuthors: number;
+  mainAuthor: boolean;
+  publicationType: "International" | "National/Local" | " ";
+  role: "Main Author" | "Co-author/Editor" | " ";
+  score: number;
 }
-interface TeachingMethodology {
-  semester: string;
-  course: string;
-  description: string;
-  score: string;
+interface ConferencePaper {
+  title: string;
+  conferenceDetails: string;
+  issnIsbn: string;
+  coAuthors: number;
+  authorRole: "Main Author" | "Co-author" | " ";
+  score: number;
 }
-interface CounselingRecord {
-  semester: string;
-  academicYear: string;
-  studentsMentored: string;
-  actionTaken: string;
-  outcome: string;
-  score: string;
+interface UGProject {
+  projectTitle: string;
+  ugPercentageCompletion: number;
+  hasPaper: string;
+  hasPatent: string;
+  hasFunding: string;
+  score: number;
 }
-interface IndustryInteraction {
-  industryName: string;
-  contactDetails: string;
+interface Patent {
+  title: string;
   date: string;
-  activitiesPlanned: string;
-  score: string;
+  type: "Indian" | "Foreign";
+  status: "Filed" | "Published" | "Awarded";
+  score: number;
 }
-interface IndustryVisit {
-  semester: string;
-  industryName: string;
+interface DesignPatent {
+  title: string;
   date: string;
-  studentsCount: string;
-  outcome: string;
-  score: string;
+  type: "Indian" | "Foreign";
+  status: "Filed" | "Published" | "Awarded";
+  score: number;
 }
-interface ExamDuty {
-  dutyType: string;
-  duties: string;
-  squad?: string;
-  roomInvigilation?: string;
-  relief?: string;
-  dcs?: string;
-  boe?: string;
-  invigilation?: string;
-  coordination?: string;
-  questionPaperSetting?: string;
-  score: string;
-}
-interface PartialDelivery {
-  industryExpert: string;
-  course: string;
+interface Copyright {
+  title: string;
   date: string;
-  score: string; // Keeping as string like CategoryD
-}
-interface StudentFeedback {
+  type: "Indian" | "Foreign";
   score: string;
 }
-interface DayToDayActivity {
-  particulars: string;
-  score: string;
+interface FundedProject {
+  title: string;
+  agency: string;
+  year: string;
+  period: string;
+  grant: string;
+  status: "Completed" | "Ongoing";
+  score: number;
 }
-interface MiniProject {
-  particulars: string;
-  score: string;
+interface ResearchGuidance {
+  degree: "Ph.D" | "M.Tech" | string;
+  candidateName: string;
+  thesisTitle: string;
+  university: string;
+  status: string;
+  score: number;
 }
-interface AcademicFile {
+interface ConsultancyWork {
+  title: string;
+  startDate: string;
+  endDate: string;
+  clientType: string; // Government/Private/Institutional
+  natureOfWork: string;
+  amount: number;
+  score: number;
+}
+interface TrainingProgram {
+  title: string;
+  duration: string;
+  organizedBy: string;
+  type: "Certification" | "FDP" | "Workshop" | "Pedagogy";
+  score: number;
+}
+interface Project3M {
+  title: string;
+  status: "Ongoing" | "Completed";
+  trl: number | null;
+  score: number;
+}
+interface ProfessionalBodyActivity {
+  name: string;
+  activityType: string;
+  score: number;
+}
+interface DisciplinaryChargeRow {
+  section: "Institutional" | "Society";
   details: string;
-  score: string;
+  remarks: string;
 }
 interface FacultyInfo {
   eid: string;
   name: string;
   branch: string;
-  loginType: "faculty" | "hod" | "committee";
-}
-interface FetchedDraftData {
-  teachingactivities: TeachingActivity[];
-  studentperformance: StudentPerformance[];
-  remedialclass: RemedialClass[];
-  teachingmethodology: TeachingMethodology[];
-  counselingrecord: CounselingRecord[];
-  industryinteraction: IndustryInteraction[];
-  industryvisit: IndustryVisit[];
-  examduty: ExamDuty[];
-  partialdelivery: PartialDelivery[];
-  studentfeedback: StudentFeedback;
-  daytodayactivity: DayToDayActivity[];
-  miniproject: MiniProject[];
-  academicfile: AcademicFile[];
-}
-
-interface FacultyData {
-  EmployeeID: string;
-  Name: string;
 }
 
 export default function ParentPage() {
   const router = useRouter();
-  const [draftCategoryA, setDraftCategoryA] = useState<TeachingActivity[]>([]);
-  const [draftCategoryB, setDraftCategoryB] = useState<StudentPerformance[]>([]);
-  const [draftCategoryC, setDraftCategoryC] = useState<RemedialClass[]>([]);
-  const [draftCategoryD, setDraftCategoryD] = useState<TeachingMethodology[]>([]);
-  const [draftCategoryE, setDraftCategoryE] = useState<CounselingRecord[]>([]);
-  const [draftCategoryF, setDraftCategoryF] = useState<IndustryInteraction[]>([]);
-  const [draftCategoryG, setDraftCategoryG] = useState<IndustryVisit[]>([]);
-  const [draftCategoryH, setDraftCategoryH] = useState<ExamDuty[]>([]);
-  const [draftCategoryI, setDraftCategoryI] = useState<PartialDelivery[]>([]);
-  const [draftCategoryJ, setDraftCategoryJ] = useState<StudentFeedback>();
-  const [draftCategoryK, setDraftCategoryK] = useState<DayToDayActivity[]>([]);
-  const [draftCategoryL, setDraftCategoryL] = useState<MiniProject[]>([]);
-  const [draftCategoryM, setDraftCategoryM] = useState<AcademicFile[]>([]);
+  const [draftCategoryA, setDraftCategoryA] = useState<PublishedPaper[]>([]);
+  const [draftCategoryB, setDraftCategoryB] = useState<BookChapter[]>([]);
+  const [draftCategoryC, setDraftCategoryC] = useState<AuthoredBook[]>([]);
+  const [draftCategoryD, setDraftCategoryD] = useState<ConferencePaper[]>([]);
+  const [draftCategoryE, setDraftCategoryE] = useState<UGProject[]>([]);
+  const [draftCategoryF, setDraftCategoryF] = useState<Patent[]>([]);
+  const [draftCategoryG, setDraftCategoryG] = useState<DesignPatent[]>([]);
+  const [draftCategoryH, setDraftCategoryH] = useState<Copyright[]>([]);
+  const [draftCategoryI, setDraftCategoryI] = useState<FundedProject[]>([]);
+  const [draftCategoryJ, setDraftCategoryJ] = useState<ResearchGuidance[]>([]);
+  const [draftCategoryK, setDraftCategoryK] = useState<ConsultancyWork[]>([]);
+  const [draftCategoryL, setDraftCategoryL] = useState<TrainingProgram[]>([]);
+  const [draftCategoryM, setDraftCategoryM] = useState<Project3M[]>([]);
+  const [draftCategoryN, setDraftCategoryN] = useState<ProfessionalBodyActivity[]>([]);
+  const [draftCategoryO, setDraftCategoryO] = useState<DisciplinaryChargeRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
-  const [facultyList, setFacultyList] = useState<FacultyData[]>([]);
-  const [selectedFaculty, setSelectedFaculty] = useState<string>("");
-  const [academicYear, setAcademicYear] = useState<string>("");
-  const [committeeScoreA, setCommitteeScoreA] = useState<string>("");
-  const [committeeScoreB, setCommitteeScoreB] = useState<string>("");
-  const [committeeScoreC, setCommitteeScoreC] = useState<string>("");
-  const [committeeScoreD, setCommitteeScoreD] = useState<string>("");
-  const [committeeScoreE, setCommitteeScoreE] = useState<string>("");
-  const [committeeScoreF, setCommitteeScoreF] = useState<string>("");
-  const [committeeScoreG, setCommitteeScoreG] = useState<string>("");
-  const [committeeScoreH, setCommitteeScoreH] = useState<string>("");
-  const [committeeScoreI, setCommitteeScoreI] = useState<string>("");
-  const [committeeScoreJ, setCommitteeScoreJ] = useState<string>("");
-  const [committeeScoreK, setCommitteeScoreK] = useState<string>("");
-  const [committeeScoreL, setCommitteeScoreL] = useState<string>("");
-  const [committeeScoreM, setCommitteeScoreM] = useState<string>("");
-  const category = "category-1";
 
-  const saveDraft = async (showToast = true) => {
+  const category = "category-3";
+
+  const saveDraft = async (showToast=true) => {
     if (!facultyInfo) return;
-
-    if (facultyInfo.loginType !== "faculty") {
-      toast.info("Only faculty members can save drafts.");
-      return;
-    }
+    //final data for submitting
 
     const formData = {
       employeeId: facultyInfo.eid,
       category,
-      academicYear,
-      teachingactivities: draftCategoryA,
-      studentperformance: draftCategoryB,
-      remedialclass: draftCategoryC,
-      teachingmethodology: draftCategoryD,
-      counselingrecord: draftCategoryE,
-      industryinteraction: draftCategoryF,
-      industryvisit: draftCategoryG,
-      examduty: draftCategoryH,
-      partialdelivery: draftCategoryI,
-      studentfeedback: draftCategoryJ,
-      daytodayactivity: draftCategoryK,
-      miniproject: draftCategoryL,
-      academicfile: draftCategoryM,
+      publishedPapers: draftCategoryA,
+      bookChapters: draftCategoryB,
+      authoredBooks: draftCategoryC,
+      conferencePapers: draftCategoryD,
+      ugProjects: draftCategoryE,
+      patents: draftCategoryF,
+      designPatents: draftCategoryG,
+      copyrights: draftCategoryH,
+      fundedProjects: draftCategoryI,
+      researchGuidance: draftCategoryJ,
+      consultancyWorks: draftCategoryK,
+      trainingPrograms: draftCategoryL,
+      developedProjects: draftCategoryM,
+      professionalBodyActivities: draftCategoryN,
+      disciplinaryCharges: draftCategoryO,
     };
 
     try {
-      const res = await fetch("/api/drafts/category-1", {
+      const res = await fetch("/api/drafts/category-3", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -208,8 +196,8 @@ export default function ParentPage() {
       });
 
       if (res.ok) {
-        if (showToast) {
-          toast.success('Draft saved successfully!');
+        if(showToast) {
+        toast.success("Draft saved successfully!");
         }
       } else {
         throw new Error("Failed to save draft");
@@ -221,473 +209,442 @@ export default function ParentPage() {
   };
 
   useEffect(() => {
-    const fetchFacultyList = async (branch: string) => {
-      try {
-        let response;
-        if (facultyInfo?.loginType === "hod") {
-          response = await fetch(`/api/final-submit?branch=${encodeURIComponent(branch)}`);
-        } else {
-          response = await fetch(`/api/final-submit`);
-        }
-    
-        if (!response.ok) {
-          throw new Error("Failed to fetch faculty list");
-        }
-    
-        const data = await response.json();
-        setFacultyList(data);
-      } catch (error) {
-        console.error("Error fetching faculty list:", error);
-      }
-    };
-
     const storedData = sessionStorage.getItem("record");
     if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setFacultyInfo(parsedData);
-
-      if (parsedData.loginType === "hod" || parsedData.loginType === "committee") {
-        fetchFacultyList(parsedData.branch);
-      }
+      setFacultyInfo(JSON.parse(storedData));
     } else {
       router.push("/login");
     }
-  }, [router, facultyInfo?.loginType]);
-
-  const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFaculty(e.target.value);
-    if (e.target.value && academicYear) {
-      fetchFacultyData(e.target.value, academicYear);
-    } else {
-      resetAllData();
-    }
-  };
-
-  const handleAcademicYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedYear = e.target.value;
-    setAcademicYear(selectedYear);
-    if (selectedFaculty && selectedYear) {
-      fetchFacultyData(selectedFaculty, selectedYear);
-    } else {
-      resetAllData();
-    }
-  };
-
-  const resetAllData = () => {
-    setDraftCategoryA([]);
-    setDraftCategoryB([]);
-    setDraftCategoryC([]);
-    setDraftCategoryD([]);
-    setDraftCategoryE([]);
-    setDraftCategoryF([]);
-    setDraftCategoryG([]);
-    setDraftCategoryH([]);
-    setDraftCategoryI([]);
-    setDraftCategoryJ(undefined);
-    setDraftCategoryK([]);
-    setDraftCategoryL([]);
-    setDraftCategoryM([]);
-  };
-
-  const fetchFacultyData = async (employeeId: string, academicYear: string) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/fetchData/category-1?employeeId=${employeeId}&academicYear=${academicYear}`);
-      if (res.ok) {
-        const json = await res.json();
-        processFetchedData(json, setDraftCategoryA,
-          setDraftCategoryB,
-          setDraftCategoryC,
-          setDraftCategoryD,
-          setDraftCategoryE,
-          setDraftCategoryF,
-          setDraftCategoryG,
-          setDraftCategoryH,
-          setDraftCategoryI,
-          setDraftCategoryJ,
-          setDraftCategoryK,
-          setDraftCategoryL,
-          setDraftCategoryM,
-        );
-        console.log("json:", json);
-      } else {
-        toast.error("Failed to fetch faculty data");
-        resetAllData();
-      }
-    } catch (error) {
-      console.error("Error fetching faculty data:", error);
-      toast.error("An error occurred while fetching faculty data");
-      resetAllData();
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [router]);
 
   useEffect(() => {
     const fetchDraft = async () => {
       if (!facultyInfo) return;
 
-      if (facultyInfo.loginType === "faculty" && academicYear){
-        try {
-          const res = await fetch(`/api/drafts/category-1?employeeId=${facultyInfo.eid}&category=${category}&academicYear=${academicYear}`);
-          const json = await res.json();
-          processFetchedData(json, setDraftCategoryA, 
-            setDraftCategoryB,
-            setDraftCategoryC,
-            setDraftCategoryD,
-            setDraftCategoryE,
-            setDraftCategoryF,
-            setDraftCategoryG,
-            setDraftCategoryH,
-            setDraftCategoryI,
-            setDraftCategoryJ,
-            setDraftCategoryK,
-            setDraftCategoryL,
-            setDraftCategoryM,
-          );
-        } catch (error) {
-          console.error("Error fetching draft:", error);
-        } finally {
-          setLoading(false);
+      try {
+        const res = await fetch(
+          `/api/drafts/category-3?employeeId=${facultyInfo.eid}&category=${category}`
+        );
+        const json = await res.json();
+
+        // const TeachingActivities: ActivityRecord[] = [];
+        const PublishedPapers: PublishedPaper[] = [];
+        const BookChapters: BookChapter[] = [];
+        const AuthoredBooks: AuthoredBook[] = [];
+        const ConferencePapers: ConferencePaper[] = [];
+        const UGProjects: UGProject[] = [];
+        const Patents: Patent[] = [];
+        const DesignPatents: DesignPatent[] = [];
+        const Copyrights: Copyright[] = [];
+        const FundedProjects: FundedProject[] = [];
+        const ResearchGuidance: ResearchGuidance[] = [];
+        const ConsultancyWorks: ConsultancyWork[] = [];
+        const TrainingPrograms: TrainingProgram[] = [];
+        const DevelopedProjects: Project3M[] = [];
+        const ProfessionalBodyActivities: ProfessionalBodyActivity[] = [];
+        const DisciplinaryCharges: DisciplinaryChargeRow[] = [];
+
+        const parseEntry = (entry: {
+          // teachingactivities?: Partial<ActivityRecord>[];
+          publishedPapers?: Partial<PublishedPaper>[];
+          bookChapters?: Partial<BookChapter>[];
+          authoredBooks?: Partial<AuthoredBook>[];
+          conferencePapers?: Partial<ConferencePaper>[];
+          ugProjects?: Partial<UGProject>[];
+          patents?: Partial<Patent>[];
+          designPatents?: Partial<DesignPatent>[];
+          copyrights?: Partial<Copyright>[];
+          fundedProjects?: Partial<FundedProject>[];
+          researchGuidance?: Partial<ResearchGuidance>[];
+          consultancyWorks?: Partial<ConsultancyWork>[];
+          trainingPrograms?: Partial<TrainingProgram>[];
+          developedProjects?: Partial<Project3M>[];
+          professionalBodyActivities?: Partial<ProfessionalBodyActivity>[];
+          disciplinaryCharges?: Partial<DisciplinaryChargeRow>[];
+          data?: {
+            publishedPapers?: Partial<PublishedPaper>[];
+            bookChapters?: Partial<BookChapter>[];
+            authoredBooks?: Partial<AuthoredBook>[];
+            conferencePapers?: Partial<ConferencePaper>[];
+            ugProjects?: Partial<UGProject>[];
+            patents?: Partial<Patent>[];
+            designPatents?: Partial<DesignPatent>[];
+            copyrights?: Partial<Copyright>[];
+            fundedProjects?: Partial<FundedProject>[];
+            researchGuidance?: Partial<ResearchGuidance>[];
+            consultancyWorks?: Partial<ConsultancyWork>[];
+            trainingPrograms?: Partial<TrainingProgram>[];
+            developedProjects?: Partial<Project3M>[];
+            professionalBodyActivities?: Partial<ProfessionalBodyActivity>[];
+            disciplinaryCharges?: Partial<DisciplinaryChargeRow>[];
+          };
+        }) => {
+          const extractData = (obj: {
+            publishedPapers?: Partial<PublishedPaper>[];
+            bookChapters?: Partial<BookChapter>[];
+            authoredBooks?: Partial<AuthoredBook>[];
+            conferencePapers?: Partial<ConferencePaper>[];
+            ugProjects?: Partial<UGProject>[];
+            patents?: Partial<Patent>[];
+            designPatents?: Partial<DesignPatent>[];
+            copyrights?: Partial<Copyright>[];
+            fundedProjects?: Partial<FundedProject>[];
+            researchGuidance?: Partial<ResearchGuidance>[];
+            consultancyWorks?: Partial<ConsultancyWork>[];
+            trainingPrograms?: Partial<TrainingProgram>[];
+            developedProjects?: Partial<Project3M>[];
+            professionalBodyActivities?: Partial<ProfessionalBodyActivity>[];
+            disciplinaryCharges?: Partial<DisciplinaryChargeRow>[];
+
+            data?: {
+              publishedPapers?: Partial<PublishedPaper>[];
+              bookChapters?: Partial<BookChapter>[];
+              authoredBooks?: Partial<AuthoredBook>[];
+              conferencePapers?: Partial<ConferencePaper>[];
+              ugProjects?: Partial<UGProject>[];
+              patents?: Partial<Patent>[];
+              designPatents?: Partial<DesignPatent>[];
+              copyrights?: Partial<Copyright>[];
+              fundedProjects?: Partial<FundedProject>[];
+              researchGuidance?: Partial<ResearchGuidance>[];
+              consultancyWorks?: Partial<ConsultancyWork>[];
+              trainingPrograms?: Partial<TrainingProgram>[];
+              developedProjects?: Partial<Project3M>[];
+              professionalBodyActivities?: Partial<ProfessionalBodyActivity>[];
+              disciplinaryCharges?: Partial<DisciplinaryChargeRow>[];
+            };
+          }) => {
+            if (!obj || typeof obj !== "object") return;
+
+            // if (Array.isArray(obj.teachingactivities)) {
+            //   obj.teachingactivities.forEach((item: Partial<TeachingActivity>) => {
+            //     TeachingActivities.push({
+            //       academicYear: item.academicYear || "",
+            //       semester: item.semester || "Odd",
+            //       courseCode: item.courseCode || "",
+            //       level: item.level || "UG",
+            //       mode: item.mode || "Lecture",
+            //       classesPerWeek: item.classesPerWeek || "",
+            //       score: String(item.score || "0"),
+            //     });
+            //   });
+            // }
+            if (Array.isArray(obj.publishedPapers)) {
+              obj.publishedPapers.forEach((item: Partial<PublishedPaper>) => {
+                PublishedPapers.push({
+                  title: item.title || "",
+                  journalName: item.journalName || "",
+                  issnIsbn: item.issnIsbn || "",
+                  peerReviewed: item.peerReviewed || "",
+                  coAuthors: Number(item.coAuthors) || 0,
+                  mainAuthor: item.mainAuthor || "",
+                  journalType: item.journalType || " ",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.bookChapters)) {
+              obj.bookChapters.forEach((item: Partial<BookChapter>) => {
+                BookChapters.push({
+                  title: item.title || "",
+                  publisherDetails: item.publisherDetails || "",
+                  issnIsbn: item.issnIsbn || "",
+                  coAuthors: Number(item.coAuthors) || 0,
+                  isMainAuthor: item.isMainAuthor || "",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.authoredBooks)) {
+              obj.authoredBooks.forEach((item: Partial<AuthoredBook>) => {
+                AuthoredBooks.push({
+                  title: item.title || "",
+                  publisherDetails: item.publisherDetails || "",
+                  issnIsbn: item.issnIsbn || "",
+                  coAuthors: Number(item.coAuthors) || 0,
+                  mainAuthor: Boolean(item.mainAuthor),
+                  publicationType: item.publicationType || " ",
+                  role: item.role || " ",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.conferencePapers)) {
+              obj.conferencePapers.forEach((item: Partial<ConferencePaper>) => {
+                ConferencePapers.push({
+                  title: item.title || "",
+                  conferenceDetails: item.conferenceDetails || "",
+                  issnIsbn: item.issnIsbn || "",
+                  coAuthors: Number(item.coAuthors) || 0,
+                  authorRole: item.authorRole || " ",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.ugProjects)) {
+              obj.ugProjects.forEach((item: Partial<UGProject>) => {
+                UGProjects.push({
+                  projectTitle: item.projectTitle || "",
+                  ugPercentageCompletion: Number(item.ugPercentageCompletion) || 0,
+                  hasPaper: item.hasPaper || "",
+                  hasPatent: item.hasPatent || "",
+                  hasFunding: item.hasFunding || "",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.patents)) {
+              obj.patents.forEach((item: Partial<Patent>) => {
+                Patents.push({
+                  title: item.title || "",
+                  date: item.date || "",
+                  type: item.type || "Indian",
+                  status: item.status || "Filed",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.designPatents)) {
+              obj.designPatents.forEach((item: Partial<DesignPatent>) => {
+                DesignPatents.push({
+                  title: item.title || "",
+                  date: item.date || "",
+                  type: item.type || "Indian",
+                  status: item.status || "Filed",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.copyrights)) {
+              obj.copyrights.forEach((item: Partial<Copyright>) => {
+                Copyrights.push({
+                  title: item.title || "",
+                  date: item.date || "",
+                  type: item.type || "Indian",
+                  score: String(item.score) || "0",
+                });
+              });
+            }
+            if (Array.isArray(obj.fundedProjects)) {
+              obj.fundedProjects.forEach((item: Partial<FundedProject>) => {
+                FundedProjects.push({
+                  title: item.title || "",
+                  agency: item.agency || "",
+                  year: item.year || "",
+                  period: item.period || "",
+                  grant: item.grant || "",
+                  status: item.status || "Completed",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.researchGuidance)) {
+              obj.researchGuidance.forEach((item: Partial<ResearchGuidance>) => {
+                ResearchGuidance.push({
+                  degree: item.degree || "Ph.D",
+                  candidateName: item.candidateName || "",
+                  thesisTitle: item.thesisTitle || "",
+                  university: item.university || "",
+                  status: item.status || "",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.consultancyWorks)) {
+              obj.consultancyWorks.forEach((item: Partial<ConsultancyWork>) => {
+                ConsultancyWorks.push({
+                  title: item.title || "",
+                  startDate: item.startDate || "",
+                  endDate: item.endDate || "",
+                  clientType: item.clientType || "Government",
+                  natureOfWork: item.natureOfWork || "",
+                  amount: Number(item.amount) || 0,
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.trainingPrograms)) {
+              obj.trainingPrograms.forEach((item: Partial<TrainingProgram>) => {
+                TrainingPrograms.push({
+                  title: item.title || "",
+                  duration: item.duration || "",
+                  organizedBy: item.organizedBy || "",
+                  type: item.type || "Certification",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.developedProjects)) {
+              obj.developedProjects.forEach((item: Partial<Project3M>) => {
+                DevelopedProjects.push({
+                  title: item.title || "",
+                  status: item.status || "Ongoing",
+                  trl: Number(item.trl) || null,
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.professionalBodyActivities)) {
+              obj.professionalBodyActivities.forEach((item: Partial<ProfessionalBodyActivity>) => {
+                ProfessionalBodyActivities.push({
+                  name: item.name || "",
+                  activityType: item.activityType || "",
+                  score: Number(item.score) || 0,
+                });
+              });
+            }
+            if (Array.isArray(obj.disciplinaryCharges)) {
+              obj.disciplinaryCharges.forEach((item: Partial<DisciplinaryChargeRow>) => {
+                DisciplinaryCharges.push({
+                  section: item.section || "Institutional",
+                  details: item.details || "",
+                  remarks: item.remarks || "",
+                });
+              });
+            }
+            if (obj.data) extractData(obj.data);
+          };
+
+          extractData(entry);
+        };
+
+        if (Array.isArray(json)) {
+          json.forEach(parseEntry);
+        } else {
+          parseEntry(json);
         }
-      } else {
+        setDraftCategoryA(PublishedPapers);
+        setDraftCategoryB(BookChapters);
+        setDraftCategoryC(AuthoredBooks);
+        setDraftCategoryD(ConferencePapers);
+        setDraftCategoryE(UGProjects);
+        setDraftCategoryF(Patents);
+        setDraftCategoryG(DesignPatents);
+        setDraftCategoryH(Copyrights);
+        setDraftCategoryI(FundedProjects);
+        setDraftCategoryJ(ResearchGuidance);
+        setDraftCategoryK(ConsultancyWorks);
+        setDraftCategoryL(TrainingPrograms);
+        setDraftCategoryM(DevelopedProjects);
+        setDraftCategoryN(ProfessionalBodyActivities);
+        setDraftCategoryO(DisciplinaryCharges);
+        
+
+      } catch (error) {
+        console.error("Error fetching draft:", error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchDraft();
-  }, [facultyInfo, selectedFaculty, academicYear]);
+  }, [facultyInfo]);
 
-  const processFetchedData = (
-    json: FetchedDraftData,
-    setDraftCategoryA: React.Dispatch<React.SetStateAction<TeachingActivity[]>>,
-    setDraftCategoryB: React.Dispatch<React.SetStateAction<StudentPerformance[]>>,
-    setDraftCategoryC: React.Dispatch<React.SetStateAction<RemedialClass[]>>,
-    setDraftCategoryD: React.Dispatch<React.SetStateAction<TeachingMethodology[]>>,
-    setDraftCategoryE: React.Dispatch<React.SetStateAction<CounselingRecord[]>>,
-    setDraftCategoryF: React.Dispatch<React.SetStateAction<IndustryInteraction[]>>,
-    setDraftCategoryG: React.Dispatch<React.SetStateAction<IndustryVisit[]>>,
-    setDraftCategoryH: React.Dispatch<React.SetStateAction<ExamDuty[]>>,
-    setDraftCategoryI: React.Dispatch<React.SetStateAction<PartialDelivery[]>>,
-    setDraftCategoryJ: React.Dispatch<React.SetStateAction<StudentFeedback | undefined>>,
-    setDraftCategoryK: React.Dispatch<React.SetStateAction<DayToDayActivity[]>>,
-    setDraftCategoryL: React.Dispatch<React.SetStateAction<MiniProject[]>>,
-    setDraftCategoryM: React.Dispatch<React.SetStateAction<AcademicFile[]>>
-  ) => {
-    const teachingActivities: TeachingActivity[] = [];
-    const studentPerformance: StudentPerformance[] = [];
-    const remedialClass: RemedialClass[] = [];
-    const teachingMethodology: TeachingMethodology[] = [];
-    const counselingRecord: CounselingRecord[] = [];
-    const industryInteraction: IndustryInteraction[] = [];
-    const industryVisit: IndustryVisit[] = [];
-    const examDuty: ExamDuty[] = [];
-    const partialDelivery: PartialDelivery[] = [];
-    let studentFeedback: StudentFeedback | undefined = undefined;
-    const dayToDayActivity: DayToDayActivity[] = [];
-    const miniProject: MiniProject[] = [];
-    const academicFile: AcademicFile[] = [];
-  
-    const parseEntry = (entry: FetchedDraftData) => {
-      // Process Category A (Teaching Activities)
-      if (entry.teachingactivities && Array.isArray(entry.teachingactivities)) {
-        entry.teachingactivities.forEach((item: any) => {
-          const activity: TeachingActivity = {
-            academicYear: item.AcademicYear || "",
-            semester: item.Semester || "Odd",
-            courseCode: item.CourseCode || "",
-            level: item.Level || "UG",
-            mode: item.TeachingMode || "Lecture",
-            classesPerWeek: String(item.ClassesPerWeek || ""),
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          teachingActivities.push(activity);
-        });
-      }
-  
-      // Process Category B (Student Performance)
-      if (entry.studentperformance && Array.isArray(entry.studentperformance)) {
-        entry.studentperformance.forEach((item: any) => {
-          const performance: StudentPerformance = {
-            course: item.CourseName || "",
-            courseCode: item.CourseCode || "",
-            studentsRegistered: String(item.StudentsRegistered || ""),
-            studentsPassed: String(item.StudentsPassed || ""),
-            notEligible: String(item.NotEligibleStudents || ""),
-            passPercentage: String(item.PassPercentage || 0),
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          studentPerformance.push(performance);
-        });
-      }
-  
-      // Process Category C (Remedial Classes)
-      if (entry.remedialclass && Array.isArray(entry.remedialclass)) {
-        entry.remedialclass.forEach((item: any) => {
-          const remedial: RemedialClass = {
-            semester: item.Semester || "Odd",
-            type: item.CourseType || "Lab",
-            course: item.CourseName || "",
-            courseCode: item.CourseCode || "",
-            classtype: item.ClassType || "Remedial",
-            numberOfClasses: String(item.TotalClasses || ""),
-            hoursSpent: String(item.TotalHoursSpent || ""),
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          remedialClass.push(remedial);
-        });
-      }
-
-      if (entry.teachingmethodology && Array.isArray(entry.teachingmethodology)) {
-        entry.teachingmethodology.forEach((item: any) => {
-          const methodology: TeachingMethodology = {
-            semester: item.Semester || "Odd",
-            course: item.course || "",
-            description: item.ShortDescription || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          teachingMethodology.push(methodology);
-        });
-      }
-
-      if (entry.counselingrecord && Array.isArray(entry.counselingrecord)) {
-        entry.counselingrecord.forEach((item: any) => {
-          const record: CounselingRecord = {
-            semester: item.Semester || "Odd",
-            academicYear: item.AcademicYear || "",
-            studentsMentored: String(item.StudentsMentored || ""),
-            actionTaken: item.ActionTaken || "",
-            outcome: item.Outcome || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          counselingRecord.push(record);
-        });
-      }
-
-      if (entry.industryinteraction && Array.isArray(entry.industryinteraction)) {
-        entry.industryinteraction.forEach((item: any) => {
-          const interaction: IndustryInteraction = {
-            industryName: item.IndustryName || "",
-            contactDetails: item.IndustryContactDetails || "",
-            date: item.InteractionDate || "",
-            activitiesPlanned: item.ActivitiesPlanned || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          industryInteraction.push(interaction);
-        });
-      }
-
-      if (entry.industryvisit && Array.isArray(entry.industryvisit)) {
-        entry.industryvisit.forEach((item: any) => {
-          const visit: IndustryVisit = {
-            semester: item.sem || "Odd",
-            industryName: item.industryname || "",
-            date: item.visitdate ? item.visitdate.split("T")[0] : "",
-            studentsCount: String(item.numberofstudents || ""),
-            outcome: item.outcome || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          industryVisit.push(visit);
-        });
-      }
-
-      if (entry.examduty && Array.isArray(entry.examduty)) {
-        entry.examduty.forEach((item: any) => {
-          const duty: ExamDuty = {
-            dutyType: item.ExamDutyType || "",
-            duties: item.DutiesAssigned || "",
-            squad: item.Squad || "",
-            roomInvigilation: item.RoomInvigilation || "",
-            relief: item.Relief || "",
-            dcs: item.DCS || "",
-            boe: item.BOE || "",
-            invigilation: item.Invigilation || "",
-            coordination: item.Coordination || "",
-            questionPaperSetting: item.QuestionPaperSetting || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          examDuty.push(duty);
-        });
-      }
-
-      if (entry.partialdelivery && Array.isArray(entry.partialdelivery)) {
-        entry.partialdelivery.forEach((item: any) => {
-          const delivery: PartialDelivery = {
-            industryExpert: item.IndustryExpert || "",
-            course: item.Course || "",
-            date: item.DeliveryDate ? item.DeliveryDate.split("T")[0] : "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          partialDelivery.push(delivery);
-        });
-      }
-
-      if (entry.studentfeedback && Array.isArray(entry.studentfeedback) && entry.studentfeedback.length > 0) {
-        const feedback: StudentFeedback = {
-          score: String(entry.studentfeedback[0].score || 0),
-        };
-        studentFeedback = feedback;
-      }
-      
-
-      if (entry.daytodayactivity && Array.isArray(entry.daytodayactivity)) {
-        entry.daytodayactivity.forEach((item: any) => {
-          const activity: DayToDayActivity = {
-            particulars: item.Particulars || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          dayToDayActivity.push(activity);
-        });
-      }
-
-      if (entry.miniproject && Array.isArray(entry.miniproject)) {
-        entry.miniproject.forEach((item: any) => {
-          const project: MiniProject = {
-            particulars: item.Particulars || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          miniProject.push(project);
-        });
-      }
-
-      if (entry.academicfile && Array.isArray(entry.academicfile)) {
-        entry.academicfile.forEach((item: any) => {
-          const file: AcademicFile = {
-            details: item.Details || "",
-            score: String(item.SelfAppraisalScore || 0),
-          };
-          academicFile.push(file);
-        });
-      }
-
-    };
-  
-    // Ensure json is an array or object, and proceed with parsing
-    if (Array.isArray(json)) {
-      json.forEach(parseEntry);
-    } else if (json) {
-      parseEntry(json);
-    } else {
-      console.error("Invalid JSON structure:", json);
-    }
-  
-    // Update state after processing the data
-    setDraftCategoryA(teachingActivities);
-    setDraftCategoryB(studentPerformance);
-    setDraftCategoryC(remedialClass);
-    setDraftCategoryD(teachingMethodology);
-    setDraftCategoryE(counselingRecord);
-    setDraftCategoryF(industryInteraction);
-    setDraftCategoryG(industryVisit);
-    setDraftCategoryH(examDuty);
-    setDraftCategoryI(partialDelivery);
-    setDraftCategoryJ(studentFeedback);
-    setDraftCategoryK(dayToDayActivity);
-    setDraftCategoryL(miniProject);
-    setDraftCategoryM(academicFile);
+  const handleFormDataUpdateA = (data: PublishedPaper[]) => {
+    setDraftCategoryA(data);
   };
-
-  const handleFormDataUpdateA = (updatedData: TeachingActivity[]) => {
-    setDraftCategoryA(updatedData);
+  const handleFormDataUpdateB = (data: BookChapter[]) => {
+    setDraftCategoryB(data);
   };
-  const handleFormDataUpdateB = (updatedData: StudentPerformance[]) => {
-    setDraftCategoryB(updatedData);
+  const handleFormDataUpdateC = (data: AuthoredBook[]) => {
+    setDraftCategoryC(data);
   };
-  const handleFormDataUpdateC = (updatedData: RemedialClass[]) => {
-    setDraftCategoryC(updatedData);
+  const handleFormDataUpdateD = (data: ConferencePaper[]) => {
+    setDraftCategoryD(data);
   };
-  const handleFormDataUpdateD = (updatedData: TeachingMethodology[]) => {
-    setDraftCategoryD(updatedData);
+  const handleFormDataUpdateE = (data: UGProject[]) => {
+    setDraftCategoryE(data);
   };
-  const handleFormDataUpdateE = (updatedData: CounselingRecord[]) => {
-    setDraftCategoryE(updatedData);
+  const handleFormDataUpdateF = (data: Patent[]) => {
+    setDraftCategoryF(data);
   };
-  const handleFormDataUpdateF = (updatedData: IndustryInteraction[]) => {
-    setDraftCategoryF(updatedData);
+  const handleFormDataUpdateG = (data: DesignPatent[]) => {
+    setDraftCategoryG(data);
   };
-  const handleFormDataUpdateG = (updatedData: IndustryVisit[]) => {
-    setDraftCategoryG(updatedData);
+  const handleFormDataUpdateH = (data: Copyright[]) => {
+    setDraftCategoryH(data);
   };
-  const handleFormDataUpdateH = (updatedData: ExamDuty[]) => {
-    setDraftCategoryH(updatedData);
+  const handleFormDataUpdateI = (data: FundedProject[]) => {
+    setDraftCategoryI(data);
   };
-  const handleFormDataUpdateI = (updatedData: PartialDelivery[]) => {
-    setDraftCategoryI(updatedData);
+  const handleFormDataUpdateJ = (data: ResearchGuidance[]) => {
+    setDraftCategoryJ(data);
   };
-  const handleFormDataUpdateJ = (updatedData: StudentFeedback) => {
-    setDraftCategoryJ(updatedData);
+  const handleFormDataUpdateK = (data: ConsultancyWork[]) => {
+    setDraftCategoryK(data);
   };
-  const handleFormDataUpdateK = (updatedData: DayToDayActivity[]) => {
-    setDraftCategoryK(updatedData);
+  const handleFormDataUpdateL = (data: TrainingProgram[]) => {
+    setDraftCategoryL(data);
   };
-  const handleFormDataUpdateL = (updatedData: MiniProject[]) => {
-    setDraftCategoryL(updatedData);
+  const handleFormDataUpdateM = (data: Project3M[]) => {
+    setDraftCategoryM(data);
   };
-  const handleFormDataUpdateM = (updatedData: AcademicFile[]) => {
-    setDraftCategoryM(updatedData);
+  const handleFormDataUpdateN = (data: ProfessionalBodyActivity[]) => {
+    setDraftCategoryN(data);
+  };
+  const handleFormDataUpdateO = (data: DisciplinaryChargeRow[]) => {
+    setDraftCategoryO(data);
   };
   const calculateTotalScore = (items: { score: number | string }[]) =>
     items.reduce((total, item) => total + (Number(item.score) || 0), 0);
 
-  const totalScore = calculateTotalScore(draftCategoryA)+
-  calculateTotalScore(draftCategoryB)+
-  calculateTotalScore(draftCategoryC)+
-  calculateTotalScore(draftCategoryD)+
-  calculateTotalScore(draftCategoryE)+
-  calculateTotalScore(draftCategoryF)+
-  calculateTotalScore(draftCategoryG)+
-  calculateTotalScore(draftCategoryH)+
-  calculateTotalScore(draftCategoryI)+
-  calculateTotalScore(draftCategoryJ ? [draftCategoryJ] : [])+
-  calculateTotalScore(draftCategoryK)+
-  calculateTotalScore(draftCategoryL)+
-  calculateTotalScore(draftCategoryM);
+  const totalScore =
+    calculateTotalScore(draftCategoryA) +
+    calculateTotalScore(draftCategoryB) +
+    calculateTotalScore(draftCategoryC) +
+    calculateTotalScore(draftCategoryD) +
+    calculateTotalScore(draftCategoryE) +
+    calculateTotalScore(draftCategoryF) +
+    calculateTotalScore(draftCategoryG) +
+    calculateTotalScore(draftCategoryH) +
+    calculateTotalScore(draftCategoryI) +
+    calculateTotalScore(draftCategoryJ) +
+    calculateTotalScore(draftCategoryK) +
+    calculateTotalScore(draftCategoryL) +
+    calculateTotalScore(draftCategoryM) +
+    calculateTotalScore(draftCategoryN);
 
-  useEffect(() => {
-    if (!loading && facultyInfo?.loginType === "faculty") {
-      const finalCategory1Data = {
-        score: totalScore,
-        academicYear,
-        teachingactivities: draftCategoryA,
-        studentperformance: draftCategoryB,
-        remedialclass: draftCategoryC,
-        teachingmethodology: draftCategoryD,
-        counselingrecord: draftCategoryE,
-        industryinteraction: draftCategoryF,
-        industryvisit: draftCategoryG,
-        examduty: draftCategoryH,
-        partialdelivery: draftCategoryI,
-        studentfeedback: draftCategoryJ,
-        daytodayactivity: draftCategoryK,
-        miniproject: draftCategoryL,
-        academicfile: draftCategoryM,
-      };
-      sessionStorage.setItem("category1", JSON.stringify(finalCategory1Data));
-      console.log("category1Summary saved to sessionStorage:", finalCategory1Data);
-    }
-  }, [loading,academicYear, totalScore, draftCategoryA,
-    draftCategoryB,
-    draftCategoryC, facultyInfo?.loginType,
-    draftCategoryD,
-    draftCategoryE,
-    draftCategoryF,
-    draftCategoryG,
-    draftCategoryH,
-    draftCategoryI,
-    draftCategoryJ,
-    draftCategoryK,
-    draftCategoryL,
-    draftCategoryM,
-  ]);
+    useEffect(() => {
+      if (!loading) {
+        const finalCategory1Data = {
+          score:totalScore,
+          publishedPapers: draftCategoryA,
+          bookChapters: draftCategoryB,
+          authoredBooks: draftCategoryC,
+          conferencePapers: draftCategoryD,
+          ugProjects: draftCategoryE,
+          patents: draftCategoryF,
+          designPatents: draftCategoryG,
+          copyrights: draftCategoryH,
+          fundedProjects: draftCategoryI,
+          researchGuidance: draftCategoryJ,
+          consultancyWorks: draftCategoryK,
+          trainingPrograms: draftCategoryL,
+          developedProjects: draftCategoryM,
+          professionalBodyActivities: draftCategoryN,
+          disciplinaryCharges: draftCategoryO,
 
-  const uniqueFacultyList = Array.from(
-    new Map(facultyList.map(faculty => [faculty.EmployeeID, faculty])).values()
-  );
-  const totalCommitteeScore = Number(committeeScoreA) + Number(committeeScoreB) + Number(committeeScoreC) + 
-  Number(committeeScoreD) + Number(committeeScoreE) + Number(committeeScoreF) + Number(committeeScoreG) + 
-  Number(committeeScoreH) + Number(committeeScoreI) + Number(committeeScoreJ) + Number(committeeScoreK) + 
-  Number(committeeScoreL) + Number(committeeScoreM);
-  
+        };
+        sessionStorage.setItem("category3", JSON.stringify(finalCategory1Data));
+        console.log("category3Summary saved to sessionStorage:", finalCategory1Data);
+      }
+    }, [loading, totalScore, draftCategoryA,
+      draftCategoryB,
+      draftCategoryC,
+      draftCategoryD,
+      draftCategoryE,
+      draftCategoryF,
+      draftCategoryG,
+      draftCategoryH,
+      draftCategoryI,
+      draftCategoryJ,
+      draftCategoryK,
+      draftCategoryL,
+      draftCategoryM,
+      draftCategoryN,
+      draftCategoryO,
+     ]);
+    
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -704,308 +661,136 @@ export default function ParentPage() {
             </button>
           </Link>
           <Link href="/partb/category-1">
-            <button className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center">
-              Part-B
-            </button>
+          <button
+            className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+          >
+            Part-B
+          </button>
           </Link>
+
+      
         </div>
 
         <ToastContainer position="top-right" autoClose={3000} />
-        <div className="flex flex-col w-full mt-5">
-        <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-6xl mb-4">
-  <div className="flex flex-col md:flex-row md:space-x-8">
-    {/* Faculty Selection */}
-    {(facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee") && (
-      <div className="w-full md:w-1/2 mb-4 md:mb-0">
-        <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-          Faculty Selection
-        </h2>
-        <div className="mb-4">
-          <label htmlFor="faculty-select" className="block text-gray-700 mb-2">
-            Select Faculty to View:
-          </label>
-          <select
-            id="faculty-select"
-            value={selectedFaculty}
-            onChange={handleFacultyChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="">-- Select Faculty --</option>
-            {uniqueFacultyList.map((faculty) => (
-              <option key={faculty.EmployeeID} value={faculty.EmployeeID}>
-                {faculty.Name} ({faculty.EmployeeID})
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-    )}
 
-    {/* Academic Year Selection */}
-    <div className="w-full md:w-1/2">
-      <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-        Select Academic Year
-      </h2>
-      <div className="mb-4">
-        <label htmlFor="academic-year-select" className="block text-gray-700 mb-2">
-          Select Academic Year:
-        </label>
-        <select
-          id="academic-year-select"
-          value={academicYear}
-          onChange={handleAcademicYearChange}
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">-- Select Academic Year --</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-          <option value="2030">2030</option>
-          {/* Add more years if needed */}
-        </select>
-      </div>
-    </div>
+        {loading ? (
+          <p className="text-gray-600">Loading draft data...</p>
+        ) : (
+          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
+            <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+              PART B: ACADEMIC PERFORMANCE INDICATOR (API)
+              <br />
+              CATEGORY III:
+            </h1>
+            <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+            Research, Publications & Academic Contribution  
+            Related Activities 
+            </h2>
+            <Category3A
+              initialData={draftCategoryA}
+              onFormDataChangeAction={handleFormDataUpdateA}
+              />
+            <Category3B
+              initialData={draftCategoryB}
+              onFormDataChangeAction={handleFormDataUpdateB}
+              />
+            <Category3C
+                initialData={draftCategoryC}
+                onFormDataChangeAction={handleFormDataUpdateC}
+                />
+            <Category3D
+                initialData={draftCategoryD}
+                onFormDataChangeAction={handleFormDataUpdateD}
+                />
+            <Category3E
+                initialData={draftCategoryE}
+                onFormDataChangeAction={handleFormDataUpdateE}
+                />
+            <Category3F
+                initialData={draftCategoryF}
+                onFormDataChangeAction={handleFormDataUpdateF}
+                />
+            <Category3G
+                initialData={draftCategoryG}
+                onFormDataChangeAction={handleFormDataUpdateG}
+                />
+            <Category3H
+                initialData={draftCategoryH}
+                onFormDataChangeAction={handleFormDataUpdateH}
+                />
+            <Category3I
+                initialData={draftCategoryI}
+                onFormDataChangeAction={handleFormDataUpdateI}
+                />
+            <Category3J
+                initialData={draftCategoryJ}
+                onFormDataChangeAction={handleFormDataUpdateJ}
+                />
+            <Category3K
+                initialData={draftCategoryK}
+                onFormDataChangeAction={handleFormDataUpdateK}
+                />
+            <Category3L
+                initialData={draftCategoryL}
+                onFormDataChangeAction={handleFormDataUpdateL}
+                />
+            <Category3M
+                initialData={draftCategoryM}
+                onFormDataChangeAction={handleFormDataUpdateM}
+                />
+            <Category3N
+                initialData={draftCategoryN}
+                onFormDataChangeAction={handleFormDataUpdateN}
+                />
+            <Category3O
+                initialData={draftCategoryO}
+                onFormDataChangeAction={handleFormDataUpdateO}
+                />
+            <TeacherDocumentUpload/>
+            {/* <div className="mt-8" /> */}
+
+            <hr className="my-4" />
+            <p className="mb-6">
+              <strong>Combined Total Score: </strong>
+              <span className="text-green-600 text-xl font-semibold">
+                {totalScore} / 600
+              </span>
+            </p>
+            <div className="flex justify-between items-center mt-8">
+  {/* Save Draft button on the left */}
+  <button
+    type="button"
+    className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
+    onClick={() => saveDraft(true)}
+  >
+    Save Draft
+  </button>
+
+  {/* Back and Next buttons on the right */}
+  <div className="flex space-x-4">
+    <Link href="/partb/category-2"> {/* Replace with your correct previous page URL */}
+      <button
+        type="button"
+        className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600"
+      >
+        Back
+      </button>
+    </Link>
+    <button
+  type="button"
+  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
+  onClick={async () => {
+    await saveDraft(false); // silent save
+    router.push('/finalsubmit');
+  }}
+>
+        Next
+      </button>
   </div>
 </div>
-          {loading ? (
-            <p className="text-gray-600 p-8">Loading data...</p>
-          ) : (
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
-              <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
-                PART B: ACADEMIC PERFORMANCE INDICATOR (API)
-                <br />
-                CATEGORY I:
-              </h1>
-              <h2 className="text-2xl font-bold text-indigo-600 mb-4">
-                Teaching, Learning & Evaluation Activities
-              </h2>
 
-              {facultyInfo && (
-  <>
-    {/* For HOD or Committee: Check both faculty and academic year */}
-    {(facultyInfo.loginType === "hod" || facultyInfo.loginType === "committee") && (
-      <>
-        {!selectedFaculty || !academicYear ? (
-          <div className="text-center p-8 text-gray-500">
-            Please select a faculty member and academic year to view their data.
           </div>
-        ) : (
-          <>
-          <CategoryA
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryA}
-            onFormDataChangeAction={handleFormDataUpdateA}
-            onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
-          />
-          <CategoryB
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryB}
-            onFormDataChangeAction={handleFormDataUpdateB}
-            onCommitteeScoreChange={(score) => setCommitteeScoreB(score)}
-          />
-          <CategoryC
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryC}
-            onFormDataChangeAction={handleFormDataUpdateC}
-            onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
-          />
-          <CategoryD
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryD}
-            onFormDataChangeAction={handleFormDataUpdateD}
-            onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
-          />
-          <CategoryE
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryE}
-            onFormDataChangeAction={handleFormDataUpdateE}
-            onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
-          />
-          <CategoryF
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryF}
-            onFormDataChangeAction={handleFormDataUpdateF}
-            onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
-          />
-          <CategoryG
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryG}
-            onFormDataChangeAction={handleFormDataUpdateG}
-            onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
-          />
-          <CategoryH
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryH}
-            onFormDataChangeAction={handleFormDataUpdateH}
-            onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
-          />
-          <CategoryI
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryI}
-            onFormDataChangeAction={handleFormDataUpdateI}
-            onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
-          />
-          <CategoryJ
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryJ || { score: "" }}
-            onFormDataChangeAction={handleFormDataUpdateJ}
-            onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
-          />
-          <CategoryK
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryK}
-            onFormDataChangeAction={handleFormDataUpdateK}
-            onCommitteeScoreChange={(score) => setCommitteeScoreK(score)}
-          />
-          <CategoryL
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryL}
-            onFormDataChangeAction={handleFormDataUpdateL}
-            onCommitteeScoreChange={(score) => setCommitteeScoreL(score)}
-          />
-          <CategoryM
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryM}
-            onFormDataChangeAction={handleFormDataUpdateM}
-            onCommitteeScoreChange={(score) => setCommitteeScoreM(score)}
-          />
-
-          </>
         )}
-      </>
-    )}
-
-    {/* For Faculty: Only check academic year */}
-    {facultyInfo.loginType === "faculty" && (
-      <>
-        {!academicYear ? (
-          <div className="text-center p-8 text-gray-500">
-            Please select an academic year to proceed.
-          </div>
-        ) : (
-          <>
-          <CategoryA
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryA}
-            onFormDataChangeAction={handleFormDataUpdateA}
-          />
-          <CategoryB
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryB}
-            onFormDataChangeAction={handleFormDataUpdateB}
-          />
-          <CategoryC
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryC}
-            onFormDataChangeAction={handleFormDataUpdateC}
-          />
-          <CategoryD
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryD}
-            onFormDataChangeAction={handleFormDataUpdateD}
-          />
-          <CategoryE
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryE}
-            onFormDataChangeAction={handleFormDataUpdateE}
-          />
-          <CategoryF
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryF}
-            onFormDataChangeAction={handleFormDataUpdateF}
-          />
-          <CategoryG
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryG}
-            onFormDataChangeAction={handleFormDataUpdateG}
-          />
-          <CategoryH
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryH}
-            onFormDataChangeAction={handleFormDataUpdateH}
-            />
-          <CategoryI
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryI}
-            onFormDataChangeAction={handleFormDataUpdateI}
-          />
-          <CategoryJ
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryJ || { score: "" }}
-            onFormDataChangeAction={handleFormDataUpdateJ}
-          />
-          <CategoryK
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryK}
-            onFormDataChangeAction={handleFormDataUpdateK}
-          />
-          <CategoryL
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryL}
-            onFormDataChangeAction={handleFormDataUpdateL}
-          />
-          <CategoryM
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryM}
-            onFormDataChangeAction={handleFormDataUpdateM}
-          />
-          </>
-        )}
-      </>
-    )}
-  </>
-)}
-              <hr className="my-4" />
-              <p className="mb-6">
-                <strong>Combined Total Score: </strong>
-                <span className="text-green-600 text-xl font-semibold">
-                  {totalScore} / 300
-                </span>
-              </p>
-                {facultyInfo?.loginType === "committee" && (
-                  <p className="mb-6">
-                  <strong>Committee Total Score: </strong>
-                  <span className="text-yellow-600 text-xl font-semibold">
-                    {totalCommitteeScore} / 300
-                  </span>
-                  </p>
-                )}
-              <div className="flex justify-between items-center mt-8">
-                <button
-                  type="button"
-                  className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
-                  onClick={() => saveDraft(true)}
-                >
-                  Save Draft
-                </button>
-                <div className="flex space-x-4">
-                  <Link href="/partb/category-1">
-                    <button
-                      type="button"
-                      className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600"
-                    >
-                      Back
-                    </button>
-                  </Link>
-                  <button
-                    type="button"
-                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
-                    onClick={async () => {
-                      await saveDraft(false);
-                      sessionStorage.setItem("employeeId", facultyInfo?facultyInfo.eid:"");
-                      sessionStorage.setItem("academicYear", academicYear);
-                      router.push('/partb/category-2');
-                    }}
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

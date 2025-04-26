@@ -99,6 +99,11 @@ export default function Category2J({ initialData, onFormDataChangeAction,
         Honors by Government, Statutory Body, Industry, University
         <br />Maximum Score: 5 
       </b>
+      {employeeId && (
+          <div className="text-sm bg-blue-50 p-2 rounded mt-2 mb-2">
+            Viewing data for Employee ID: {employeeId}
+          </div>
+        )}
       <table className="w-full border-collapse border border-gray-300 text-center mt-4">
         <thead className="bg-gray-100">
           <tr>

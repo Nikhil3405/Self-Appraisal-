@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface DisciplinaryChargeRow {
   section: "Institutional" | "Society";
@@ -9,12 +9,27 @@ interface DisciplinaryChargeRow {
 interface Category3OProps {
   initialData: DisciplinaryChargeRow[];
   onFormDataChangeAction: (data: DisciplinaryChargeRow[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
 }
 
-export default function Category3O({ initialData, onFormDataChangeAction }: Category3OProps) {
+export default function Category3O({ initialData, onFormDataChangeAction,
+  loginType, employeeId
+ }: Category3OProps) {
   const [rows, setRows] = useState<DisciplinaryChargeRow[]>(initialData);
-
+  useEffect(() => {
+     if (initialData?.length) {
+      setRows(initialData);
+     }
+   }, [initialData]);
+ 
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
   const handleChange = (index: number, field: keyof DisciplinaryChargeRow, value: string) => {
+    if (loginType === "hod") return;
     const updated = [...rows];
     updated[index] = { ...updated[index], [field]: value };
     setRows(updated);
@@ -22,6 +37,7 @@ export default function Category3O({ initialData, onFormDataChangeAction }: Cate
   };
 
   const addRow = () => {
+    if (loginType !== "hod") {
     const updated = [
       ...rows,
       {
@@ -31,10 +47,11 @@ export default function Category3O({ initialData, onFormDataChangeAction }: Cate
       },
     ];
     setRows(updated);
-    onFormDataChangeAction(updated);
+  }
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = rows.filter((_, i) => i !== index);
     setRows(updated);
     onFormDataChangeAction(updated);
@@ -63,6 +80,7 @@ export default function Category3O({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <select
                   value={row.section}
+                  disabled={loginType === "hod"||loginType === "committee"}
                   onChange={(e) => handleChange(index, "section", e.target.value)}
                   className="w-full p-2 border rounded"
                 >
@@ -74,6 +92,7 @@ export default function Category3O({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={row.details}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleChange(index, "details", e.target.value)}
                   className="w-full p-2 border rounded"
                 />
@@ -82,16 +101,22 @@ export default function Category3O({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={row.remarks}
+                  disabled = {loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleChange(index, "remarks", e.target.value)}
                   className="w-full p-2 border rounded"
                 />
               </td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface UGProject {
   projectTitle: string;
@@ -12,14 +12,31 @@ interface UGProject {
 interface Category3EProps {
   initialData: UGProject[];
   onFormDataChangeAction: (data: UGProject[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
-export default function Category3E({ initialData, onFormDataChangeAction }: Category3EProps) {
+export default function Category3E({ initialData, onFormDataChangeAction,
+  loginType, employeeId, onCommitteeScoreChange
+ }: Category3EProps) {
   const [projects, setProjects] = useState<UGProject[]>(initialData);
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
   const [warning, setWarning] = useState("");
 
   const MAX_SCORE = 20;
 
+  useEffect(() => {
+     if (initialData?.length) {
+      setProjects(initialData);
+     }
+   }, [initialData]);
+ 
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
   const calculateScore = (paper: string, patent: string, funding: string): number => {
     const scorePerYes = 5;
     const count =
@@ -37,6 +54,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
     field: keyof UGProject,
     value: string | number
   ) => {
+    if (loginType === "hod") return;
     const updated = [...projects];
     const tempProject = { ...updated[index], [field]: value };
 
@@ -63,6 +81,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = projects.filter((_, i) => i !== index);
     setProjects(updated);
     onFormDataChangeAction(updated);
@@ -70,6 +89,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
   };
 
   const addRow = () => {
+    if(loginType !== "hod" && getTotalScore() < MAX_SCORE) {
     if (getTotalScore() >= MAX_SCORE) {
       setWarning("Cannot add more rows. Max total score reached.");
       return;
@@ -94,9 +114,21 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
     const updated = [...projects, newProject];
     setProjects(updated);
     onFormDataChangeAction(updated);
+  }
   };
 
   const totalScore = getTotalScore();
+
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 20) {
+      alert("Committee total score cannot exceed 20.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
 
   return (
     <div>
@@ -126,6 +158,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="text"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={proj.projectTitle}
                   onChange={(e) => handleInputChange(index, "projectTitle", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -136,6 +169,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
                   type="number"
                   min={0}
                   max={100}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={proj.ugPercentageCompletion}
                   onChange={(e) =>
                     handleInputChange(index, "ugPercentageCompletion", Number(e.target.value))
@@ -146,6 +180,7 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
               {["hasPaper", "hasPatent", "hasFunding"].map((field) => (
                 <td className="border p-2" key={field}>
                   <select
+                    disabled={loginType === "hod" || loginType === "committee"}
                     value={proj[field as keyof UGProject] as string}
                     onChange={(e) =>
                       handleInputChange(index, field as keyof UGProject, e.target.value)
@@ -159,11 +194,16 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
               ))}
               <td className="border p-2">{proj.score}</td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -175,9 +215,9 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
       <button
         type="button"
         onClick={addRow}
-        disabled={totalScore >= MAX_SCORE}
+        disabled={loginType === "hod" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row
@@ -188,6 +228,19 @@ export default function Category3E({ initialData, onFormDataChangeAction }: Cate
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {totalScore} / {MAX_SCORE}
       </p>
+      {loginType === "committee" && (
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-yellow-600">
+              Committee Total Score (out of 20):
+            </label>
+            <input
+              type="number"
+              value={committeeTotalScore}
+              onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+              className="w-32 px-2 py-1 border border-yellow-400 rounded"
+            />
+          </div>
+        )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface TrainingProgram {
   title: string;
@@ -11,13 +11,29 @@ interface TrainingProgram {
 interface Category3LProps {
   initialData: TrainingProgram[];
   onFormDataChangeAction: (data: TrainingProgram[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
-export default function Category3L({ initialData, onFormDataChangeAction }: Category3LProps) {
+export default function Category3L({ initialData, onFormDataChangeAction,
+  loginType, employeeId, onCommitteeScoreChange
+ }: Category3LProps) {
   const [programs, setPrograms] = useState<TrainingProgram[]>(initialData);
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
   const [warning, setWarning] = useState("");
   const MAX_SCORE = 25;
-
+  useEffect(() => {
+     if (initialData?.length) {
+      setPrograms(initialData);
+     }
+   }, [initialData]);
+ 
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
   const calculateScore = (type: string): number => {
     switch (type) {
       case "Certification":
@@ -39,6 +55,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
     field: keyof TrainingProgram,
     value: string
   ) => {
+    if (loginType === "hod") return;
     const updated = [...programs];
     const updatedProgram = { ...updated[index], [field]: value };
 
@@ -59,6 +76,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
   };
 
   const addRow = () => {
+    if(loginType !== "hod" && getTotalScore() < MAX_SCORE) {
     const defaultScore = 2;
     const hypotheticalTotal = getTotalScore() + defaultScore;
     if (hypotheticalTotal > MAX_SCORE) {
@@ -79,15 +97,27 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
     ];
     setPrograms(newPrograms);
     onFormDataChangeAction(newPrograms);
+  }
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = programs.filter((_, i) => i !== index);
     setPrograms(updated);
     onFormDataChangeAction(updated);
     setWarning("");
   };
 
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 25) {
+      alert("Committee total score cannot exceed 25.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
   return (
     <div>
       <h3 className="text-lg font-bold text-indigo-600 mt-6">
@@ -118,6 +148,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="text"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={prog.title}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -126,6 +157,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="text"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={prog.duration}
                   onChange={(e) => handleInputChange(index, "duration", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -134,6 +166,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="text"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={prog.organizedBy}
                   onChange={(e) => handleInputChange(index, "organizedBy", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -142,6 +175,7 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <select
                   value={prog.type}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "type", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -153,11 +187,16 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
               </td>
               <td className="border p-2">{prog.score}</td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -170,9 +209,9 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
         type="button"
         onClick={addRow}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          getTotalScore() >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || getTotalScore() >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
-        disabled={getTotalScore() >= MAX_SCORE}
+        disabled={loginType === "hod" || loginType === "committee"}  
       >
         + Add Row
       </button>
@@ -182,6 +221,19 @@ export default function Category3L({ initialData, onFormDataChangeAction }: Cate
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {getTotalScore()} / 25
       </p>
+      {loginType === "committee" && (
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-yellow-600">
+              Committee Total Score (out of 25):
+            </label>
+            <input
+              type="number"
+              value={committeeTotalScore}
+              onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+              className="w-32 px-2 py-1 border border-yellow-400 rounded"
+            />
+          </div>
+        )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface Copyright {
   title: string;
@@ -10,14 +10,29 @@ interface Copyright {
 interface Category3HProps {
   initialData: Copyright[];
   onFormDataChangeAction: (data: Copyright[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
-export default function Category3H({ initialData, onFormDataChangeAction }: Category3HProps) {
+export default function Category3H({ initialData, onFormDataChangeAction,
+  loginType, employeeId, onCommitteeScoreChange
+ }: Category3HProps) {
   const [copyrights, setCopyrights] = useState<Copyright[]>(initialData);
   const [warning, setWarning] = useState("");
-
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
   const MAX_SCORE = 5;
-
+  useEffect(() => {
+     if (initialData?.length) {
+      setCopyrights(initialData);
+     }
+   }, [initialData]);
+ 
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
   const getTotalScore = () =>
     copyrights.reduce((total, c) => total + Number(c.score), 0);
 
@@ -26,6 +41,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
     field: keyof Copyright,
     value: string | number
   ) => {
+    if (loginType === "hod") return;
     const updated = [...copyrights];
     const updatedItem = { ...updated[index], [field]: value };
 
@@ -47,6 +63,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = copyrights.filter((_, i) => i !== index);
     setWarning("");
     setCopyrights(updated);
@@ -54,6 +71,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
   };
 
   const addRow = () => {
+    if(loginType !== "hod" && getTotalScore() < MAX_SCORE) {
     const hypotheticalTotal = getTotalScore() + 1;
     if (hypotheticalTotal > MAX_SCORE) {
       setWarning("Cannot add row. Maximum score of 5 will be exceeded.");
@@ -72,11 +90,21 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
     ];
     setCopyrights(updated);
     onFormDataChangeAction(updated);
+  }
   };
   
-
   const totalScore = getTotalScore();
 
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 5) {
+      alert("Committee total score cannot exceed 5.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
   return (
     <div>
       <h3 className="text-lg font-bold text-indigo-600 mt-6">H. Copyrights</h3>
@@ -103,6 +131,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={row.title}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -111,6 +140,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="date"
                   value={row.date}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "date", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -118,6 +148,7 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <select
                   value={row.type}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "type", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -130,17 +161,23 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
                   type="number"
                   min={0}
                   max={5}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={row.score}
                   onChange={(e) => handleInputChange(index, "score", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
                 />
               </td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -152,9 +189,9 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
       <button
         type="button"
         onClick={addRow}
-        disabled={totalScore >= MAX_SCORE}
+        disabled={loginType === "hod" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row
@@ -167,6 +204,19 @@ export default function Category3H({ initialData, onFormDataChangeAction }: Cate
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {totalScore} / {MAX_SCORE}
       </p>
+      {loginType === "committee" && (
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-yellow-600">
+              Committee Total Score (out of 5):
+            </label>
+            <input
+              type="number"
+              value={committeeTotalScore}
+              onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+              className="w-32 px-2 py-1 border border-yellow-400 rounded"
+            />
+          </div>
+        )}  
     </div>
   );
 }

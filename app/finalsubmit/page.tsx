@@ -9,6 +9,7 @@ interface FacultyInfo {
   name: string;
   branch: string;
   designation?: string; // Added designation for minimum score check
+  loginType: "faculty" | "hod" | "committee";
 }
 export default function FinalSubmit() {
   const [categoryScores, setCategoryScores] = useState({
@@ -17,16 +18,33 @@ export default function FinalSubmit() {
     category3: 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [committeeScore1, setCommitteeScore1] = useState<number>(0);
+  const [committeeScore2, setCommitteeScore2] = useState<number>(0);
+  const [committeeScore3, setCommitteeScore3] = useState<number>(0);
+  const [academicYear, setAcademicYear] = useState<string>("");
   const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [faculty, setFaculty] = useState<FacultyInfo | null>(null);
+  const [EmployeeId, setEmployeeId] = useState<string>("");
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedData = sessionStorage.getItem("record");
-      if (storedData) {
+    const employeeId = sessionStorage.getItem("employeeId");
+    const academicYear = sessionStorage.getItem("academicYear");
+      const Score1 = sessionStorage.getItem("committeeScore1");
+      const Score2 = sessionStorage.getItem("committeeScore2");
+      const Score3 = sessionStorage.getItem("committeeScore3");
+      if (storedData && academicYear && employeeId) {
+        if(facultyInfo?.loginType === "committee") {
+          setCommitteeScore1(Number(Score1));
+          setCommitteeScore2(Number(Score2));
+          setCommitteeScore3(Number(Score3));
+        }
+        
         setFacultyInfo(JSON.parse(storedData));
+        setEmployeeId(employeeId); // Set the employee ID
+        setAcademicYear(academicYear);
       }
-
       const c1 = sessionStorage.getItem("category1");
       const c2 = sessionStorage.getItem("category2");
       const c3 = sessionStorage.getItem("category3");
@@ -36,7 +54,11 @@ export default function FinalSubmit() {
         category3: c3 ? JSON.parse(c3).score || 0 : 0,
       });
     }
-  }, []);
+  }, [facultyInfo?.loginType]);
+  const CommitteeScore = committeeScore1 + committeeScore2 + committeeScore3;
+  console.log("Committee 1:", committeeScore1);
+  console.log("Committee 2:", committeeScore2);
+  console.log("Committee 3:", committeeScore3);
   const employeeId = facultyInfo?.eid;
 
   useEffect(() => {
@@ -60,25 +82,143 @@ export default function FinalSubmit() {
     }
   }, [employeeId]);
   
-
+  // const handleConfirmSubmit = async () => {
+  //   setIsSubmitting(true);
+  
+  //   const loginType = facultyInfo?.loginType;
+  //   const errors: string[] = [];
+  
+  //   const category1 = sessionStorage.getItem("category1");
+  //   const category2 = sessionStorage.getItem("category2");
+  //   const category3 = sessionStorage.getItem("category3");
+  
+  //   interface CategoryData {
+  //     score: number;
+  //     [key: string]: number | string | boolean;
+  //   }
+  
+  //   const submitCategory = async (url: string, data: CategoryData, label: string) => {
+  //     try {
+  //       const response = await fetch(url, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ employeeId, ...data }),
+  //       });
+  
+  //       if (!response.ok) throw new Error(`${label} submission failed`);
+  //     } catch (err) {
+  //       console.error(`Error submitting ${label}:`, err);
+  //       errors.push(label);
+  //     }
+  //   };
+  
+  //   try {
+  //     if (loginType !== "committee") {
+  //       // Only faculty and HOD can submit category data
+  //       if (category1) {
+  //         await submitCategory("/api/category-1", JSON.parse(category1), "Category 1");
+  //       }
+  
+  //       if (category2) {
+  //         await submitCategory("/api/category-2", JSON.parse(category2), "Category 2");
+  //       }
+  
+  //       if (category3) {
+  //         await submitCategory("/api/category-3", JSON.parse(category3), "Category 3");
+  //       }
+  
+  //       await submitCategory(
+  //         "/api/final-submit",
+  //         { score: totalScore, ...categoryScores, academicYear },
+  //         "Final Submit"
+  //       );
+  //     } else {
+  //       // Committee can only update the final score (PUT request)
+  //       await fetch("/api/final-submit", {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           employeeId:EmployeeId,
+  //           academicYear,
+  //           loginType,
+  //           committeeScore: CommitteeScore,
+  //         }),
+  //       });
+  //     }
+  //     console.log("employeeId", EmployeeId);
+  //     console.log("loginType", loginType);
+  //     console.log("CommitteeScore", CommitteeScore);
+  //     if (errors.length > 0) {
+  //       toast.error(`Submission failed for: ${errors.join(", ")}`);
+  //     } else {
+  //       toast.success("Submitted successfully!");
+  
+  //       // Clear sessionStorage drafts
+  //       sessionStorage.removeItem("category1");
+  //       sessionStorage.removeItem("category2");
+  //       sessionStorage.removeItem("category3");
+  //       sessionStorage.removeItem("committeeScore1");
+  //       sessionStorage.removeItem("committeeScore2");
+  //       sessionStorage.removeItem("committeeScore3");
+  
+  //       // Only faculty and HOD need to delete drafts
+  //       if (employeeId && loginType !== "committee") {
+  //         await fetch("/api/drafts/category-1", {
+  //           method: "DELETE",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ employeeId, category: "category-1" }),
+  //         });
+  //         await fetch("/api/drafts/category-2", {
+  //           method: "DELETE",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ employeeId, category: "category-2" }),
+  //         });
+  //         await fetch("/api/drafts/category-3", {
+  //           method: "DELETE",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ employeeId, category: "category-3" }),
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Unexpected error submitting form:", error);
+  //     toast.error("Unexpected error occurred. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //     setShowConfirmation(false);
+  //   }
+  // };
+  const checkAlreadySubmitted = async (): Promise<boolean> => {
+    const res = await fetch(`/api/final-submit?facultyId=${employeeId}&academicYear=${academicYear}`);
+    const data = await res.json();
+    return data.submitted === true;
+  };
+  
   const handleConfirmSubmit = async () => {
     setIsSubmitting(true);
-
-    const employeeId = facultyInfo?.eid;
+    const loginType = facultyInfo?.loginType;
     const errors: string[] = [];
-
+  
+    // 🔒 Prevent duplicate submission for faculty/HOD
+    if (loginType !== "committee") {
+      const alreadySubmitted = await checkAlreadySubmitted();
+      if (alreadySubmitted) {
+        toast.error("You have already submitted for this academic year.");
+        setIsSubmitting(false);
+        setShowConfirmation(false);
+        return;
+      }
+    }
+  
     const category1 = sessionStorage.getItem("category1");
     const category2 = sessionStorage.getItem("category2");
     const category3 = sessionStorage.getItem("category3");
-    console.log("Category 1:", category1);
-    console.log("Category 2:", category2);
-    console.log("Category 3:", category3);
+  
     interface CategoryData {
       score: number;
-      [key: string]: number | string | boolean; // Adjust this to match the exact structure of your data
+      [key: string]: number | string | boolean;
     }
-
-    
+  
     const submitCategory = async (url: string, data: CategoryData, label: string) => {
       try {
         const response = await fetch(url, {
@@ -86,40 +226,62 @@ export default function FinalSubmit() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ employeeId, ...data }),
         });
-
+  
         if (!response.ok) throw new Error(`${label} submission failed`);
       } catch (err) {
         console.error(`Error submitting ${label}:`, err);
         errors.push(label);
       }
     };
-
+  
     try {
-      if (category1) {
-        await submitCategory("/api/category-1", JSON.parse(category1), "Category 1");
+      if (loginType !== "committee") {
+        if (category1) {
+          await submitCategory("/api/category-1", JSON.parse(category1), "Category 1");
+        }
+  
+        if (category2) {
+          await submitCategory("/api/category-2", JSON.parse(category2), "Category 2");
+        }
+  
+        if (category3) {
+          await submitCategory("/api/category-3", JSON.parse(category3), "Category 3");
+        }
+  
+        await submitCategory(
+          "/api/final-submit",
+          { score: totalScore, ...categoryScores, academicYear },
+          "Final Submit"
+        );
+      } else {
+        // Committee can only update the final score (PUT request)
+        await fetch("/api/final-submit", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            employeeId: EmployeeId,
+            academicYear,
+            loginType,
+            committeeScore: CommitteeScore,
+          }),
+        });
       }
-
-      if (category2) {
-        await submitCategory("/api/category-2", JSON.parse(category2), "Category 2");
-      }
-
-      if (category3) {
-        await submitCategory("/api/category-3", JSON.parse(category3), "Category 3");
-      }
-      if(categoryScores){
-        await submitCategory("/api/final-submit", { score: totalScore, ...categoryScores }, "Final Submit");
-      }
+  
       if (errors.length > 0) {
         toast.error(`Submission failed for: ${errors.join(", ")}`);
       } else {
-        toast.success("All categories submitted successfully!");
-        // Delete draft from sessionStorage and backend
+        toast.success("Submitted successfully!");
+  
+        // Clear sessionStorage
         sessionStorage.removeItem("category1");
         sessionStorage.removeItem("category2");
         sessionStorage.removeItem("category3");
-
-        // Delete draft from the database
-        if (employeeId) {
+        sessionStorage.removeItem("committeeScore1");
+        sessionStorage.removeItem("committeeScore2");
+        sessionStorage.removeItem("committeeScore3");
+  
+        // Delete drafts if needed
+        if (employeeId && loginType !== "committee") {
           await fetch("/api/drafts/category-1", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -145,6 +307,7 @@ export default function FinalSubmit() {
       setShowConfirmation(false);
     }
   };
+  
 
   const handleCancelSubmit = () => {
     setShowConfirmation(false);
@@ -291,8 +454,8 @@ export default function FinalSubmit() {
           </div>
           {/* Submit Button Section */}
           <div className="flex justify-between items-center mt-6">
-            <div className="text-sm text-gray-500">Total Self-Appraisal Score: {totalScore}</div>
-
+            <div className="text-lg text-gray-600">Total Self-Appraisal Score: {totalScore}</div>
+            
             {/* Back and Next buttons on the right */}
             <div className="flex space-x-4">
               <Link href="/partb/category-3"> {/* Replace with your correct previous page URL */}
@@ -311,6 +474,9 @@ export default function FinalSubmit() {
               </button>
             </div>
           </div>
+          {facultyInfo?.loginType === "committee" && (
+                  <div className="text-lg text-gray-600">Committee Total Score: {CommitteeScore}</div>
+                )}
         </div>
 
         {showConfirmation && (
@@ -319,7 +485,9 @@ export default function FinalSubmit() {
               <h3 className="text-xl font-bold mb-4 text-indigo-700">Confirm Submission</h3>
               <p className="mb-6">Are you sure you want to submit all your data? This action cannot be undone.</p>
               <p className="mb-4 font-semibold">Total Score: <span className="text-green-600">{totalScore}</span></p>
-              
+              {facultyInfo?.loginType === "committee" && (
+                <p className="mb-4 font-semibold">Committee Total Score: <span className="text-yellow-600">{CommitteeScore}</span></p>
+              )}
               {/* Display approval status warnings */}
               {(!checkMinimumApiScore(1, categoryScores.category1) || 
                 !checkMinimumApiScore(2, categoryScores.category2) || 

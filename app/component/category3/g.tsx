@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface DesignPatent {
   title: string;
@@ -11,16 +11,33 @@ interface DesignPatent {
 interface Category3GProps {
   initialData: DesignPatent[];
   onFormDataChangeAction: (data: DesignPatent[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
 export default function Category3G({
   initialData,
   onFormDataChangeAction,
+  loginType, employeeId, onCommitteeScoreChange
 }: Category3GProps) {
   const [designPatents, setDesignPatents] = useState<DesignPatent[]>(initialData);
   const [warning, setWarning] = useState("");
-
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
   const MAX_SCORE = 5;
+
+
+  useEffect(() => {
+     if (initialData?.length) {
+      setDesignPatents(initialData);
+     }
+   }, [initialData]);
+ 
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
 
   const calculateScore = (status: string): number => {
     switch (status) {
@@ -43,6 +60,7 @@ export default function Category3G({
     field: keyof DesignPatent,
     value: string
   ) => {
+    if (loginType === "hod") return;
     const updated = [...designPatents];
     const updatedPatent = { ...updated[index], [field]: value };
 
@@ -66,6 +84,7 @@ export default function Category3G({
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = designPatents.filter((_, i) => i !== index);
     setDesignPatents(updated);
     onFormDataChangeAction(updated);
@@ -73,6 +92,7 @@ export default function Category3G({
   };
 
   const addRow = () => {
+    if(loginType !== "hod" && getTotalScore() < MAX_SCORE) {
     const newscore = 3;
     const hypotheticalTotal = getTotalScore()+newscore// Default: Filed = 3
     if (hypotheticalTotal > MAX_SCORE) {
@@ -92,9 +112,21 @@ export default function Category3G({
     const updated = [...designPatents, newPatent];
     setDesignPatents(updated);
     onFormDataChangeAction(updated);
+  }
   };
 
   const totalScore = getTotalScore();
+
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 5) {
+      alert("Committee total score cannot exceed 5.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
 
   return (
     <div>
@@ -125,6 +157,7 @@ export default function Category3G({
                 <input
                   type="text"
                   value={patent.title}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "title", e.target.value)
                   }
@@ -135,6 +168,7 @@ export default function Category3G({
                 <input
                   type="date"
                   value={patent.date}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "date", e.target.value)
                   }
@@ -144,6 +178,7 @@ export default function Category3G({
               <td className="border p-2">
                 <select
                   value={patent.type}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "type", e.target.value)
                   }
@@ -156,6 +191,7 @@ export default function Category3G({
               <td className="border p-2">
                 <select
                   value={patent.status}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) =>
                     handleInputChange(index, "status", e.target.value)
                   }
@@ -168,11 +204,16 @@ export default function Category3G({
               </td>
               <td className="border p-2">{patent.score}</td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -184,9 +225,9 @@ export default function Category3G({
       <button
         type="button"
         onClick={addRow}
-        disabled={totalScore >= MAX_SCORE}
+        disabled={loginType === "hod" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row
@@ -199,6 +240,19 @@ export default function Category3G({
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {totalScore} / {MAX_SCORE}
       </p>
+      {loginType === "committee" && (
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-yellow-600">
+              Committee Total Score (out of 5):
+            </label>
+            <input
+              type="number"
+              value={committeeTotalScore}
+              onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+              className="w-32 px-2 py-1 border border-yellow-400 rounded"
+            />
+          </div>
+        )}
     </div>
   );
 }

@@ -87,11 +87,6 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
         L. Guiding of Mini Projects
       </h3>
       <b className="text-gray-600">Maximum Score 10, 5 per project</b>
-      {employeeId && (
-          <div className="text-sm bg-blue-50 p-2 rounded mt-2 mb-2">
-            Viewing data for Employee ID: {employeeId}
-          </div>
-        )}
       <table className="w-full border-collapse border border-gray-300 text-center mt-4">
         <thead className="bg-gray-100">
           <tr>
@@ -131,14 +126,14 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
               </td>
               <td>
               <button
-                    type="button"
-                    onClick={() => deleteRow(index)}
-                    disabled={loginType === "hod" || loginType === "committee"}
-                    className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                   >Delete
                 </button>
               </td>

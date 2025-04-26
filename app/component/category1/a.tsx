@@ -13,7 +13,7 @@ interface TeachingActivity {
 interface CategoryAProps {
   initialData: TeachingActivity[];
   onFormDataChangeAction: (updatedData: TeachingActivity[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee" | "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
   selectedAcademicYear?: string;
@@ -47,7 +47,7 @@ export default function CategoryA({
     field: keyof TeachingActivity,
     value: string | number
   ) => {
-    if (loginType === "hod") return;
+    if (loginType === "hod" || loginType === "principal") return;
 
     const updatedRecords = [...categoryA];
     const newValue = typeof value === "number" ? String(value) : value;
@@ -83,7 +83,7 @@ export default function CategoryA({
   };
 
   const deleteRow = (index: number) => {
-    if (loginType === "hod") return;
+    if (loginType === "hod" || loginType === "principal") return;
 
     const updated = categoryA.filter((_, i) => i !== index);
     setCategoryA(updated);
@@ -154,7 +154,7 @@ export default function CategoryA({
                     value={row.semester}
                     onChange={(e) => handleInputChange(index, "semester", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   >
                     <option value="Odd">Odd</option>
                     <option value="Even">Even</option>
@@ -166,7 +166,7 @@ export default function CategoryA({
                     value={row.courseCode}
                     onChange={(e) => handleInputChange(index, "courseCode", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   />
                 </td>
                 <td className="p-2">
@@ -174,7 +174,7 @@ export default function CategoryA({
                     value={row.level}
                     onChange={(e) => handleInputChange(index, "level", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType !== "faculty"}
                   >
                     <option value="UG">UG</option>
                     <option value="PG">PG</option>
@@ -185,7 +185,7 @@ export default function CategoryA({
                     value={row.mode}
                     onChange={(e) => handleInputChange(index, "mode", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   >
                     <option value="Lecture">Lecture</option>
                     <option value="Tutorial">Tutorial</option>
@@ -198,7 +198,7 @@ export default function CategoryA({
                     value={row.classesPerWeek}
                     onChange={(e) => handleInputChange(index, "classesPerWeek", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   />
                 </td>
                 <td className="p-2">
@@ -207,7 +207,7 @@ export default function CategoryA({
                     value={row.score}
                     onChange={(e) => handleInputChange(index, "score", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   />
                 </td>
                 <td className="p-2">
@@ -216,7 +216,7 @@ export default function CategoryA({
                     onClick={() => deleteRow(index)}
                     disabled={loginType === "hod" || loginType === "committee"}
                     className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
+                      loginType === "hod" || loginType === "committee" || loginType === "principal"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}
@@ -232,9 +232,9 @@ export default function CategoryA({
         <button
           type="button"
           onClick={addRow}
-          disabled={loginType === "hod" || loginType === "committee" || totalScore >= 50}
+          disabled={loginType === "hod" || loginType === "committee"  || loginType === "principal" || totalScore >= 50}
           className={`mt-2 px-3 py-2 rounded text-white ${
-            loginType === "hod" || loginType === "committee" || totalScore >= 50
+            loginType === "hod" || loginType === "committee" || loginType === "principal" || totalScore >= 50
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-indigo-500"
           }`}

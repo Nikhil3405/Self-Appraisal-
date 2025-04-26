@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 interface ScannedDocument {
     id?: number;
     documentType: string;
@@ -16,7 +16,12 @@ interface PopupProps {
     onClose: () => void;
     document: ScannedDocument | null;
 }
-
+interface FacultyInfo {
+    eid: string;
+    name: string;
+    branch: string;
+    loginType: "faculty" | "hod" | "committee";
+  }
 // Popup component for confirmation after upload
 const UploadSuccessPopup = ({ isOpen, onClose, document }: PopupProps) => {
     if (!isOpen || !document) return null;
@@ -199,6 +204,7 @@ export default function TeacherDocumentUpload() {
     const [isUploading, setIsUploading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [documents, setDocuments] = useState<ScannedDocument[]>([]);
+    const router = useRouter();
     const [alert, setAlert] = useState<{ type: "success" | "error", message: string } | null>(null);
     const [newDocument, setNewDocument] = useState<ScannedDocument>({
         documentType: "Certificate",
@@ -214,26 +220,29 @@ export default function TeacherDocumentUpload() {
     const [deletePopupOpen, setDeletePopupOpen] = useState(false);
     const [currentDocument, setCurrentDocument] = useState<ScannedDocument | null>(null);
     const [employeeId, setEmployeeId] = useState<string>("");
+    const [academicYear, setAcademicYear] = useState<string>("");
+    const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
 
     // Get employee ID from session storage when component mounts
     useEffect(() => {
-        const facultyInfo = sessionStorage.getItem("record");
-        if (facultyInfo) {
-            try {
-                const parsedInfo = JSON.parse(facultyInfo);
-                setEmployeeId(parsedInfo.eid);
-            } catch (error) {
-                console.error("Error parsing faculty info:", error);
-            }
+        const storedData = sessionStorage.getItem("record");
+        const employeeId = sessionStorage.getItem("employeeId");
+        const academicYear = sessionStorage.getItem("academicYear");
+        if (storedData) {
+          setFacultyInfo(JSON.parse(storedData)); // Parse the stored data
+        } 
+        if(employeeId){
+          setEmployeeId(employeeId);
         }
-    }, []);
-
+        if(academicYear){
+          setAcademicYear(academicYear);
+        }
+        else if(!storedData || !employeeId || !academicYear){
+            console.log("No data found");
+        }
+      }, [router]);
+      console.log("Academic Year Problem: ", academicYear);
     // Load existing documents when component mounts or employee ID changes
-    useEffect(() => {
-        if (employeeId) {
-            loadDocuments();
-        }
-    }, [employeeId]);
 
     const documentTypes = [
         "Certificate",
@@ -265,20 +274,26 @@ export default function TeacherDocumentUpload() {
         }, 3000);
     };
 
-    const loadDocuments = async () => {
-        if (!employeeId) return;
-
-        try {
-            const response = await fetch(`/api/category-3?employeeId=${employeeId}`);
-            if (!response.ok) throw new Error('Failed to load documents');
-
-            const data = await response.json();
-            setDocuments(data.documents || []);
-        } catch (error) {
-            console.error('Error loading documents:', error);
-            showAlert("error", "Failed to load documents");
+    useEffect(() => {
+        
+        const loadDocuments = async () => {
+            if (!employeeId || !academicYear) return;
+    
+            try {
+                const response = await fetch(`/api/category-3?employeeId=${employeeId}&academicYear=${academicYear}`);
+                if (!response.ok) throw new Error('Failed to load documents');
+    
+                const data = await response.json();
+                setDocuments(data.documents || []);
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                showAlert("error", "Failed to load documents");
+            }
+        };
+        if (employeeId && academicYear) {
+            loadDocuments();
         }
-    };
+    }, [employeeId, academicYear]);
 
     const openViewPopup = (document: ScannedDocument) => {
         setCurrentDocument(document);
@@ -362,6 +377,7 @@ export default function TeacherDocumentUpload() {
             formData.append("remarks", newDocument.remarks);
             formData.append("status", newDocument.status);
             formData.append("employeeId", employeeId);
+            formData.append("academicYear", academicYear);
 
             const response = await fetch("/api/category-3", {
                 method: "POST",

@@ -11,11 +11,15 @@ export async function POST(req: Request) {
         if (contentType?.includes("multipart/form-data")) {
             const formData = await req.formData();
             const employeeId = formData.get('employeeId') as string;
+            const academicYear = formData.get('academicYear') as string;
 
             if (!employeeId) {
                 return NextResponse.json({ error: "Employee ID required" }, { status: 401 });
             }
 
+            if (!academicYear) {
+                return NextResponse.json({ error: "Academic Year required" }, { status: 401 });
+            }
             const documentType = formData.get('documentType') as string;
             const documentTitle = formData.get('documentTitle') as string;
             const uploadDate = formData.get('uploadDate') as string;
@@ -41,7 +45,8 @@ export async function POST(req: Request) {
                     file_type,
                     file_data,
                     remarks,
-                    status
+                    status,
+                    academicyear
                 ) VALUES (
                     ${employeeId},
                     ${documentType},
@@ -51,7 +56,8 @@ export async function POST(req: Request) {
                     ${fileType},
                     ${fileBuffer},
                     ${remarks},
-                    'Pending'
+                    'Pending',
+                    ${academicYear}
                 );
                 SELECT SCOPE_IDENTITY() AS id;
             `;
@@ -75,6 +81,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const {
             employeeId,
+            academicYear,
             papers,
             chapters,
             books,
@@ -106,8 +113,8 @@ export async function POST(req: Request) {
                 for (const p of papers) {
                     await transaction.request().query(`
                         INSERT INTO PublishedJournals
-                        (PaperTitle, JournalName, ISSN_ISBN, PeerReviewedOrImpactFactor, NumberOfCoAuthors, IsMainAuthor, JournalType, SelfAppraisalScore, EmployeeID)
-                        VALUES ('${p.title}', '${p.journalName}', '${p.issnIsbn}', '${p.peerReviewed}', ${p.coAuthors}, '${p.mainAuthor}', '${p.journalType}', ${p.score}, '${employeeId}')
+                        (PaperTitle, JournalName, ISSN_ISBN, PeerReviewedOrImpactFactor, NumberOfCoAuthors, IsMainAuthor, JournalType, SelfAppraisalScore, EmployeeID,academicyear)
+                        VALUES ('${p.title}', '${p.journalName}', '${p.issnIsbn}', '${p.peerReviewed}', ${p.coAuthors}, '${p.mainAuthor}', '${p.journalType}', ${p.score}, '${employeeId}','${academicYear}')
                     `);
                 }
             }
@@ -116,8 +123,8 @@ export async function POST(req: Request) {
                 for (const c of chapters) {
                     await transaction.request().query(`
                         INSERT INTO BookChapterPublications 
-                        (BookChapterTitle, PublisherDetails, ISSN_ISBN, NumberOfCoAuthors, IsMainAuthor, SelfAppraisalScore, EmployeeID)
-                        VALUES ('${c.title}', '${c.publisherDetails}', '${c.issnIsbn}', ${c.coAuthors}, '${c.isMainAuthor}', ${c.score}, '${employeeId}')
+                        (BookChapterTitle, PublisherDetails, ISSN_ISBN, NumberOfCoAuthors, IsMainAuthor, SelfAppraisalScore, EmployeeID,academicyear)
+                        VALUES ('${c.title}', '${c.publisherDetails}', '${c.issnIsbn}', ${c.coAuthors}, '${c.isMainAuthor}', ${c.score}, '${employeeId}','${academicYear}')
                     `);
                 }
             }
@@ -125,8 +132,8 @@ export async function POST(req: Request) {
                 for (const b of books) {
                     await sql.query`
                     INSERT INTO AuthoredBooks 
-                    (BookTitle, PublisherDetails, ISSN_ISBN, NumberOfCoAuthors, PublicationLevel, AuthorRole, SelfAppraisalScore, EmployeeID)
-                    VALUES (${b.title}, ${b.publisherDetails}, ${b.issnIsbn}, ${b.coAuthors}, ${b.publicationType}, ${b.role}, ${b.score}, ${employeeId})`;
+                    (BookTitle, PublisherDetails, ISSN_ISBN, NumberOfCoAuthors, PublicationLevel, AuthorRole, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${b.title}, ${b.publisherDetails}, ${b.issnIsbn}, ${b.coAuthors}, ${b.publicationType}, ${b.role}, ${b.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -134,8 +141,8 @@ export async function POST(req: Request) {
                 for (const cp of conferencePapers) {
                     await sql.query`
                     INSERT INTO ConferencePapers 
-                    (PaperTitle, ConferenceDetails, ISSN_ISBN, NumberOfCoAuthors, AuthorRole, SelfAppraisalScore, EmployeeID)
-                    VALUES (${cp.title}, ${cp.conferenceDetails}, ${cp.issnIsbn}, ${cp.coAuthors}, ${cp.authorRole}, ${cp.score}, ${employeeId})`;
+                    (PaperTitle, ConferenceDetails, ISSN_ISBN, NumberOfCoAuthors, AuthorRole, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${cp.title}, ${cp.conferenceDetails}, ${cp.issnIsbn}, ${cp.coAuthors}, ${cp.authorRole}, ${cp.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -143,8 +150,8 @@ export async function POST(req: Request) {
                 for (const pj of projects) {
                     await sql.query`
                     INSERT INTO UGProjects 
-                    (ProjectTitle, UGCompletionPercent, PaperPublished, PatentPublished, IsFunded, SelfAppraisalScore, EmployeeID)
-                    VALUES (${pj.projectTitle}, ${pj.ugPercentageCompletion}, ${pj.hasPaper}, ${pj.hasPatent}, ${pj.hasFunding}, ${pj.score}, ${employeeId})`;
+                    (ProjectTitle, UGCompletionPercent, PaperPublished, PatentPublished, IsFunded, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${pj.projectTitle}, ${pj.ugPercentageCompletion}, ${pj.hasPaper}, ${pj.hasPatent}, ${pj.hasFunding}, ${pj.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -152,8 +159,8 @@ export async function POST(req: Request) {
                 for (const pt of patents) {
                     await sql.query`
                     INSERT INTO PatentStatus 
-                    (PatentTitle, FilingDate, PatentType, Status, SelfAppraisalScore, EmployeeID)
-                    VALUES (${pt.title}, ${pt.date}, ${pt.type}, ${pt.status}, ${pt.score}, ${employeeId})`;
+                    (PatentTitle, FilingDate, PatentType, Status, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${pt.title}, ${pt.date}, ${pt.type}, ${pt.status}, ${pt.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -161,8 +168,8 @@ export async function POST(req: Request) {
                 for (const dp of designPatents) {
                     await sql.query`
                     INSERT INTO DesignPatents 
-                    (DesignTitle, FilingDate, PatentType, Status, SelfAppraisalScore, EmployeeID)
-                    VALUES (${dp.title}, ${dp.date}, ${dp.type}, ${dp.status}, ${dp.score}, ${employeeId})`;
+                    (DesignTitle, FilingDate, PatentType, Status, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${dp.title}, ${dp.date}, ${dp.type}, ${dp.status}, ${dp.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -170,8 +177,8 @@ export async function POST(req: Request) {
                 for (const cr of copyrights) {
                     await sql.query`
                     INSERT INTO Copyrights 
-                    (CopyrightTitle, RegistrationDate, CopyrightType, SelfAppraisalScore, EmployeeID)
-                    VALUES (${cr.title}, ${cr.date}, ${cr.type}, ${cr.score}, ${employeeId})`;
+                    (CopyrightTitle, RegistrationDate, CopyrightType, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${cr.title}, ${cr.date}, ${cr.type}, ${cr.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -179,8 +186,8 @@ export async function POST(req: Request) {
                 for (const fp of fundProjects) {
                     await sql.query`
                     INSERT INTO FundedResearchProjects 
-                    (ProjectTitle, FundingAgency, SanctionYear, ProjectPeriod, AmountMobilized, ProjectStatus, SelfAppraisalScore, EmployeeID)
-                    VALUES (${fp.title}, ${fp.agency}, ${fp.year}, ${fp.period}, ${fp.grant}, ${fp.status}, ${fp.score}, ${employeeId})`;
+                    (ProjectTitle, FundingAgency, SanctionYear, ProjectPeriod, AmountMobilized, ProjectStatus, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${fp.title}, ${fp.agency}, ${fp.year}, ${fp.period}, ${fp.grant}, ${fp.status}, ${fp.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -188,8 +195,8 @@ export async function POST(req: Request) {
                 for (const g of guidanceList) {
                     await sql.query`
                     INSERT INTO ResearchGuidance 
-                    (Degree, CandidateName, ThesisTitle, Status, University, SelfAppraisalScore, EmployeeID)
-                    VALUES (${g.degree}, ${g.candidateName}, ${g.thesisTitle}, ${g.status}, ${g.university}, ${g.score}, ${employeeId})`;
+                    (Degree, CandidateName, ThesisTitle, Status, University, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${g.degree}, ${g.candidateName}, ${g.thesisTitle}, ${g.status}, ${g.university}, ${g.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -197,8 +204,8 @@ export async function POST(req: Request) {
                 for (const cw of consultancyWorks) {
                     await sql.query`
                     INSERT INTO ConsultancyWorks 
-                    (ConsultancyTitle, StartDate, EndDate, ClientType, NatureOfWork, Amount, SelfAppraisalScore, EmployeeID)
-                    VALUES (${cw.title}, ${cw.startDate}, ${cw.endDate}, ${cw.clientType}, ${cw.natureOfWork}, ${cw.amount}, ${cw.score}, ${employeeId})`;
+                    (ConsultancyTitle, StartDate, EndDate, ClientType, NatureOfWork, Amount, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${cw.title}, ${cw.startDate}, ${cw.endDate}, ${cw.clientType}, ${cw.natureOfWork}, ${cw.amount}, ${cw.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -206,8 +213,8 @@ export async function POST(req: Request) {
                 for (const pr of programs) {
                     await sql.query`
                     INSERT INTO FacultyTraining  
-                    (ProgramTitle, Duration, OrganizedBy, ProgramType, SelfAppraisalScore, EmployeeID)
-                    VALUES (${pr.title}, ${pr.duration}, ${pr.organizedBy}, ${pr.type}, ${pr.score}, ${employeeId})`;
+                    (ProgramTitle, Duration, OrganizedBy, ProgramType, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${pr.title}, ${pr.duration}, ${pr.organizedBy}, ${pr.type}, ${pr.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -215,8 +222,8 @@ export async function POST(req: Request) {
                 for (const dj of developedprojects) {
                     await sql.query`
                     INSERT INTO InnovativeProjects 
-                    (ProjectTitle, ProjectStatus, TRLLevel, SelfAppraisalScore, EmployeeID)
-                    VALUES (${dj.title}, ${dj.status}, ${dj.trl}, ${dj.score}, ${employeeId})`;
+                    (ProjectTitle, ProjectStatus, TRLLevel, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${dj.title}, ${dj.status}, ${dj.trl}, ${dj.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -224,8 +231,8 @@ export async function POST(req: Request) {
                 for (const ac of activities) {
                     await sql.query`
                     INSERT INTO ProfessionalBodyActivities 
-                    (ProfessionalBodyName, ActivityType, SelfAppraisalScore, EmployeeID)
-                    VALUES (${ac.name}, ${ac.activityType}, ${ac.score}, ${employeeId})`;
+                    (ProfessionalBodyName, ActivityType, SelfAppraisalScore, EmployeeID,academicyear)
+                    VALUES (${ac.name}, ${ac.activityType}, ${ac.score}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -233,8 +240,8 @@ export async function POST(req: Request) {
                 for (const dt of data) {
                     await sql.query`
                     INSERT INTO DisciplinaryCharges 
-                    (Section, Details, Remarks, EmployeeID)
-                    VALUES (${dt.section}, ${dt.details}, ${dt.remarks}, ${employeeId})`;
+                    (Section, Details, Remarks, EmployeeID,academicyear)
+                    VALUES (${dt.section}, ${dt.details}, ${dt.remarks}, ${employeeId},${academicYear})`;
                 }
             }
 
@@ -260,11 +267,14 @@ export async function GET(req: Request) {
         await connectToDatabase();
         const { searchParams } = new URL(req.url);
         const employeeId = searchParams.get('employeeId');
+        const academicYear = searchParams.get('academicYear');
 
         if (!employeeId) {
             return NextResponse.json({ error: "Employee ID required" }, { status: 400 });
         }
-
+        if (!academicYear) {
+            return NextResponse.json({ error: "Academic Year required" }, { status: 400 });
+        }
         const docResult = await sql.query`
             SELECT 
                 document_id as id,
@@ -276,7 +286,7 @@ export async function GET(req: Request) {
                 remarks,
                 '/api/view-document/' + CAST(document_id AS VARCHAR(10)) as fileUrl
             FROM teacher_documents
-            WHERE employee_id = ${employeeId}
+            WHERE employee_id = ${employeeId} AND academicyear = ${academicYear}
             ORDER BY upload_date DESC, document_id DESC`;
 
         return NextResponse.json({ documents: docResult.recordset }, { status: 200 });

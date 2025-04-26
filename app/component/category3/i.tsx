@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface FundedProject {
   title: string;
@@ -13,18 +13,34 @@ interface FundedProject {
 interface Category3IProps {
   initialData: FundedProject[];
   onFormDataChangeAction: (data: FundedProject[]) => void;
+  loginType: "faculty" | "hod" | "committee";
+  employeeId?: string;
+  onCommitteeScoreChange?: (score: string) => void;
 }
 
-export default function Category3I({ initialData, onFormDataChangeAction }: Category3IProps) {
+export default function Category3I({ initialData, onFormDataChangeAction,
+  loginType, employeeId, onCommitteeScoreChange
+ }: Category3IProps) {
   const [fundProjects, setFundProjects] = useState<FundedProject[]>(initialData);
   const [warning, setWarning] = useState("");
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<string>("");
   const MAX_SCORE = 50;
+  useEffect(() => {
+     if (initialData?.length) {
+      setFundProjects(initialData);
+     }
+   }, [initialData]);
+   useEffect(() => {
+     if (employeeId) {
+       console.log(`Loading data for employee ID: ${employeeId}`);
+     }
+   }, [employeeId]);
 
   const calculateScore = (grant: number): number => {
-    if (grant >= 30) return 25;
-    if (grant >= 5) return 20;
-    if (grant >= 1) return 15;
-    if (grant > 0) return 5;
+    if (grant >= 3000000) return 25;
+    if (grant >= 500000) return 20;
+    if (grant >= 100000) return 15;
+    if (grant < 100000) return 5;
     return 0;
   };
 
@@ -36,6 +52,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
     field: keyof FundedProject,
     value: string | number
   ) => {
+    if (loginType === "hod") return;
     const updated = [...fundProjects];
     const updatedProject = { ...updated[index], [field]: value };
 
@@ -59,6 +76,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
   };
 
   const deleteRow = (index: number) => {
+    if (loginType === "hod") return;
     const updated = fundProjects.filter((_, i) => i !== index);
     setFundProjects(updated);
     onFormDataChangeAction(updated);
@@ -66,6 +84,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
   };
 
   const addRow = () => {
+    if(loginType !== "hod" && getTotalScore() < MAX_SCORE) {
     const hypotheticalTotal = getTotalScore();
     if (hypotheticalTotal >= MAX_SCORE) {
       setWarning("Cannot add row. Maximum total score of 50 will be exceeded.");
@@ -85,9 +104,21 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
         score: 0,
       },
     ]);
+  }
   };
 
   const totalScore = getTotalScore();
+
+  const handleCommitteeTotalScoreChange = (value: string) => {
+    if (Number(value) > 50) {
+      alert("Committee total score cannot exceed 50.");
+      return;
+    }
+    setCommitteeTotalScore(value);
+    if (onCommitteeScoreChange) {
+      onCommitteeScoreChange(value); // 👈 call the parent function
+    }
+  };
 
   return (
     <div>
@@ -121,6 +152,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <input
                   type="text"
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={project.title}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -130,6 +162,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={project.agency}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "agency", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -138,6 +171,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={project.year}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "year", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -146,6 +180,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="text"
                   value={project.period}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "period", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -154,6 +189,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
                 <input
                   type="number"
                   min={0}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   value={project.grant}
                   onChange={(e) => handleInputChange(index, "grant", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -162,6 +198,7 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
               <td className="border p-2">
                 <select
                   value={project.status}
+                  disabled={loginType === "hod" || loginType === "committee"}
                   onChange={(e) => handleInputChange(index, "status", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -171,11 +208,16 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
               </td>
               <td className="border p-2">{project.score}</td>
               <td className="border p-2">
-                <button
-                  type="button"
-                  onClick={() => deleteRow(index)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
+              <button
+                type="button"
+                onClick={() => deleteRow(index)}
+                disabled={loginType === "hod" || loginType === "committee"}
+                className={`bg-red-500 text-white px-2 py-1 rounded ${
+                  loginType === "hod" || loginType === "committee"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                  >
                   Delete
                 </button>
               </td>
@@ -187,9 +229,9 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
       <button
         type="button"
         onClick={addRow}
-        disabled={totalScore >= MAX_SCORE}
+        disabled={loginType === "hod" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row
@@ -200,6 +242,19 @@ export default function Category3I({ initialData, onFormDataChangeAction }: Cate
       <p className="text-base font-semibold mt-1 text-gray-700">
         Total Score: {totalScore} / 50
       </p>
+      {loginType === "committee" && (
+          <div className="mt-4">
+            <label className="block mb-1 font-semibold text-yellow-600">
+              Committee Total Score (out of 50):
+            </label>
+            <input
+              type="number"
+              value={committeeTotalScore}
+              onChange={(e) => handleCommitteeTotalScoreChange(e.target.value)}
+              className="w-32 px-2 py-1 border border-yellow-400 rounded"
+            />
+          </div>
+        )}  
     </div>
   );
 }
