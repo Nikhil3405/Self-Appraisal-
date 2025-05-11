@@ -1,20 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../navbar/page";
 import Link from "next/link";
 
 
-
+interface FacultyInfo {
+  eid:string;
+  name: string;
+  branch: string;
+  role: string;
+  loginType: "faculty" | "hod"| "committee";
+  designation: string;
+}
 export default function FacultyHome() {
   const router = useRouter();
-
+    const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
+  
+  useEffect(() => {
+    // Retrieve faculty details from session storage
+    const storedData = sessionStorage.getItem("record");
+    if (storedData) {
+      setFacultyInfo(JSON.parse(storedData));
+    } else {
+      router.push("/login"); // Redirect if no data found
+    }
+  }, [router]);
   const handleLogout = () => {
     sessionStorage.clear();
     router.push("/");
   };
-
-  const [isPartBDropdownOpen, setPartBDropdownOpen] = useState(false);
 
   return (
 <div className="min-h-screen">
@@ -28,39 +43,56 @@ export default function FacultyHome() {
               Home
             </button>
           </Link>
-          <Link href="/faculty_part_a">
-            <button className="w-full text-left px-4 py-2 mb-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+          {facultyInfo && facultyInfo.loginType==="faculty" &&(
+            <>
+            <Link href="/faculty_part_a">
+            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Part-A
             </button>
           </Link>
-          
-        <button
-          onClick={() => setPartBDropdownOpen(!isPartBDropdownOpen)}
-          className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-        >
-          Part-B
-          <span>{isPartBDropdownOpen ? "▲" : "▼"}</span> {/* Arrow Icon */}
-        </button>
+              <Link href="/partb/category-1">
+              <button
+                className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+              >
+                Part-B
+              </button>
+              </Link>
+               <Link href="/downloadReport">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Download Report
+            </button>
+          </Link>
+              </>
+          )}
+          {facultyInfo && facultyInfo.loginType === "committee" && (
 
-        {/* Dropdown Content */}
-        {isPartBDropdownOpen && (
-          <div className="ml-4 mt-2 space-y-2">
-            <Link href="/partb/test">
-              <button className="w-full text-left mb-4 px-4 py-2 bg-indigo-500 rounded-md hover:bg-indigo-400">
-                Category 1
-              </button>
+            <Link href="/partb/category-1">
+            <button
+              className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+            >
+              Part-B
+            </button>
             </Link>
-            <Link href="/partb/category-2">
-              <button className="w-full text-left mb-4 px-4 py-2 bg-indigo-500 rounded-md hover:bg-indigo-400">
-                Category 2
-              </button>
-            </Link>
-            <Link href="/partb/category-3">
-              <button className="w-full text-left mb-4 px-4 py-2 bg-indigo-500 rounded-md hover:bg-indigo-400">
-                Category 3
-              </button>
-            </Link>
-          </div>)}
+        )}
+        {facultyInfo && facultyInfo.loginType === "hod" && (
+          <>
+          <Link href="/partc/viewreport">
+          <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+            View Report
+          </button>
+        </Link>
+          <Link href="/partc">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Part-C
+            </button>
+          </Link>
+          <Link href="/downloadReport">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Download Report
+            </button>
+          </Link>
+        </>
+        )}
         </div>
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl">
 

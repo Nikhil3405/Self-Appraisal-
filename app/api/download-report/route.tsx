@@ -1,18 +1,28 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest } from "next/server";
 import puppeteer from "puppeteer";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { employeeId } = req.query;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const employeeId = searchParams.get("employeeId");
+
+  if (!employeeId) {
+    return new Response("Employee ID is required", { status: 400 });
+  }
 
   try {
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless:true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+
     const page = await browser.newPage();
 
-    // Load a special page you create that displays the entire report nicely
-    await page.goto(`${process.env.NEXT_PUBLIC_BASE_URL}/report/${employeeId}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (!baseUrl) {
+      throw new Error("NEXT_PUBLIC_BASE_URL is not defined in environment variables");
+    }
+
+    await page.goto(`${baseUrl}/report/${employeeId}`, {
       waitUntil: "networkidle0",
     });
 
@@ -24,11 +34,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await browser.close();
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="${employeeId}_report.pdf"`);
-    res.send(pdfBuffer);
+    return new Response(pdfBuffer, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${employeeId}_report.pdf"`,
+      },
+    });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).send("Error generating report");
+    return new Response("Error generating report", { status: 500 });
   }
 }

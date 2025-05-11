@@ -13,7 +13,14 @@ interface Qualification {
   yearOfAward: string;
   classObtained: string;
 }
-
+interface FacultyInfo {
+  eid:string;
+  name: string;
+  branch: string;
+  role: string;
+  loginType: "faculty" | "hod"| "committee";
+  designation: string;
+}
 interface Experience {
   position: string;
   institution: string;
@@ -23,6 +30,8 @@ interface Experience {
 
 export default function FacultySelfAppraisal() {
   const router = useRouter();
+    const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -48,13 +57,12 @@ export default function FacultySelfAppraisal() {
     const facultyInfo = sessionStorage.getItem("record");
     if (facultyInfo) {
       const parsedInfo = JSON.parse(facultyInfo);
+      setFacultyInfo(parsedInfo);
       setFormData(prevData => ({
         ...prevData,
         name: parsedInfo.name || prevData.name,
         department: parsedInfo.branch || prevData.department,
         employeeId: parsedInfo.eid || prevData.employeeId,
-        // If you have employeeId in session storage, you would add it here
-        // employeeId: parsedInfo.employeeId || prevData.employeeId,
       }));
     }
   }, []);
@@ -191,20 +199,57 @@ export default function FacultySelfAppraisal() {
               Home
             </button>
           </Link>
-          <Link href="/faculty_part_a">
+          {facultyInfo && facultyInfo.loginType==="faculty" &&(
+            <>
+            <Link href="/faculty_part_a">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Part-A
             </button>
           </Link>
-          <Link href="/partb/category-1">
-        <button
-          className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-        >
-          Part-B
-        </button>
-        </Link>
-        </div>
+              <Link href="/partb/category-1">
+              <button
+                className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+              >
+                Part-B
+              </button>
+              </Link>
+               <Link href="/downloadReport">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Download Report
+            </button>
+          </Link>
+              </>
+          )}
+          {facultyInfo && facultyInfo.loginType === "committee" && (
 
+            <Link href="/partb/category-1">
+            <button
+              className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+            >
+              Part-B
+            </button>
+            </Link>
+        )}
+        {facultyInfo && facultyInfo.loginType === "hod" && (
+          <>
+          <Link href="/partc/viewreport">
+          <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+            View Report
+          </button>
+        </Link>
+          <Link href="/partc">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Part-C
+            </button>
+          </Link>
+          <Link href="/downloadReport">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Download Report
+            </button>
+          </Link>
+        </>
+        )}
+        </div>
         {/* Main Content */}
         <div className="flex-1">
           <div className="bg-white shadow-lg rounded-lg p-6 w-full">

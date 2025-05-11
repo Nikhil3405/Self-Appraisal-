@@ -9,7 +9,7 @@ interface FacultyInfo {
   name: string;
   branch: string;
   role: string;
-  loginType: "faculty" | "hod";
+  loginType: "faculty" | "hod"| "committee";
   designation: string;
 }
 
@@ -45,21 +45,37 @@ export default function FacultyHome() {
               Home
             </button>
           </Link>
-          {facultyInfo && facultyInfo.role !== "hod" && facultyInfo.role !== "committee" && (
+          {facultyInfo && facultyInfo.loginType==="faculty" &&(
             <>
-          <Link href="/faculty_part_a">
+            <Link href="/faculty_part_a">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Part-A
             </button>
           </Link>
-          <Link href="/partb/category-1">
-        <button
-          className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-        >
-          Part-B
-        </button>
-        </Link>
-        </>)}
+              <Link href="/partb/category-1">
+              <button
+                className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+              >
+                Part-B
+              </button>
+              </Link>
+               <Link href="/downloadReport">
+            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Download Report
+            </button>
+          </Link>
+              </>
+          )}
+          {facultyInfo && facultyInfo.role === "committee" && (
+
+            <Link href="/partb/category-1">
+            <button
+              className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
+            >
+              Part-B
+            </button>
+            </Link>
+        )}
         {facultyInfo && facultyInfo.role === "hod" && (
           <>
           <Link href="/partc/viewreport">
@@ -92,7 +108,7 @@ export default function FacultyHome() {
                   Logout
                 </button>
             </div>
-              ):(
+              ):facultyInfo && facultyInfo.loginType==="hod" ?(
                 <div className="flex justify-between items-center">
               <h2 className="text-4xl font-bold mb-2 text-indigo-600">
                 HOD Dashboard
@@ -100,10 +116,42 @@ export default function FacultyHome() {
                 <button onClick={handleLogout} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md shadow">
                   Logout
                 </button>
+            </div>):facultyInfo && facultyInfo.loginType==="committee" ?(
+            <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold mb-2 text-indigo-600">
+                Committee Dashboard
+              </h2>
+                <button onClick={handleLogout} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md shadow">
+                  Logout
+                </button>
+            </div>
+              ):(
+                <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold mb-2 text-indigo-600">
+                Error loading
+              </h2>
             </div>)}
+            {/* {facultyInfo && facultyInfo.loginType==="committee" ?(
+            <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold mb-2 text-indigo-600">
+                Committee Dashboard
+              </h2>
+                <button onClick={handleLogout} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md shadow">
+                  Logout
+                </button>
+            </div>
+              ):(
+                <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold mb-2 text-indigo-600">
+                Committee Dashboard
+              </h2>
+                <button onClick={handleLogout} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md shadow">
+                  Logout
+                </button>
+            </div>)} */}
           </div>
           <hr className="bg-slate-300 h-0.5 mb-6"></hr>
-          {facultyInfo ? (
+          {facultyInfo && (facultyInfo.loginType === "faculty" || facultyInfo.loginType === "hod") ? (
           <div>
             <h2 className="text-3xl px-4 font-semibold text-gray-700">
               Welcome, {facultyInfo.name}!
@@ -112,7 +160,9 @@ export default function FacultyHome() {
             <p className="text-gray-600 text-2xl px-4 py-4">Faculty ID: {facultyInfo.eid}</p>
           </div>
         ) : (
-          <p className="text-center text-red-500">Loading faculty details...</p>
+          <div>
+            <h2 className="text-3xl px-4 font-semibold text-gray-700">Welcome Committee</h2>
+          </div>
         )}
           </div>
           </div>
