@@ -32,6 +32,7 @@ const FacultyReviewForm: React.FC = () => {
 
     const formRef = useRef<HTMLFormElement>(null);
     // const printRef = useRef<HTMLDivElement>(null);
+    const printRef = useRef<HTMLDivElement>(null);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -71,28 +72,54 @@ const FacultyReviewForm: React.FC = () => {
     <title>Faculty Review Form</title>
     <style>
         body {
+<<<<<<< HEAD
             margin: 15px;
             line-height: 1.5;
             font-size: 19px;
+=======
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+            font-size: 12px;
+            color: #333;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
+<<<<<<< HEAD
         }
         .header {
             text-align: center;
             margin-bottom: 10px;
+=======
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             border-bottom: 2px solid #00366e;
             padding-bottom: 10px;
         }
         .header h1 {
+<<<<<<< HEAD
             font-size: 21px;
             margin: 5px 0;
         }
         .faculty-info {
             margin-bottom: 10px;
+=======
+            font-size: 16px;
+            margin: 5px 0;
+            color: #00366e;
+        }
+        .faculty-info {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             padding: 10px;
             border-radius: 5px;
         }
@@ -109,14 +136,24 @@ const FacultyReviewForm: React.FC = () => {
             border-bottom: 1px solid #aaa;
             flex-grow: 1;
             padding: 2px 5px;
+<<<<<<< HEAD
             min-height: 15px;
+=======
+            min-height: 18px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .questions {
             margin: 20px 0;
         }
         .question {
+<<<<<<< HEAD
             margin-bottom: 15px;
             page-break-inside: avoid;
+=======
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+            border-left: 3px solid #00366e;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             padding-left: 10px;
         }
         .question-text {
@@ -124,9 +161,18 @@ const FacultyReviewForm: React.FC = () => {
             margin-bottom: 8px;
         }
         .question .number {
+<<<<<<< HEAD
             padding: 2px 6px;
             margin-right: 8px;
             font-size: 16px;
+=======
+            background-color: #00366e;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 50%;
+            margin-right: 8px;
+            font-size: 11px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .answer {
             margin-top: 8px;
@@ -134,9 +180,16 @@ const FacultyReviewForm: React.FC = () => {
             min-height: 40px;
             border: 1px solid #ddd;
             border-radius: 3px;
+<<<<<<< HEAD
         }
         .footer {
             margin-top: 10px;
+=======
+            background-color: #fff;
+        }
+        .footer {
+            margin-top: 30px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -154,7 +207,11 @@ const FacultyReviewForm: React.FC = () => {
         @media print {
             body {
                 margin: 0;
+<<<<<<< HEAD
                 font-size: 16px;
+=======
+                font-size: 11px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             }
             .container {
                 border: none;
@@ -162,10 +219,17 @@ const FacultyReviewForm: React.FC = () => {
                 padding: 10px;
             }
             .header h1 {
+<<<<<<< HEAD
                 font-size: 18px;
             }
             .question {
                 margin-bottom: 10px;
+=======
+                font-size: 14px;
+            }
+            .question {
+                margin-bottom: 15px;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             }
         }
     </style>
@@ -366,6 +430,7 @@ const FacultyReviewForm: React.FC = () => {
                         </div>
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">Principal&#39;s Name</label>
+                            <label className="block text-sm font-medium text-gray-700">Principal's Name</label>
                             <input
                                 type="text"
                                 name="principalName"

@@ -105,15 +105,27 @@ export default function FacultyAppraisalForm() {
     <title>Faculty Appraisal Form</title>
     <style>
         body {
+<<<<<<< HEAD
             margin: 20px;
             line-height: 1.5;
             font-size: 12px;
+=======
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+            font-size: 12px;
+            color: #333;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             border: 1px solid #ddd;
             padding: 20px;
+<<<<<<< HEAD
+=======
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .header {
             text-align: center;
@@ -124,9 +136,17 @@ export default function FacultyAppraisalForm() {
         .header h1 {
             font-size: 16px;
             margin: 5px 0;
+<<<<<<< HEAD
         }
         .faculty-info {
             margin-bottom: 20px;
+=======
+            color: #00366e;
+        }
+        .faculty-info {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             padding: 10px;
             border-radius: 5px;
         }
@@ -151,6 +171,10 @@ export default function FacultyAppraisalForm() {
         .question {
             margin-bottom: 25px;
             page-break-inside: avoid;
+<<<<<<< HEAD
+=======
+            border-left: 3px solid #00366e;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             padding-left: 10px;
         }
         .question-text {
@@ -158,7 +182,14 @@ export default function FacultyAppraisalForm() {
             margin-bottom: 8px;
         }
         .question .number {
+<<<<<<< HEAD
             padding: 2px 6px;
+=======
+            background-color: #00366e;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 50%;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
             margin-right: 8px;
             font-size: 11px;
         }
@@ -168,6 +199,10 @@ export default function FacultyAppraisalForm() {
             min-height: 40px;
             border: 1px solid #ddd;
             border-radius: 3px;
+<<<<<<< HEAD
+=======
+            background-color: #fff;
+>>>>>>> c1723971a88ae42fe4fca2eb42be2da08dde6111
         }
         .footer {
             margin-top: 30px;
