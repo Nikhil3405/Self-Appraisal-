@@ -13,7 +13,7 @@ interface AuthoredBook {
 interface Category3CProps {
   initialData: AuthoredBook[];
   onFormDataChangeAction: (data: AuthoredBook[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -153,7 +153,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.title}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -163,7 +163,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={row.publisherDetails}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "publisherDetails", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -171,7 +171,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.issnIsbn}
                   onChange={(e) => handleInputChange(index, "issnIsbn", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -182,7 +182,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
                   type="number"
                   min={0}
                   value={row.coAuthors}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "coAuthors", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -190,7 +190,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={row.publicationType}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "publicationType", e.target.value)}
                   className="w-full px-2 py-1 border rounded" required
                 >
@@ -202,7 +202,7 @@ export default function Category3C({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={row.role}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "role", e.target.value)}
                   className="w-full px-2 py-1 border rounded" required
                 >
@@ -216,9 +216,9 @@ export default function Category3C({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -233,9 +233,9 @@ export default function Category3C({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType=== "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType=== "hod" || loginType === "committee"|| loginType === "principal" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

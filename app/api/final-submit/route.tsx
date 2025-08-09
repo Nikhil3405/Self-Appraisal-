@@ -61,7 +61,8 @@ export async function GET(req: Request) {
         `);
 
       const hasSubmitted = result.recordset.length > 0;
-      return NextResponse.json({ submitted: hasSubmitted }, { status: 200 });
+      return NextResponse.json({ submitted: hasSubmitted, committeeScore1: result.recordset[0]?.CommitteeScore1
+, committeeScore2: result.recordset[0]?.CommitteeScore2, committeeScore3: result.recordset[0]?.CommitteeScore3}, { status: 200 });
     } else if (branch) {
       // Fetch faculty of specific branch
       result = await pool.request()
@@ -75,7 +76,8 @@ export async function GET(req: Request) {
             cs.Category3Score,
             cs.TotalScore,
             cs.CommitteeScore,
-            cs.academicyear
+            cs.academicyear,
+            gi.Department
           FROM 
             CategoryScores cs
           INNER JOIN 
@@ -97,7 +99,8 @@ export async function GET(req: Request) {
             cs.Category3Score,
             cs.TotalScore,
             cs.CommitteeScore,
-            cs.academicyear
+            cs.academicyear,
+            gi.Department
           FROM 
             CategoryScores cs
           INNER JOIN 
@@ -118,7 +121,7 @@ export async function GET(req: Request) {
 export async function PUT(request: Request) {
   try {
     // Parse the request body
-    const { employeeId, committeeScore, academicYear } = await request.json();
+    const { employeeId, committeeScore, academicYear, committeeScore1, committeeScore2, committeeScore3 } = await request.json();
 
     // Validate input
     if (!employeeId || committeeScore == null || !academicYear) {
@@ -129,11 +132,17 @@ export async function PUT(request: Request) {
 
     const result = await pool.request()
       .input("committeeScore", sql.Int, committeeScore)
+      .input("committeeScore1", sql.Int, committeeScore1)
+      .input("committeeScore2", sql.Int, committeeScore2)
+      .input("committeeScore3", sql.Int, committeeScore3)
       .input("employeeId", sql.NVarChar(20), employeeId)
       .input("academicYear", sql.NVarChar(10), academicYear)
       .query(`
         UPDATE CategoryScores
-        SET CommitteeScore = @committeeScore
+        SET CommitteeScore = @committeeScore,
+            CommitteeScore1 = @committeeScore1,
+            CommitteeScore2 = @committeeScore2,
+            CommitteeScore3 = @committeeScore3
         WHERE EmployeeID = @employeeId AND academicyear = @academicYear
       `);
 

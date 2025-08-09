@@ -10,7 +10,7 @@ interface ArticleContribution {
 interface Category2CProps {
   initialData: ArticleContribution[];
   onFormDataChangeAction: (data: ArticleContribution[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -120,7 +120,7 @@ export default function Category2C({ initialData, onFormDataChangeAction, loginT
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   placeholder="Enter article details"
                   value={row.articleDetails}
                   onChange={(e) =>
@@ -133,7 +133,7 @@ export default function Category2C({ initialData, onFormDataChangeAction, loginT
                 <input
                   type="date"
                   value={row.articleDate}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "articleDate", e.target.value)
                   }
@@ -144,7 +144,7 @@ export default function Category2C({ initialData, onFormDataChangeAction, loginT
               <td className="border p-2">
                 <input
                   type="number"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
 
                   min={0}
                   max={5}
@@ -159,7 +159,7 @@ export default function Category2C({ initialData, onFormDataChangeAction, loginT
                 <button
                   type="button"
                   onClick={() => deleteRow(index)}
-                  className={`bg-red-500 text-white px-2 py-1 rounded ${loginType === "hod" || loginType === "committee"
+                  className={`bg-red-500 text-white px-2 py-1 rounded ${loginType === "hod"|| loginType === "principal" || loginType === "committee"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                     }`}
@@ -174,9 +174,9 @@ export default function Category2C({ initialData, onFormDataChangeAction, loginT
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= 15 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 15 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

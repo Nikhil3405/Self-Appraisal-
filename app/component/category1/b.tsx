@@ -14,7 +14,7 @@ interface StudentPerformance {
 interface CategoryBProps {
   initialData: StudentPerformance[];
   onFormDataChangeAction: (updatedData: StudentPerformance[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee" | "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void; 
 
@@ -36,7 +36,7 @@ export default function CategoryB({ initialData, onFormDataChangeAction,loginTyp
       }
     }, [employeeId]);
   const addRow = () => {
-    if(loginType !== "hod" && getTotalScore() < 50) {
+    if(loginType !== "hod"  && getTotalScore() < 50) {
       const newRecord: StudentPerformance = {
         course: "",
         courseCode: "",
@@ -44,42 +44,63 @@ export default function CategoryB({ initialData, onFormDataChangeAction,loginTyp
         studentsPassed: "",
         notEligible: "",
         passPercentage: "",
-        score: "",
+        score: "0",
       };
       setCategoryB((prev) => [...prev, newRecord]); // 👈 notify parent
     }
   };
 
   const deleteRow = (index: number) => {
-    if(loginType === "hod") return;
+    if(loginType === "hod" || loginType === "principal") return;
     const updated = categoryB.filter((_, i) => i !== index);
     setCategoryB(updated);
-    onFormDataChangeAction(updated); // 👈 notify parent
+    onFormDataChangeAction(updated); //  notify parent
   };
 
   const getTotalScore = () =>
     categoryB.reduce((total, project) => total + Number(project.score), 0);
   
-  const handleInputChange = (
-    index: number,
-    field: keyof StudentPerformance,
-    value: string | number
-  ) => {
-    if(loginType === "hod") return;
-    const updatedRecords = [...categoryB];
-    const newValue = typeof value === "number" ? String(value) : value;
-    if (field === "score" && !isNaN(Number(newValue))) {
+const handleInputChange = (
+  index: number,
+  field: keyof StudentPerformance,
+  value: string | number
+) => {
+  if (loginType === "hod" || loginType === "principal") return;
+  const updatedRecords = [...categoryB];
+  const newValue = typeof value === "number" ? String(value) : value;
+
+  updatedRecords[index] = { ...updatedRecords[index], [field]: newValue };
+
+  // Auto-calculate score based on passPercentage
+  if (field === "passPercentage") {
+    const percent = Number(newValue);
+    let autoScore = "";
+
+    if (!isNaN(percent)) {
+      if (percent > 90) autoScore = "10";
+      else if (percent > 80) autoScore = "9";
+      else if (percent > 70) autoScore = "8";
+      else if (percent > 60) autoScore = "7";
+      else if (percent > 50) autoScore = "6";
+      else if (percent >= 40) autoScore = "5";
+      else autoScore = "0";
+
       const oldScore = Number(categoryB[index].score);
-      const newTotal = getTotalScore() - oldScore + Number(newValue);
-  
+      const newTotal = getTotalScore() - oldScore + Number(autoScore);
+
       if (newTotal > 50) {
         alert("Total score cannot exceed 50.");
-        return; // Prevent score overflow
-    }}
-    updatedRecords[index] = { ...updatedRecords[index], [field]: value };
-    setCategoryB(updatedRecords);
-    onFormDataChangeAction(updatedRecords);
-  };
+        return;
+      }
+
+      updatedRecords[index].score = autoScore;
+    }
+  }
+
+  setCategoryB(updatedRecords);
+  onFormDataChangeAction(updatedRecords);
+};
+
   const totalScore = getTotalScore();
   const handleCommitteeTotalScoreChange = (value: string) => {
     if (Number(value) > 50) {
@@ -122,29 +143,28 @@ export default function CategoryB({ initialData, onFormDataChangeAction,loginTyp
           {categoryB.map((row, index) => (
             <tr key={index} className="border">
               <td className="p-2">
-                <input type="text" value={row.course}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "course", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="text" value={row.course}  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onChange={(e) => handleInputChange(index, "course", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="text" value={row.courseCode}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "courseCode", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="text" value={row.courseCode}  disabled={loginType === "hod" || loginType === "principal"|| loginType === "committee"} onChange={(e) => handleInputChange(index, "courseCode", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" value={row.studentsRegistered}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "studentsRegistered", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" value={row.studentsRegistered}  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onChange={(e) => handleInputChange(index, "studentsRegistered", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" value={row.studentsPassed}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "studentsPassed", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" value={row.studentsPassed}  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onChange={(e) => handleInputChange(index, "studentsPassed", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" value={row.notEligible}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "notEligible", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" value={row.notEligible}  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onChange={(e) => handleInputChange(index, "notEligible", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" value={row.passPercentage}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "passPercentage", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" value={row.passPercentage}  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onChange={(e) => handleInputChange(index, "passPercentage", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
-              <td className="p-2">
-                <input type="number" value={row.score}  disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "score", e.target.value)} className="w-full px-2 py-1 border rounded" />
+              <td className="p-2">{row.score}
               </td>
               <td>
-                <button type="button"  disabled={loginType === "hod" || loginType === "committee"} onClick={() => deleteRow(index)} className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
+                <button type="button"  disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"} onClick={() => deleteRow(index)} className={`bg-red-500 text-white px-2 py-1 rounded ${
+                      loginType === "hod" || loginType === "committee"|| loginType === "principal"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}>Delete</button>
@@ -156,9 +176,9 @@ export default function CategoryB({ initialData, onFormDataChangeAction,loginTyp
       <button
           type="button"
           onClick={addRow}
-          disabled={loginType === "hod" || loginType === "committee" || totalScore >= 50}
+          disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 50}
           className={`mt-2 px-3 py-2 rounded text-white ${
-            loginType === "hod" || loginType === "committee" || totalScore >= 50
+            loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 50
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-indigo-500"
           }`}
@@ -166,7 +186,7 @@ export default function CategoryB({ initialData, onFormDataChangeAction,loginTyp
         + Add Row
       </button>
       <p className="text-base font-semibold mt-1 text-gray-700">Total Score: {totalScore} / 50</p>
-      {loginType === "committee" && (
+      {loginType === "committee"  && (
           <div className="mt-4">
             <label className="block mb-1 font-semibold text-yellow-600">
               Committee Total Score (out of 50):

@@ -391,7 +391,7 @@ const FacultyReportCategory2: React.FC<FacultyReportProps> = ({ categories }) =>
   
   
   return (
-<div className='print-content'>
+<div>
   <h3 style={{ textAlign: "center" }}>CATEGORY II:</h3>
   <h3 style={{ textAlign: "center" }}>
     CO-CURRICULAR, EXTRA-CURRICULAR, PROFESSIONAL DEVELOPMENT RELATED ACTIVITIES

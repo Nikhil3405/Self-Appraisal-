@@ -18,7 +18,7 @@ interface ExamDuty {
 interface CategoryHProps {
   initialData: ExamDuty[];
   onFormDataChangeAction: (data: ExamDuty[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -134,7 +134,7 @@ export default function CategoryH({ initialData, onFormDataChangeAction, loginTy
                     value={row.duties}
                     onChange={(e) => handleInputChange(index, "duties", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   />
                 ) : index === 1 ? (
                   <div>
@@ -147,7 +147,7 @@ export default function CategoryH({ initialData, onFormDataChangeAction, loginTy
                           className="border rounded w-20 ml-2"
                           value={row[field as keyof ExamDuty] ?? ""}
                           onChange={(e) => handleInputChange(index, field as keyof ExamDuty, e.target.value)}
-                          disabled={loginType === "hod" || loginType === "committee"}
+                          disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                         />
                       </div>
                     ))}
@@ -163,7 +163,7 @@ export default function CategoryH({ initialData, onFormDataChangeAction, loginTy
                           className="border rounded w-20 ml-2"
                           value={row[field as keyof ExamDuty] ?? ""}
                           onChange={(e) => handleInputChange(index, field as keyof ExamDuty, e.target.value)}
-                          disabled={loginType === "hod" || loginType === "committee"}
+                          disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                         />
                       </div>
                     ))}
@@ -178,7 +178,7 @@ export default function CategoryH({ initialData, onFormDataChangeAction, loginTy
                   value={row.score}
                   onChange={(e) => handleInputChange(index, "score", e.target.value)}
                   className="w-full px-2 py-1 border rounded text-center"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 />
               </td>
             </tr>

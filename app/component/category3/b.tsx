@@ -12,7 +12,7 @@ interface BookChapter {
 interface Category3BProps {
   initialData: BookChapter[];
   onFormDataChangeAction: (data: BookChapter[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -147,7 +147,7 @@ useEffect(() => {
                 <input
                   type="text"
                   value={row.title}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -156,7 +156,7 @@ useEffect(() => {
                 <input
                   type="text"
                   value={row.publisherDetails}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "publisherDetails", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -165,7 +165,7 @@ useEffect(() => {
                 <input
                   type="text"
                   value={row.issnIsbn}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "issnIsbn", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -175,7 +175,7 @@ useEffect(() => {
                   type="number"
                   min={0}
                   value={row.coAuthors}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "coAuthors", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -183,7 +183,7 @@ useEffect(() => {
               <td className="border p-2">
               <select
                   value={row.isMainAuthor}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "isMainAuthor", e.target.value)
                   }
@@ -201,9 +201,9 @@ useEffect(() => {
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -218,9 +218,9 @@ useEffect(() => {
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee"||totalScore >= 100 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal"||totalScore >= 100 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

@@ -12,7 +12,7 @@ interface ConferencePaper {
 interface Category3DProps {
   initialData: ConferencePaper[];
   onFormDataChangeAction: (data: ConferencePaper[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -135,7 +135,7 @@ export default function Category3D({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={paper.title}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -144,7 +144,7 @@ export default function Category3D({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={paper.conferenceDetails}
                   onChange={(e) => handleInputChange(index, "conferenceDetails", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -153,7 +153,7 @@ export default function Category3D({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={paper.issnIsbn}
                   onChange={(e) => handleInputChange(index, "issnIsbn", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -163,7 +163,7 @@ export default function Category3D({ initialData, onFormDataChangeAction,
                 <input
                   type="number"
                   min={0}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={paper.coAuthors}
                   onChange={(e) => handleInputChange(index, "coAuthors", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
@@ -172,7 +172,7 @@ export default function Category3D({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={paper.authorRole}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "authorRole", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -186,9 +186,9 @@ export default function Category3D({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -204,9 +204,9 @@ export default function Category3D({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
 
         }`}
       >

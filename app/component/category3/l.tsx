@@ -11,7 +11,7 @@ interface TrainingProgram {
 interface Category3LProps {
   initialData: TrainingProgram[];
   onFormDataChangeAction: (data: TrainingProgram[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -148,7 +148,7 @@ export default function Category3L({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={prog.title}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -157,7 +157,7 @@ export default function Category3L({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={prog.duration}
                   onChange={(e) => handleInputChange(index, "duration", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -166,7 +166,7 @@ export default function Category3L({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={prog.organizedBy}
                   onChange={(e) => handleInputChange(index, "organizedBy", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -175,7 +175,7 @@ export default function Category3L({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={prog.type}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "type", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -190,9 +190,9 @@ export default function Category3L({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -209,9 +209,9 @@ export default function Category3L({ initialData, onFormDataChangeAction,
         type="button"
         onClick={addRow}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || getTotalScore() >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal" || getTotalScore() >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
-        disabled={loginType === "hod" || loginType === "committee"}  
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}  
       >
         + Add Row
       </button>

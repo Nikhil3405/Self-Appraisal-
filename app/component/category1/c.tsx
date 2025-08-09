@@ -15,7 +15,7 @@ interface RemedialClass {
 interface CategoryCProps {
   initialData: RemedialClass[];
   onFormDataChangeAction: (updatedData: RemedialClass[]) => void;
-  loginType: "faculty" | "committee" | "hod";
+  loginType: "faculty" | "committee" | "hod"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void; 
 
@@ -130,25 +130,25 @@ regular classes) <br/>
           {categoryC.map((row, index) => (
             <tr key={index} className="border">
               <td className="p-2">
-                <select disabled={loginType === "hod" || loginType === "committee"} value={row.semester}  onChange={(e) => handleInputChange(index, "semester", e.target.value)} className="w-full px-2 py-1 border rounded">
+                <select disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.semester}  onChange={(e) => handleInputChange(index, "semester", e.target.value)} className="w-full px-2 py-1 border rounded">
                   <option value="Odd">Odd</option>
                   <option value="Even">Even</option>
                 </select>
               </td>
               <td className="p-2 w-32">
-                <select value={row.type} disabled={loginType === "hod" || loginType === "committee"} onChange={(e) => handleInputChange(index, "type", e.target.value)} className="w-full px-2 py-1 border rounded">
+                <select value={row.type} disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} onChange={(e) => handleInputChange(index, "type", e.target.value)} className="w-full px-2 py-1 border rounded">
                   <option value="Lab">Lab</option>
                   <option value="Theory">Theory</option>
                 </select>
               </td>
               <td className="p-2">
-                <input type="text" disabled={loginType === "hod" || loginType === "committee"} value={row.course} onChange={(e) => handleInputChange(index, "course", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="text" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.course} onChange={(e) => handleInputChange(index, "course", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="text" disabled={loginType === "hod" || loginType === "committee"} value={row.courseCode} onChange={(e) => handleInputChange(index, "courseCode", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="text" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.courseCode} onChange={(e) => handleInputChange(index, "courseCode", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2 w-32">
-                <select disabled={loginType === "hod" || loginType === "committee"}
+                <select disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                     value={row.classtype}
                     onChange={(e) => handleInputChange(index, "classtype", e.target.value)}
                     className="w-full px-2 py-1 border rounded"
@@ -159,17 +159,17 @@ regular classes) <br/>
                 </select>
             </td>
             <td className="p-2">
-                <input type="number" disabled={loginType === "hod" || loginType === "committee"} value={row.numberOfClasses} onChange={(e) => handleInputChange(index, "numberOfClasses", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.numberOfClasses} onChange={(e) => handleInputChange(index, "numberOfClasses", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" disabled={loginType === "hod" || loginType === "committee"} value={row.hoursSpent} onChange={(e) => handleInputChange(index, "hoursSpent", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.hoursSpent} onChange={(e) => handleInputChange(index, "hoursSpent", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td className="p-2">
-                <input type="number" disabled={loginType === "hod" || loginType === "committee"} value={row.score} onChange={(e) => handleInputChange(index, "score", e.target.value)} className="w-full px-2 py-1 border rounded" />
+                <input type="number" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} value={row.score} onChange={(e) => handleInputChange(index, "score", e.target.value)} className="w-full px-2 py-1 border rounded" />
               </td>
               <td>
-                <button type="button" disabled={loginType === "hod" || loginType === "committee"} onClick={() => deleteRow(index)} className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
+                <button type="button" disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"} onClick={() => deleteRow(index)} className={`bg-red-500 text-white px-2 py-1 rounded ${
+                      loginType === "hod" || loginType === "committee"|| loginType === "principal"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}>
@@ -183,7 +183,7 @@ regular classes) <br/>
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee" || totalScore >= 20} 
+        disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 20} 
         className={`mt-2 px-3 py-2 rounded text-white ${
           totalScore >= 20 ||loginType === "hod" || loginType === "committee" ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}

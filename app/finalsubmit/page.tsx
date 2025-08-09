@@ -263,6 +263,9 @@ export default function FinalSubmit() {
             academicYear,
             loginType,
             committeeScore: CommitteeScore,
+            committeeScore1: committeeScore1,
+            committeeScore2: committeeScore2,
+            committeeScore3: committeeScore3,
           }),
         });
       }

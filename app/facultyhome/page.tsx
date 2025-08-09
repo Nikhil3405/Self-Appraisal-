@@ -52,7 +52,7 @@ export default function FacultyHome() {
               Part-A
             </button>
           </Link>
-              <Link href="/partb/category-1">
+              <Link href="/partb">
               <button
                 className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
               >
@@ -67,18 +67,29 @@ export default function FacultyHome() {
               </>
           )}
           {facultyInfo && facultyInfo.role === "committee" && (
-
-            <Link href="/partb/category-1">
+            <>
+            <Link href="/facultyhome">
+            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Home
+            </button>
+          </Link>
+            <Link href="/partb">
             <button
               className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
             >
               Part-B
             </button>
             </Link>
+            </>
         )}
         {facultyInfo && facultyInfo.role === "hod" && (
           <>
-          <Link href="/partc/viewreport">
+          <Link href="/facultyhome">
+            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+              Home
+            </button>
+          </Link>
+          <Link href="/partb">
           <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
             View Report
           </button>

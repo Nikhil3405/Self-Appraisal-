@@ -20,7 +20,7 @@ interface FacultyInfo {
     eid: string;
     name: string;
     branch: string;
-    loginType: "faculty" | "hod" | "committee";
+    loginType: "faculty" | "hod" | "committee"|"principal";
   }
 // Popup component for confirmation after upload
 const UploadSuccessPopup = ({ isOpen, onClose, document }: PopupProps) => {

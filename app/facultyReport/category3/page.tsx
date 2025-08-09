@@ -733,7 +733,7 @@ const FacultyReportCategory3: React.FC<FacultyReportProps> = ({ categories }) =>
     }
   };
   return (
-<div className='print-content'>
+<div>
   <h3 style={{ textAlign: "center" }}>CATEGORY III:</h3>
   <h3 style={{ textAlign: "center" }}>
     RESEARCH, PUBLICATIONS & ACADEMIC CONTRIBUTION RELATED ACTIVITIES
@@ -745,23 +745,31 @@ const FacultyReportCategory3: React.FC<FacultyReportProps> = ({ categories }) =>
       {renderTable(category.title, category.data as unknown as CategoryData3)}
 </div>
   ))}
-  <div style={{ marginTop: "100px" }}>
-  <p>
-    <b>
-      I certify that the information provided is correct as per records available with the
-      Institute and/or documents enclosed with the duly filled proforma.
-    </b>
-  </p>
+<div style={{ marginTop: "100px" }}>
+  <div
+    style={{
+      pageBreakInside: "avoid", // Prevent breaking inside this block
+      breakInside: "avoid",     // For newer browsers
+    }}
+  >
+    <p>
+      <b>
+        I certify that the information provided is correct as per records available with the
+        Institute and/or documents enclosed with the duly filled proforma.
+      </b>
+    </p>
 
-  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "150px" }}>
-    <p>
-      <b>Dated:</b> {new Date().toLocaleDateString()}
-    </p>
-    <p>
-      <b>Signature of the faculty:</b>
-    </p>
+    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "150px" }}>
+      <p>
+        <b>Dated:</b> {new Date().toLocaleDateString()}
+      </p>
+      <p>
+        <b>Signature of the faculty:</b>
+      </p>
+    </div>
   </div>
 </div>
+
 </div>
   );
 };

@@ -10,7 +10,7 @@ interface Copyright {
 interface Category3HProps {
   initialData: Copyright[];
   onFormDataChangeAction: (data: Copyright[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -131,7 +131,7 @@ export default function Category3H({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={row.title}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -140,7 +140,7 @@ export default function Category3H({ initialData, onFormDataChangeAction,
                 <input
                   type="date"
                   value={row.date}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "date", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -148,7 +148,7 @@ export default function Category3H({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={row.type}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "type", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -161,7 +161,7 @@ export default function Category3H({ initialData, onFormDataChangeAction,
                   type="number"
                   min={0}
                   max={5}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.score}
                   onChange={(e) => handleInputChange(index, "score", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
@@ -171,9 +171,9 @@ export default function Category3H({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -189,9 +189,9 @@ export default function Category3H({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || loginType === "principal"|| totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

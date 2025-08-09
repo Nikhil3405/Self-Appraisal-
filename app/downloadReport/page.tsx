@@ -393,7 +393,6 @@ export default function FacultyHome() {
   const fetchFacultyData = async (EmployeeID: string, academicYear: string) => {
     const response = await fetch(`api/fetchData/category-1?employeeId=${EmployeeID}&academicYear=${academicYear}`);
     const data = await response.json();
-    // Ensure data is correctly set in state
     setCategory1Data(data);
   };
   const fetchCategory2Data = async (EmployeeID: string, academicYear: string) => {
@@ -412,8 +411,7 @@ const fetchCategory3Data = async (EmployeeID: string, academicYear: string) => {
 
     console.log('Fetched Data 1:', data1);
     console.log('Fetched Data 2:', data2);
-
-    // Merge logic - assuming both are arrays or objects
+    
     let combined;
 
     if (Array.isArray(data1) && Array.isArray(data2)) {
@@ -550,28 +548,6 @@ const handlePrint = useCallback(async () => {
             <title>Faculty Report</title>
                     <style>
           @media print {
-            header.print-header {
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              text-align: center;
-              padding: 10px 0;
-              font-size: 14px;
-              border-bottom: 1px solid #000;
-              background: white;
-              z-index: 9999;
-            }
-
-            body {
-              margin: 0;
-            }
-
-            .print-content {
-              padding-top: 100px; /* Enough for fixed header */
-              padding-left: 20px;
-              padding-right: 20px;
-            }
 
             table {
               width: 100%;
@@ -599,44 +575,9 @@ const handlePrint = useCallback(async () => {
             }
           }
 
-          /* Also apply the same padding in non-print mode to ensure consistent layout */
-          .print-content {
-            padding-top: 100px;
-            padding-left: 20px;
-            padding-right: 20px;
-          }
-
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-          }
-
-          th, td {
-            border: 1px solid black;
-            padding: 6px;
-            text-align: center;
-          }
-
-          thead {
-            text-align: center;
-          }
-
-          .page-break {
-            page-break-before: always;
-            margin-top: 100px;
-          }
-
-          .table-wrapper {
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
         </style>
           </head>
           <body>
-            <header class="print-header">
-              Name of the faculty: ${facultyInfo?.name ?? 'N/A'}
-            </header>
             <div id="faculty-report"></div>
           </body>
         </html>
@@ -679,7 +620,7 @@ const handlePrint = useCallback(async () => {
           printWindow.print();
         }, 300);
     }}
-  }, [category1Data, facultyInfo, category2Data,category3Data]);
+  }, [category1Data, category2Data,category3Data]);
 
 // Now listen for when selectedFacultyData is ready
 useEffect(() => {

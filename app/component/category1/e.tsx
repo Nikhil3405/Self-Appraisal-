@@ -12,7 +12,7 @@ interface CounselingRecord {
 interface CategoryEProps {
   initialData: CounselingRecord[];
   onFormDataChangeAction: (data: CounselingRecord[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -115,7 +115,7 @@ export default function CategoryE({ initialData, onFormDataChangeAction
               <td className="p-2">
                 <select
                   value={row.semester}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "semester", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -136,7 +136,7 @@ export default function CategoryE({ initialData, onFormDataChangeAction
                 <input
                   type="number"
                   value={row.studentsMentored}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "studentsMentored", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -145,7 +145,7 @@ export default function CategoryE({ initialData, onFormDataChangeAction
                 <input
                   type="text"
                   value={row.actionTaken}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "actionTaken", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -154,7 +154,7 @@ export default function CategoryE({ initialData, onFormDataChangeAction
                 <input
                   type="text"
                   value={row.outcome}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "outcome", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -163,7 +163,7 @@ export default function CategoryE({ initialData, onFormDataChangeAction
                 <input
                   type="number"
                   value={row.score}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "score", Number(e.target.value))}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -172,9 +172,9 @@ export default function CategoryE({ initialData, onFormDataChangeAction
               <button
                     type="button"
                     onClick={() => deleteRow(index)}
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                     className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
+                      loginType === "hod" || loginType === "committee"|| loginType === "principal"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}
@@ -189,9 +189,9 @@ export default function CategoryE({ initialData, onFormDataChangeAction
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" ||totalScore >= 20 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "principal"|| loginType === "committee" ||totalScore >= 20 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

@@ -176,7 +176,7 @@ interface FacultyInfo {
   eid: string;
   name: string;
   branch: string;
-  loginType: "faculty" | "hod" | "committee" ;
+  loginType: "faculty" | "hod" | "committee" | "principal";
 }
 interface FetchedDraftData {
   teachingactivities: TeachingActivity[];
@@ -192,10 +192,6 @@ interface FetchedDraftData {
   daytodayactivity: DayToDayActivity[];
   miniproject: MiniProject[];
   academicfile: AcademicFile[];
-}
-interface FacultyData {
-  EmployeeID: string;
-  Name: string;
 }
 
 export default function ParentPage() {
@@ -215,8 +211,8 @@ export default function ParentPage() {
   const [draftCategoryM, setDraftCategoryM] = useState<AcademicFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [facultyInfo, setFacultyInfo] = useState<FacultyInfo | null>(null);
-  const [facultyList, setFacultyList] = useState<FacultyData[]>([]);
-  const [selectedFaculty, setSelectedFaculty] = useState<string>("");
+  // const [facultyList, setFacultyList] = useState<FacultyData[]>([]);
+  // const [selectedFaculty, setSelectedFaculty] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>("");
   const [committeeScoreA, setCommitteeScoreA] = useState<string>("");
   const [committeeScoreB, setCommitteeScoreB] = useState<string>("");
@@ -231,57 +227,96 @@ export default function ParentPage() {
   const [committeeScoreK, setCommitteeScoreK] = useState<string>("");
   const [committeeScoreL, setCommitteeScoreL] = useState<string>("");
   const [committeeScoreM, setCommitteeScoreM] = useState<string>("");
+  const [employeeId, setEmployeeId] = useState<string>("");
   const category = "category-1";
-
-  if(facultyInfo?.loginType === "faculty"){
-    sessionStorage.setItem("employeeId", facultyInfo.eid);
-    console.log("Faculty ID: ", facultyInfo.eid);
-  }
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<number>(0);
+  
   useEffect(() => {
-    const fetchFacultyList = async (branch: string) => {
-      try {
-        let response;
-        if (facultyInfo?.loginType === "hod") {
-          response = await fetch(`/api/final-submit?branch=${encodeURIComponent(branch)}`);
-        } else {
-          response = await fetch(`/api/final-submit`);
-        }
+    // const fetchFacultyList = async (branch: string) => {
+      // //   try {
+      //   if(facultyInfo?.loginType === "faculty"){
+      //     sessionStorage.setItem("employeeId", facultyInfo.eid);
+      //     setEmployeeId(facultyInfo.eid);
+      //     console.log("Faculty ID: ", facultyInfo.eid);
+      //   }
+    //     let response;
+    //     if (facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "principal") {
+    //       response = await fetch(`/api/final-submit?branch=${encodeURIComponent(branch)}`);
+    //     }  else {
+    //       response = await fetch(`/api/final-submit`);
+    //     }
+        
+    //     if (!response.ok) {
+    //       throw new Error("Failed to fetch faculty list");
+    //     }
     
-        if (!response.ok) {
-          throw new Error("Failed to fetch faculty list");
-        }
-    
-        const data = await response.json();
-        setFacultyList(data);
-        console.log("facultyList", data);
-      } catch (error) {
-        console.error("Error fetching faculty list:", error);
-      }
-    };
+    //     const data = await response.json();
+    //     setFacultyList(data);
+    //     console.log("facultyList", data);
+    //   } catch (error) {
+      //     console.error("Error fetching faculty list:", error);
+      //   }
+    // };
+  const storedData = sessionStorage.getItem("record");
+  const storedAcademicYear = sessionStorage.getItem("academicYear");
+  const storedEmployeeId = sessionStorage.getItem("employeeId");
 
-    const storedData = sessionStorage.getItem("record");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setFacultyInfo(parsedData);
-      if (parsedData.loginType === "hod" || parsedData.loginType === "committee" || parsedData.loginType === "principal") {
-        fetchFacultyList(parsedData.branch);
+  if (storedAcademicYear) {
+    setAcademicYear(storedAcademicYear);
+    console.log("Academic Year from sessionStorage: ", storedAcademicYear);
+  }
+
+  if (storedData) {
+    const parsedData = JSON.parse(storedData);
+    setFacultyInfo(parsedData);
+
+    if (parsedData.loginType === "principal") {
+      console.log("principal executed");
+
+      const branch = sessionStorage.getItem("department");
+      console.log("branch", branch);
+
+      if (!storedEmployeeId && parsedData.eid) {
+        sessionStorage.setItem("employeeId", parsedData.eid);
+        setEmployeeId(parsedData.eid);
+        console.log("Employee ID from parsedData: ", parsedData.eid);
+      } else if (storedEmployeeId) {
+        setEmployeeId(storedEmployeeId);
+        console.log("Employee ID from sessionStorage: ", storedEmployeeId);
       }
-    } else {
-      router.push("/");
+
+      const fetchCommitteeScore = async () => {
+        const empIdToUse = storedEmployeeId || parsedData.eid;
+        if (storedAcademicYear && empIdToUse) {
+          const response = await fetch(
+            `/api/final-submit?facultyId=${empIdToUse}&academicYear=${storedAcademicYear}`
+          );
+          if (response.ok) {
+            const json = await response.json();
+            const score = json.committeeScore1 || 0;
+            setCommitteeTotalScore(score);
+            console.log("Committee Score: ", score);
+          }
+        }
+      };
+
+      fetchCommitteeScore();
     }
-  }, [router, facultyInfo?.loginType]);
+  } else {
+    router.push("/");
+  }
+}, [ router, academicYear, employeeId,committeeTotalScore]);
 
+      
 
   const saveDraft = async (showToast = true) => {
-    if (!facultyInfo) return;
-
     if (!academicYear) {
       toast.error("Please select an academic year before saving.");
       return;
     }
   
     const formData = {
-      employeeId: facultyInfo.eid,
+      employeeId: employeeId,
       category,
       academicYear,
       data: {
@@ -302,7 +337,7 @@ export default function ParentPage() {
     };
   
     try {
-      console.log("Saving draft with data:", formData);
+      // console.log("Saving draft with data:", formData);
       const res = await fetch("/api/drafts/category-1", {
         method: "POST",
         headers: {
@@ -312,7 +347,7 @@ export default function ParentPage() {
       });
   
       const responseText = await res.text();
-      console.log("API response:", res.status, responseText);
+      // console.log("API response:", res.status, responseText);
   
       if (res.ok) {
         if (showToast) {
@@ -327,28 +362,29 @@ export default function ParentPage() {
     }
   };
 
-  const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if(facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "hod" ){
-    sessionStorage.setItem("employeeId", e.target.value);}
-    console.log("Faculty ID: ", e.target.value);
-    setSelectedFaculty(e.target.value);
-    if (e.target.value && academicYear) {
-      fetchFacultyData(e.target.value, academicYear);
-    } else {
-      resetAllData();
-    }
-  };
+  // const handleFacultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   if(facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "principal"){
+  //   sessionStorage.setItem("employeeId", e.target.value);}
+  //   console.log("Faculty ID: ", e.target.value);
+  //   setSelectedFaculty(e.target.value);
+  //   setEmployeeId(e.target.value);
+  //   if (e.target.value && academicYear) {
+  //     fetchFacultyData(e.target.value, academicYear);
+  //   } else {
+  //     resetAllData();
+  //   }
+  // };
 
-  const handleAcademicYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedYear = e.target.value;
-    console.log("Academic Year: ", selectedYear);
-    setAcademicYear(selectedYear);
-    if (selectedFaculty && selectedYear) {
-      fetchFacultyData(selectedFaculty, selectedYear);
-    } else {
-      resetAllData();
-    }
-  };
+  // const handleAcademicYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedYear = e.target.value;
+  //   console.log("Academic Year: ", selectedYear);
+  //   setAcademicYear(selectedYear);
+  //   if (selectedFaculty && selectedYear) {
+  //     fetchFacultyData(selectedFaculty, selectedYear);
+  //   } else {
+  //     resetAllData();
+  //   }
+  // };
 
   const resetAllData = () => {
     setDraftCategoryA([]);
@@ -365,7 +401,7 @@ export default function ParentPage() {
     setDraftCategoryL([]);
     setDraftCategoryM([]);
   };
-
+useEffect(() => {
   const fetchFacultyData = async (employeeId: string, academicYear: string) => {
     setLoading(true);
     try {
@@ -386,7 +422,7 @@ export default function ParentPage() {
           setDraftCategoryL,
           setDraftCategoryM,
         );
-        console.log("json:", json);
+        // console.log("json:", json);
       } else {
         toast.error("Failed to fetch faculty data");
         resetAllData();
@@ -400,26 +436,37 @@ export default function ParentPage() {
     }
   };
 
+  if(academicYear && employeeId && facultyInfo?.loginType !== "faculty") {
+    fetchFacultyData(employeeId, academicYear);
+  }
+}, [academicYear, employeeId, facultyInfo?.loginType]);
   useEffect(() => {
     const fetchDraft = async () => {
-      if (!facultyInfo) return;
-  
-      if (facultyInfo.loginType === "faculty" && academicYear) {
+      if (!academicYear) return;
+      if(!employeeId){
+        const data = sessionStorage.getItem("employeeId");
+        if (data) {
+          setEmployeeId(data);
+          console.log("Employee ID from sessionStorage: ", data);
+        }
+      }
+      
+      if (academicYear && employeeId) {
         setLoading(true);
         try {
-          console.log(`Fetching draft for employee ${facultyInfo.eid}, category ${category}, year ${academicYear}`);
+          console.log(`Fetching draft for employee ${employeeId}, category ${category}, year ${academicYear}`);
           
-          const res = await fetch(`/api/drafts/category-1?employeeId=${facultyInfo.eid}&category=${category}&academicYear=${academicYear}`);
+          const res = await fetch(`/api/drafts/category-1?employeeId=${employeeId}&category=${category}&academicYear=${academicYear}`);
           
           if (!res.ok) {
             console.error(`Failed to fetch draft: ${res.status} ${res.statusText}`);
-            toast.error("Failed to fetch saved draft data");
+            // toast.error("Failed to fetch saved draft data");
             setLoading(false);
             return;
           }
           
           const json = await res.json();
-          console.log("Fetched draft data:", json);
+          // console.log("Fetched draft data:", json);
           
           // Process the fetched data directly without looking for a nested 'data' property
           processFetchedData(json, 
@@ -450,7 +497,7 @@ export default function ParentPage() {
     };
   
     fetchDraft();
-  }, [facultyInfo, academicYear]);
+  }, [employeeId, academicYear]);
 
   const processFetchedData = (
     json: FetchedDraftData,
@@ -774,378 +821,439 @@ export default function ParentPage() {
     draftCategoryM,
   ]);
 
-  const uniqueFacultyList = Array.from(
-    new Map(facultyList.map(faculty => [faculty.EmployeeID, faculty])).values()
-  );
+  // const uniqueFacultyList = Array.from(
+  //   new Map(facultyList.map(faculty => [faculty.EmployeeID, faculty])).values()
+  // );
   const totalCommitteeScore = Number(committeeScoreA) + Number(committeeScoreB) + Number(committeeScoreC) + 
   Number(committeeScoreD) + Number(committeeScoreE) + Number(committeeScoreF) + Number(committeeScoreG) + 
   Number(committeeScoreH) + Number(committeeScoreI) + Number(committeeScoreJ) + Number(committeeScoreK) + 
   Number(committeeScoreL) + Number(committeeScoreM);
   
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="flex flex-col md:flex-row items-start space-x-2">
-        <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-          <Link href="/facultyhome">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Home
-            </button>
-          </Link>
-          {facultyInfo && facultyInfo.loginType==="faculty" &&(
-            <>
+return (
+  <div className="min-h-screen flex flex-col">
+    <Navbar />
+    <div className="flex flex-col md:flex-row items-start space-x-2">
+      <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
+        <Link href="/facultyhome">
+          <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+            Home
+          </button>
+        </Link>
+        {facultyInfo && facultyInfo.loginType === "faculty" && (
+          <>
             <Link href="/faculty_part_a">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Part-A
-            </button>
-          </Link>
-              <Link href="/partb/category-1">
+              <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                Part-A
+              </button>
+            </Link>
+            <Link href="/partb/category-1">
               <button
                 className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
               >
                 Part-B
               </button>
-              </Link>
-               <Link href="/downloadReport">
-            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Download Report
-            </button>
-          </Link>
-              </>
-          )}
-          {facultyInfo && facultyInfo.loginType === "committee" && (
-
-            <Link href="/partb/category-1">
+            </Link>
+            <Link href="/downloadReport">
+              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                Download Report
+              </button>
+            </Link>
+          </>
+        )}
+        {facultyInfo && facultyInfo.loginType === "committee" && (
+          <Link href="/partb/category-1">
             <button
               className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
             >
               Part-B
             </button>
-            </Link>
+          </Link>
         )}
         {facultyInfo && facultyInfo.loginType === "hod" && (
           <>
-          <Link href="/partc/viewreport">
-          <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-            View Report
-          </button>
-        </Link>
-          <Link href="/partc">
-            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Part-C
-            </button>
-          </Link>
-          <Link href="/downloadReport">
-            <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Download Report
-            </button>
-          </Link>
-        </>
+            <Link href="/partc/viewreport">
+              <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                View Report
+              </button>
+            </Link>
+            <Link href="/partc">
+              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                Part-C
+              </button>
+            </Link>
+            <Link href="/downloadReport">
+              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                Download Report
+              </button>
+            </Link>
+          </>
         )}
-        </div>
-
-        <ToastContainer position="top-right" autoClose={3000} />
-        <div className="flex flex-col w-full mt-5">
-        <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-6xl mb-4">
-  <div className="flex flex-col md:flex-row md:space-x-8">
-    {/* Faculty Selection */}
-    {(facultyInfo?.loginType !=="faculty") && (
-      <div className="w-full md:w-1/2 mb-4 md:mb-0">
-        <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-          Faculty Selection:
-        </h2>
-        <div className="mb-4">
-          <select
-            id="faculty-select"
-            value={selectedFaculty}
-            onChange={handleFacultyChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="">-- Select Faculty --</option>
-            {uniqueFacultyList.map((faculty) => (
-              <option key={faculty.EmployeeID} value={faculty.EmployeeID}>
-                {faculty.Name} ({faculty.EmployeeID})
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
-    )}
 
-    {/* Academic Year Selection */}
-    <div className="w-full md:w-1/2">
-      <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-        Select Academic Year:
-      </h2>
-      <div className="mb-4">
-        <select
-          id="academic-year-select"
-          value={academicYear}
-          onChange={handleAcademicYearChange}
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">-- Select Academic Year --</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-          <option value="2030">2030</option>
-          {/* Add more years if needed */}
-        </select>
-      </div>
-    </div>
-  </div>
-</div>
-          {loading ? (
-            <p className="text-gray-600 p-8">Loading data...</p>
-          ) : (
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
-              <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
-                PART B: ACADEMIC PERFORMANCE INDICATOR (API)
-                <br />
-                CATEGORY I:
-              </h1>
-              <h2 className="text-2xl font-bold text-indigo-600 mb-4">
-                Teaching, Learning & Evaluation Activities
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="flex flex-col w-full mt-5">
+        {/* <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-6xl mb-4">
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold text-indigo-600 mb-4">
+              Select Academic Year:
+            </h2>
+            <div className="mb-4">
+              <select
+                id="academic-year-select"
+                value={academicYear}
+                onChange={handleAcademicYearChange}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">-- Select Academic Year --</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+              </select>
+            </div>
+          </div>
+
+          {(facultyInfo?.loginType !== "faculty") && academicYear && (
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold text-indigo-600 mb-4">
+                Faculty List:
               </h2>
-
-              {facultyInfo && (
-  <>
-    {/* For HOD or Committee: Check both faculty and academic year */}
-    {(facultyInfo.loginType !== "faculty") && (
-      <>
-        {!selectedFaculty || !academicYear ? (
-          <div className="text-center p-8 text-gray-500">
-            Please select a faculty member and academic year to view their data.
-          </div>
-        ) : (
-          <>
-          <CategoryA
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryA}
-            onFormDataChangeAction={handleFormDataUpdateA}
-            onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
-          />
-          <CategoryB
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryB}
-            onFormDataChangeAction={handleFormDataUpdateB}
-            onCommitteeScoreChange={(score) => setCommitteeScoreB(score)}
-          />
-          <CategoryC
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryC}
-            onFormDataChangeAction={handleFormDataUpdateC}
-            onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
-          />
-          <CategoryD
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryD}
-            onFormDataChangeAction={handleFormDataUpdateD}
-            onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
-          />
-          <CategoryE
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryE}
-            onFormDataChangeAction={handleFormDataUpdateE}
-            onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
-          />
-          <CategoryF
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryF}
-            onFormDataChangeAction={handleFormDataUpdateF}
-            onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
-          />
-          <CategoryG
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryG}
-            onFormDataChangeAction={handleFormDataUpdateG}
-            onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
-          />
-          <CategoryH
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryH}
-            onFormDataChangeAction={handleFormDataUpdateH}
-            onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
-          />
-          <CategoryI
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryI}
-            onFormDataChangeAction={handleFormDataUpdateI}
-            onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
-          />
-          <CategoryJ
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryJ || { score: "" }}
-            onFormDataChangeAction={handleFormDataUpdateJ}
-            onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
-          />
-          <CategoryK
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryK}
-            onFormDataChangeAction={handleFormDataUpdateK}
-            onCommitteeScoreChange={(score) => setCommitteeScoreK(score)}
-          />
-          <CategoryL
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryL}
-            onFormDataChangeAction={handleFormDataUpdateL}
-            onCommitteeScoreChange={(score) => setCommitteeScoreL(score)}
-          />
-          <CategoryM
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryM}
-            onFormDataChangeAction={handleFormDataUpdateM}
-            onCommitteeScoreChange={(score) => setCommitteeScoreM(score)}
-          />
-
-          </>
-        )}
-      </>
-    )}
-
-    {/* For Faculty: Only check academic year */}
-    {facultyInfo.loginType === "faculty" && (
-      <>
-        {!academicYear ? (
-          <div className="text-center p-8 text-gray-500">
-            Please select an academic year to proceed.
-          </div>
-        ) : (
-          <>
-          <CategoryA
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryA}
-            onFormDataChangeAction={handleFormDataUpdateA}
-            // selectedAcademicYear={academicYear}
-          />
-          <CategoryB
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryB}
-            onFormDataChangeAction={handleFormDataUpdateB}
-          />
-          <CategoryC
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryC}
-            onFormDataChangeAction={handleFormDataUpdateC}
-          />
-          <CategoryD
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryD}
-            onFormDataChangeAction={handleFormDataUpdateD}
-          />
-          <CategoryE
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryE}
-            onFormDataChangeAction={handleFormDataUpdateE}
-          />
-          <CategoryF
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryF}
-            onFormDataChangeAction={handleFormDataUpdateF}
-          />
-          <CategoryG
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryG}
-            onFormDataChangeAction={handleFormDataUpdateG}
-          />
-          <CategoryH
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryH}
-            onFormDataChangeAction={handleFormDataUpdateH}
-            />
-          <CategoryI
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryI}
-            onFormDataChangeAction={handleFormDataUpdateI}
-          />
-          <CategoryJ
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryJ || { score: "" }}
-            onFormDataChangeAction={handleFormDataUpdateJ}
-          />
-          <CategoryK
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryK}
-            onFormDataChangeAction={handleFormDataUpdateK}
-          />
-          <CategoryL
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryL}
-            onFormDataChangeAction={handleFormDataUpdateL}
-          />
-          <CategoryM
-            loginType={facultyInfo.loginType}
-            initialData={draftCategoryM}
-            onFormDataChangeAction={handleFormDataUpdateM}
-          />
-          </>
-        )}
-      </>
-    )}
-  </>
-)}
-              <hr className="my-4" />
-              <p className="mb-6">
-                <strong>Combined Total Score: </strong>
-                <span className="text-green-600 text-xl font-semibold">
-                  {totalScore} / 300
-                </span>
-              </p>
-                {facultyInfo?.loginType === "committee" && (
-                  <p className="mb-6">
-                  <strong>Committee Total Score: </strong>
-                  <span className="text-yellow-600 text-xl font-semibold">
-                    {totalCommitteeScore} / 300
-                  </span>
-                  </p>
-                )}
-              <div className="flex justify-between items-center mt-8">
-                <button
-                  type="button"
-                  className={`text-white px-6 py-2 rounded ${
-                    facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"
-                      ?  "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
-                      :"bg-yellow-500 hover:bg-yellow-600"
-                  }`}
-                  onClick={() => saveDraft(true)}
-                  disabled={facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee"}
-
-                >
-                  Save Draft
-                </button>
-                <div className="flex space-x-4">
-                <button
-                  type="button"
-                  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
-                  onClick={async () => {
-                    try {
-                      await saveDraft(false);
-                      
-                      if (academicYear) {
-                        sessionStorage.setItem("academicYear", academicYear);
-                      }
-                      
-                      if (typeof totalCommitteeScore === "number") {
-                        sessionStorage.setItem("committeeScore1", String(totalCommitteeScore));
-                      }
-
-                      router.push('/partb/category-2');
-                    } catch (error) {
-                      console.error("Error during draft save or navigation:", error);
-                    }
-                  }}
-                >
-                  Next
-                </button>
-
-                </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="py-3 px-4 border-b text-left">Employee ID</th>
+                      <th className="py-3 px-4 border-b text-left">Name</th>
+                      <th className="py-3 px-4 border-b text-left">Department</th>
+                      <th className="py-3 px-4 border-b text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {uniqueFacultyList.map((faculty) => (
+                      <tr 
+                        key={faculty.EmployeeID} 
+                        className={selectedFaculty === faculty.EmployeeID ? "bg-indigo-50" : "hover:bg-gray-50"}
+                      >
+                        <td className="py-2 px-4 border-b">{faculty.EmployeeID}</td>
+                        <td className="py-2 px-4 border-b">{faculty.Name}</td>
+                        <td className="py-2 px-4 border-b">{faculty.Department || "Not specified"}</td>
+                        <td className="py-2 px-4 border-b">
+                        <button
+                            onClick={() => {
+                              // Set the faculty ID in state
+                              setSelectedFaculty(faculty.EmployeeID);
+                              // Save to session storage
+                              sessionStorage.setItem("employeeId", faculty.EmployeeID);
+                              console.log("Selected Faculty ID: ", faculty.EmployeeID);
+                              // Load faculty data if we have an academic year
+                              if (academicYear) {
+                                fetchFacultyData(faculty.EmployeeID, academicYear);
+                                console.log("Selected Faculty ID: ", faculty.EmployeeID);
+                              }
+                            }}
+                            className={`px-4 py-1 rounded ${
+                              selectedFaculty === faculty.EmployeeID
+                                ? "bg-indigo-600 text-white"
+                                : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                            }`}
+                          >
+                            {selectedFaculty === faculty.EmployeeID ? "Selected" : "Select"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
-        </div>
+        </div>  */}
+
+        {loading ? (
+          <p className="text-gray-600 p-8">Loading data...</p>
+        ) : (
+          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
+            {facultyInfo?.loginType  && (
+              // <>
+              //   {/* For HOD or Committee: Show faculty performance after selection */}
+              //   {(facultyInfo.loginType !== "faculty") && (
+              //     <>
+              //       {!selectedFaculty || !academicYear ? (
+              //         <div className="text-center p-8 text-gray-500">
+              //           {!academicYear ? (
+              //             "Please select an academic year to view faculty list."
+              //           ) : (
+              //             "Please select a faculty member from the table above to view their data."
+              //           )}
+              //         </div>
+              //       ) : (
+                      <>
+                        <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+                          PART B: ACADEMIC PERFORMANCE INDICATOR (API)
+                          <br />
+                          CATEGORY I:
+                        </h1>
+                        <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+                          Teaching, Learning & Evaluation Activities
+                        </h2>
+{/*                         
+                        <div className="bg-indigo-50 p-4 rounded-lg mb-6">
+                          <h3 className="text-lg font-semibold text-indigo-700 mb-2">Selected Faculty:</h3>
+                          {uniqueFacultyList.filter(f => f.EmployeeID === selectedFaculty).map(faculty => (
+                            <div key={faculty.EmployeeID} className="flex flex-col md:flex-row md:items-center md:justify-between">
+                              <div>
+                                <p><span className="font-medium">ID:</span> {faculty.EmployeeID}</p>
+                                <p><span className="font-medium">Name:</span> {faculty.Name}</p>
+                              </div>
+                              <div>
+                                <p><span className="font-medium">Department:</span> {faculty.Department || "Not specified"}</p>
+                                <p><span className="font-medium">Academic Year:</span> {academicYear}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div> */}
+                        
+                        <CategoryA
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryA}
+                          onFormDataChangeAction={handleFormDataUpdateA}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
+                        />
+                        <CategoryB
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryB}
+                          onFormDataChangeAction={handleFormDataUpdateB}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreB(score)}
+                        />
+                        <CategoryC
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryC}
+                          onFormDataChangeAction={handleFormDataUpdateC}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
+                        />
+                        <CategoryD
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryD}
+                          onFormDataChangeAction={handleFormDataUpdateD}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
+                        />
+                        <CategoryE
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryE}
+                          onFormDataChangeAction={handleFormDataUpdateE}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
+                        />
+                        <CategoryF
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryF}
+                          onFormDataChangeAction={handleFormDataUpdateF}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
+                        />
+                        <CategoryG
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryG}
+                          onFormDataChangeAction={handleFormDataUpdateG}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
+                        />
+                        <CategoryH
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryH}
+                          onFormDataChangeAction={handleFormDataUpdateH}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
+                        />
+                        <CategoryI
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryI}
+                          onFormDataChangeAction={handleFormDataUpdateI}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
+                        />
+                        <CategoryJ
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryJ || { score: "" }}
+                          onFormDataChangeAction={handleFormDataUpdateJ}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
+                        />
+                        <CategoryK
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryK}
+                          onFormDataChangeAction={handleFormDataUpdateK}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreK(score)}
+                        />
+                        <CategoryL
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryL}
+                          onFormDataChangeAction={handleFormDataUpdateL}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreL(score)}
+                        />
+                        <CategoryM
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryM}
+                          onFormDataChangeAction={handleFormDataUpdateM}
+                          onCommitteeScoreChange={(score) => setCommitteeScoreM(score)}
+                        />
+                  </>
+                )}
+
+                {/* For Faculty: Only check academic year */}
+                {/* {facultyInfo?.loginType === "faculty" && (
+                  // <>
+                  //   {!academicYear ? (
+                  //     <div className="text-center p-8 text-gray-500">
+                  //       Please select an academic year to proceed.
+                  //     </div>
+                  //   ) : (
+                      <>
+                        <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+                          PART B: ACADEMIC PERFORMANCE INDICATOR (API)
+                          <br />
+                          CATEGORY I:
+                        </h1>
+                        <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+                          Teaching, Learning & Evaluation Activities
+                        </h2>
+                        
+                        <CategoryA
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryA}
+                          onFormDataChangeAction={handleFormDataUpdateA}
+                        />
+                        <CategoryB
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryB}
+                          onFormDataChangeAction={handleFormDataUpdateB}
+                        />
+                        <CategoryC
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryC}
+                          onFormDataChangeAction={handleFormDataUpdateC}
+                        />
+                        <CategoryD
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryD}
+                          onFormDataChangeAction={handleFormDataUpdateD}
+                        />
+                        <CategoryE
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryE}
+                          onFormDataChangeAction={handleFormDataUpdateE}
+                        />
+                        <CategoryF
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryF}
+                          onFormDataChangeAction={handleFormDataUpdateF}
+                        />
+                        <CategoryG
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryG}
+                          onFormDataChangeAction={handleFormDataUpdateG}
+                        />
+                        <CategoryH
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryH}
+                          onFormDataChangeAction={handleFormDataUpdateH}
+                        />
+                        <CategoryI
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryI}
+                          onFormDataChangeAction={handleFormDataUpdateI}
+                        />
+                        <CategoryJ
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryJ || { score: "" }}
+                          onFormDataChangeAction={handleFormDataUpdateJ}
+                        />
+                        <CategoryK
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryK}
+                          onFormDataChangeAction={handleFormDataUpdateK}
+                        />
+                        <CategoryL
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryL}
+                          onFormDataChangeAction={handleFormDataUpdateL}
+                        />
+                        <CategoryM
+                          loginType={facultyInfo.loginType}
+                          initialData={draftCategoryM}
+                          onFormDataChangeAction={handleFormDataUpdateM}
+                        />
+                      {/* </>
+                    )}
+                  </> */}
+                {/* )} */}
+
+            {/* Show score summary only if a faculty is selected or for faculty login */}
+                <hr className="my-4" />
+                <p className="mb-6">
+                  <strong>Combined Total Score: </strong>
+                  <span className="text-green-600 text-xl font-semibold">
+                    {totalScore} / 300
+                  </span>
+                </p>
+                {(facultyInfo?.loginType === "committee") && (
+                  <p className="mb-6">
+                    <strong>Committee Total Score: </strong>
+                    <span className="text-yellow-600 text-xl font-semibold">
+                      {totalCommitteeScore} / 300
+                    </span>
+                  </p>
+                )}
+                {(facultyInfo?.loginType === "principal") && (
+                  <p className="mb-6">
+                    <strong>Committee Total Score: </strong>
+                    <span className="text-yellow-600 text-xl font-semibold">
+                      {committeeTotalScore} / 300
+                    </span>
+                  </p>
+                )}
+                <div className="flex justify-between items-center mt-8">
+                  <button
+                    type="button"
+                    className={`text-white px-6 py-2 rounded ${
+                      facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "principal"
+                        ? "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
+                        : "bg-yellow-500 hover:bg-yellow-600"
+                    }`}
+                    onClick={() => saveDraft(true)}
+                    disabled={facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "principal"}
+                  >
+                    Save Draft
+                  </button>
+                  <div className="flex space-x-4">
+                    <button type="button" className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500" onClick={() => router.push("/partb")}>
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
+                      onClick={async () => {
+                        try {
+                          await saveDraft(false);
+                          
+                          if (academicYear) {
+                            sessionStorage.setItem("academicYear", academicYear);
+                          }
+                          
+                          if (typeof totalCommitteeScore === "number") {
+                            sessionStorage.setItem("committeeScore1", String(totalCommitteeScore));
+                          }
+
+                          router.push('/partb/category-2');
+                        } catch (error) {
+                          console.error("Error during draft save or navigation:", error);
+                        }
+                      }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+          </div>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 }

@@ -11,7 +11,7 @@ interface PartialDelivery {
 interface CategoryIProps {
   initialData: PartialDelivery[];
   onFormDataChangeAction: (data: PartialDelivery[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -116,7 +116,7 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
                 <input
                   type="text"
                   value={row.industryExpert}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "industryExpert", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -125,7 +125,7 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
                 <input
                   type="text"
                   value={row.course}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "course", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -134,7 +134,7 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
                 <input
                   type="date"
                   value={row.date}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "date", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -143,7 +143,7 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
                 <input
                   type="number"
                   value={row.score}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleInputChange(index, "score", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -152,9 +152,9 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
                 <button
                   type="button"
                   onClick={() => deleteRow(index)}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   className={`bg-red-500 text-white px-2 py-1 rounded ${
-                    loginType === "hod" || loginType === "committee" ? "opacity-50 cursor-not-allowed" : ""
+                    loginType === "hod"|| loginType === "principal" || loginType === "committee" ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   Delete
@@ -168,9 +168,9 @@ export default function CategoryI({ initialData, onFormDataChangeAction, loginTy
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee" || totalScore >= 20}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal" || totalScore >= 20}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= 20
+          loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 20
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-indigo-500"
         }`}

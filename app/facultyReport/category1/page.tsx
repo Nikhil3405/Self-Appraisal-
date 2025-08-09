@@ -606,10 +606,12 @@ Demonstration models =  5 points each] <br/>Maximum Score: 20      </b>
         <h3 style={{textAlign: "center"}}>CATEGORY I:</h3><h3 style={{textAlign: "center"}}> TEACHING, LEARNING & EVALUATION ACTIVITIES</h3>
 
 {categories.map((category, index) => (
-  <div key={index}>
-    {renderTable(category.title, category.data as unknown as CategoryData1)}
-
-  </div>
+  <React.Fragment key={index}>
+    
+    <div>
+      {renderTable(category.title, category.data as unknown as CategoryData1)}
+    </div>
+  </React.Fragment>
 ))}
 
     </div>

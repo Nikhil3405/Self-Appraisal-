@@ -109,7 +109,7 @@ interface FacultyInfo {
   eid: string;
   name: string;
   branch: string;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
 }
 interface FetchedDraftData {
   activityrecords: ActivityRecord[];
@@ -151,6 +151,7 @@ export default function ParentPage() {
   const [academicYear, setAcademicYear] = useState<string>("");
   const [hasFetched, setHasFetched] = useState(false);
   const category = "category-2";
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<number>(0);
   useEffect(() => {
     const storedData = sessionStorage.getItem("record");
     const employeeId = sessionStorage.getItem("employeeId");
@@ -170,6 +171,60 @@ export default function ParentPage() {
   }, [router]);
   console.log("Employee ID: ", employeeId);
   console.log("Academic Year: ", academicYear);
+
+    useEffect(() => {
+    const storedData = sessionStorage.getItem("record");
+    const storedAcademicYear = sessionStorage.getItem("academicYear");
+    const storedEmployeeId = sessionStorage.getItem("employeeId");
+  
+    if (storedAcademicYear) {
+      setAcademicYear(storedAcademicYear);
+      console.log("Academic Year from sessionStorage: ", storedAcademicYear);
+    }
+  
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setFacultyInfo(parsedData);
+  
+      if (parsedData.loginType === "principal") {
+        console.log("principal executed");
+  
+        const branch = sessionStorage.getItem("department");
+        console.log("branch", branch);
+  
+        if (!storedEmployeeId && parsedData.eid) {
+          sessionStorage.setItem("employeeId", parsedData.eid);
+          setEmployeeId(parsedData.eid);
+          console.log("Employee ID from parsedData: ", parsedData.eid);
+        } else if (storedEmployeeId) {
+          setEmployeeId(storedEmployeeId);
+          console.log("Employee ID from sessionStorage: ", storedEmployeeId);
+        }
+  
+        const fetchCommitteeScore = async () => {
+          const empIdToUse = storedEmployeeId || parsedData.eid;
+          if (storedAcademicYear && empIdToUse) {
+            const response = await fetch(
+              `/api/final-submit?facultyId=${empIdToUse}&academicYear=${storedAcademicYear}`
+            );
+            if (response.ok) {
+              const json = await response.json();
+              const score = json.committeeScore2 || 0;
+              setCommitteeTotalScore(score);
+              console.log("Committee Score: ", score);
+            }
+          }
+        };
+  
+        fetchCommitteeScore();
+      }
+    } else {
+      router.push("/");
+    }
+  }, [ router, academicYear, employeeId,committeeTotalScore]);
+  
+        
+
   const saveDraft = async (showToast=true) => {
     if (!facultyInfo) return;
   
@@ -177,7 +232,7 @@ export default function ParentPage() {
       toast.info("Only faculty members can save drafts.");
       return;
     }
-  
+          
     // if (!academicYear) {
     //   toast.error("Please select an academic year before saving.");
     //   return;
@@ -267,7 +322,7 @@ export default function ParentPage() {
     }
   };
   
-  if (!hasFetched && (facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee") && employeeId && academicYear) {
+  if (!hasFetched && (facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "principal") && employeeId && academicYear) {
     setHasFetched(true);
     fetchFacultyData(employeeId, academicYear);
   }
@@ -620,7 +675,7 @@ export default function ParentPage() {
             {facultyInfo && (
               <>
                 {/* For HOD or Committee: Check both faculty and academic year */}
-                {(facultyInfo.loginType === "hod" || facultyInfo.loginType === "committee") && (
+                {facultyInfo?.loginType && (
                   <>
                     {!academicYear ? (
                       router.push("/partb/category-1")
@@ -691,7 +746,7 @@ export default function ParentPage() {
                   </>
                 )}
             {/* <div className="mt-8" /> */}
-            {facultyInfo.loginType === "faculty" && (
+            {/* {facultyInfo.loginType === "faculty" && (
           <>
             <Category2A
               loginType={facultyInfo.loginType}
@@ -745,7 +800,7 @@ export default function ParentPage() {
               onFormDataChangeAction={handleFormDataUpdateJ}
             />
             </>
-          )}
+          )} */}
         </>
     )}
             <hr className="my-4" />
@@ -760,6 +815,14 @@ export default function ParentPage() {
                   <strong>Committee Total Score: </strong>
                   <span className="text-yellow-600 text-xl font-semibold">
                     {totalCommitteeScore} / 100
+                  </span>
+                  </p>
+                )}
+                {facultyInfo?.loginType === "principal" && (
+                  <p className="mb-6">
+                  <strong>Committee Total Score: </strong>
+                  <span className="text-yellow-600 text-xl font-semibold">
+                    {committeeTotalScore} / 100
                   </span>
                   </p>
                 )}
@@ -778,7 +841,7 @@ export default function ParentPage() {
                 >
     Save Draft
   </button>
-
+  
   {/* Back and Next buttons on the right */}
   <div className="flex space-x-4">
     <Link href="/partb/category-1"> {/* Replace with your correct previous page URL */}

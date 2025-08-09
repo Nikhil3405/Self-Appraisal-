@@ -8,7 +8,7 @@ interface CommitteeActivity {
 interface Category2BProps {
   initialData: CommitteeActivity[];
   onFormDataChangeAction: (data: CommitteeActivity[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -128,7 +128,7 @@ export default function Category2B({ initialData, onFormDataChangeAction, loginT
               <td className="border p-2">
                 <select
                   value={row.activityType}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   onChange={(e) => handleInputChange(index,"activityType", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -144,10 +144,10 @@ export default function Category2B({ initialData, onFormDataChangeAction, loginT
               <td className="border p-2">
                 <button
                   type="button"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
 
                   onClick={() => deleteRow(index)}
-                  className={`bg-red-500 text-white px-2 py-1 rounded ${loginType === "hod" || loginType === "committee"
+                  className={`bg-red-500 text-white px-2 py-1 rounded ${loginType === "hod"|| loginType === "principal" || loginType === "committee"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                     }`}
@@ -164,9 +164,9 @@ export default function Category2B({ initialData, onFormDataChangeAction, loginT
         type="button"
         
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod"|| loginType === "principal" || loginType === "committee"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= 10 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod"|| loginType === "principal" || loginType === "committee" || totalScore >= 10 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

@@ -10,7 +10,7 @@ interface Project3M {
 interface Category3MProps {
   initialData: Project3M[];
   onFormDataChangeAction: (data: Project3M[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -155,7 +155,7 @@ export default function Category3M({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={proj.title}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleChange(index, "title", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 />
@@ -163,7 +163,7 @@ export default function Category3M({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={proj.status}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleChange(index, "status", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
                 >
@@ -175,7 +175,7 @@ export default function Category3M({ initialData, onFormDataChangeAction,
                 <input
                   type="number"
                   min={1}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   max={9}
                   value={proj.trl ?? ""}
                   onChange={(e) => handleChange(index, "trl", Number(e.target.value))}
@@ -187,9 +187,9 @@ export default function Category3M({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -205,9 +205,9 @@ export default function Category3M({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee" || loginType === "principal"|| totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

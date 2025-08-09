@@ -11,7 +11,7 @@ interface DesignPatent {
 interface Category3GProps {
   initialData: DesignPatent[];
   onFormDataChangeAction: (data: DesignPatent[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -157,7 +157,7 @@ export default function Category3G({
                 <input
                   type="text"
                   value={patent.title}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "title", e.target.value)
                   }
@@ -168,7 +168,7 @@ export default function Category3G({
                 <input
                   type="date"
                   value={patent.date}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "date", e.target.value)
                   }
@@ -178,7 +178,7 @@ export default function Category3G({
               <td className="border p-2">
                 <select
                   value={patent.type}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "type", e.target.value)
                   }
@@ -191,7 +191,7 @@ export default function Category3G({
               <td className="border p-2">
                 <select
                   value={patent.status}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "status", e.target.value)
                   }
@@ -207,9 +207,9 @@ export default function Category3G({
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -225,9 +225,9 @@ export default function Category3G({
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

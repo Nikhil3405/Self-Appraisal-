@@ -9,7 +9,7 @@ interface DisciplinaryChargeRow {
 interface Category3OProps {
   initialData: DisciplinaryChargeRow[];
   onFormDataChangeAction: (data: DisciplinaryChargeRow[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
 }
 
@@ -80,7 +80,7 @@ export default function Category3O({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={row.section}
-                  disabled={loginType === "hod"||loginType === "committee"}
+                  disabled={loginType === "hod"||loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleChange(index, "section", e.target.value)}
                   className="w-full p-2 border rounded"
                 >
@@ -92,7 +92,7 @@ export default function Category3O({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={row.details}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleChange(index, "details", e.target.value)}
                   className="w-full p-2 border rounded"
                 />
@@ -101,7 +101,7 @@ export default function Category3O({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={row.remarks}
-                  disabled = {loginType === "hod" || loginType === "committee"}
+                  disabled = {loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) => handleChange(index, "remarks", e.target.value)}
                   className="w-full p-2 border rounded"
                 />
@@ -110,9 +110,9 @@ export default function Category3O({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -128,6 +128,7 @@ export default function Category3O({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className="mt-3 px-3 py-2 rounded text-white bg-indigo-500"
       >
         + Add Row

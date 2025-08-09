@@ -14,7 +14,7 @@ interface PublishedPaper {
 interface Category3AProps {
   initialData: PublishedPaper[];
   onFormDataChangeAction: (data: PublishedPaper[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -158,7 +158,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee" || loginType === "principal"}
                   value={row.title}
                   onChange={(e) =>
                     handleInputChange(index, "title", e.target.value)
@@ -169,7 +169,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.journalName}
                   onChange={(e) =>
                     handleInputChange(index, "journalName", e.target.value)
@@ -181,7 +181,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
                 <input
                   type="text"
                   value={row.issnIsbn}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "issnIsbn", e.target.value)
                   }
@@ -191,7 +191,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.peerReviewed}
                   onChange={(e) =>
                     handleInputChange(index, "peerReviewed", e.target.value)
@@ -203,7 +203,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
                 <input
                   type="number"
                   min={0}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.coAuthors}
                   onChange={(e) =>
                     handleInputChange(index, "coAuthors", Number(e.target.value))
@@ -214,7 +214,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <td className="border p-2">
   <select
     value={row.mainAuthor}
-    disabled={loginType === "hod" || loginType === "committee"}
+    disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
     onChange={(e) =>
       handleInputChange(index, "mainAuthor", e.target.value)
     }
@@ -231,7 +231,7 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <select
                   value={row.journalType}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "journalType", e.target.value)
                   }
@@ -251,9 +251,9 @@ export default function Category3A({ initialData, onFormDataChangeAction,
               <button
                     type="button"
                     onClick={() => deleteRow(index)}
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                     className={`bg-red-500 text-white px-2 py-1 rounded ${
-                      loginType === "hod" || loginType === "committee"
+                      loginType === "hod" || loginType === "committee"|| loginType === "principal"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
                     }`}
@@ -268,9 +268,9 @@ export default function Category3A({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee"||totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal"||totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

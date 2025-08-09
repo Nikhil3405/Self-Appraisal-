@@ -12,7 +12,7 @@ interface UGProject {
 interface Category3EProps {
   initialData: UGProject[];
   onFormDataChangeAction: (data: UGProject[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -158,7 +158,7 @@ export default function Category3E({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={proj.projectTitle}
                   onChange={(e) => handleInputChange(index, "projectTitle", e.target.value)}
                   className="w-full px-2 py-1 border rounded"
@@ -169,7 +169,7 @@ export default function Category3E({ initialData, onFormDataChangeAction,
                   type="number"
                   min={0}
                   max={100}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={proj.ugPercentageCompletion}
                   onChange={(e) =>
                     handleInputChange(index, "ugPercentageCompletion", Number(e.target.value))
@@ -180,7 +180,7 @@ export default function Category3E({ initialData, onFormDataChangeAction,
               {["hasPaper", "hasPatent", "hasFunding"].map((field) => (
                 <td className="border p-2" key={field}>
                   <select
-                    disabled={loginType === "hod" || loginType === "committee"}
+                    disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                     value={proj[field as keyof UGProject] as string}
                     onChange={(e) =>
                       handleInputChange(index, field as keyof UGProject, e.target.value)
@@ -197,9 +197,9 @@ export default function Category3E({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -215,9 +215,9 @@ export default function Category3E({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType === "hod" || loginType === "committee" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType === "hod" || loginType === "committee"|| loginType === "principal" || totalScore >= MAX_SCORE ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

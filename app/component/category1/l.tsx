@@ -8,7 +8,7 @@ interface MiniProject {
 interface CategoryLProps {
   initialData: MiniProject[];
   onFormDataChangeAction: (data: MiniProject[]) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void;
 }
@@ -103,7 +103,7 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
               <td className="border p-2">
                 <input
                   type="text"
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   value={row.particulars}
                   onChange={(e) =>
                     handleInputChange(index, "particulars", e.target.value)
@@ -115,7 +115,7 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
                 <input
                   type="number"
                   value={row.score}
-                  disabled={loginType === "hod" || loginType === "committee"}
+                  disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                   onChange={(e) =>
                     handleInputChange(index, "score", Number(e.target.value))
                   }
@@ -128,9 +128,9 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
               <button
                 type="button"
                 onClick={() => deleteRow(index)}
-                disabled={loginType === "hod" || loginType === "committee"}
+                disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
                 className={`bg-red-500 text-white px-2 py-1 rounded ${
-                  loginType === "hod" || loginType === "committee"
+                  loginType === "hod" || loginType === "committee"|| loginType === "principal"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
@@ -145,9 +145,9 @@ export default function CategoryL({ initialData, onFormDataChangeAction,
       <button
         type="button"
         onClick={addRow}
-        disabled={loginType === "hod" || loginType === "committee"}
+        disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
         className={`mt-2 px-3 py-2 rounded text-white ${
-          loginType==="hod"|| loginType==="committee"||totalScore >= 10 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+          loginType==="hod"|| loginType === "principal"|| loginType==="committee"||totalScore >= 10 ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
         }`}
       >
         + Add Row

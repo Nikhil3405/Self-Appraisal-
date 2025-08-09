@@ -221,7 +221,7 @@ interface FacultyInfo {
   eid: string;
   name: string;
   branch: string;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"|"principal";
 }
 interface FetchedDraftData {
   papers: PublishedPaper[];
@@ -277,6 +277,8 @@ export default function ParentPage() {
   const [academicYear, setAcademicYear] = useState<string>("");
   const [hasFetched, setHasFetched] = useState(false);
   const category = "category-3";
+  const [committeeTotalScore, setCommitteeTotalScore] = useState<number>(0);
+
   useEffect(() => {
     const storedData = sessionStorage.getItem("record");
     const employeeId = sessionStorage.getItem("employeeId");
@@ -294,6 +296,58 @@ export default function ParentPage() {
       alert("Some error occured");
     }
   }, [router]);
+
+      useEffect(() => {
+    const storedData = sessionStorage.getItem("record");
+    const storedAcademicYear = sessionStorage.getItem("academicYear");
+    const storedEmployeeId = sessionStorage.getItem("employeeId");
+  
+    if (storedAcademicYear) {
+      setAcademicYear(storedAcademicYear);
+      console.log("Academic Year from sessionStorage: ", storedAcademicYear);
+    }
+  
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setFacultyInfo(parsedData);
+  
+      if (parsedData.loginType === "principal") {
+        console.log("principal executed");
+  
+        const branch = sessionStorage.getItem("department");
+        console.log("branch", branch);
+  
+        if (!storedEmployeeId && parsedData.eid) {
+          sessionStorage.setItem("employeeId", parsedData.eid);
+          setEmployeeId(parsedData.eid);
+          console.log("Employee ID from parsedData: ", parsedData.eid);
+        } else if (storedEmployeeId) {
+          setEmployeeId(storedEmployeeId);
+          console.log("Employee ID from sessionStorage: ", storedEmployeeId);
+        }
+  
+        const fetchCommitteeScore = async () => {
+          const empIdToUse = storedEmployeeId || parsedData.eid;
+          if (storedAcademicYear && empIdToUse) {
+            const response = await fetch(
+              `/api/final-submit?facultyId=${empIdToUse}&academicYear=${storedAcademicYear}`
+            );
+            if (response.ok) {
+              const json = await response.json();
+              const score = json.committeeScore3 || 0;
+              setCommitteeTotalScore(score);
+              console.log("Committee Score: ", score);
+            }
+          }
+        };
+  
+        fetchCommitteeScore();
+      }
+    } else {
+      router.push("/");
+    }
+  }, [ router, academicYear, employeeId,committeeTotalScore]);
+  
   console.log("Employee ID:", employeeId);
   console.log("Academic Year:", academicYear);
   const saveDraft = async (showToast=true) => {
@@ -901,7 +955,7 @@ export default function ParentPage() {
             {facultyInfo && (
               <>
                 {/* For HOD or Committee: Check both faculty and academic year */}
-                {(facultyInfo.loginType === "hod" || facultyInfo.loginType === "committee") && (
+                {facultyInfo.loginType  && (
                   <>
                     {!academicYear ? (
                       router.push("/partb/category-1")
@@ -1002,7 +1056,7 @@ export default function ParentPage() {
                   </>
                 )}
             {/* <div className="mt-8" /> */}
-            {facultyInfo.loginType === "faculty" && (
+            {/* {facultyInfo.loginType === "faculty" && (
           <>
             <Category3A
               loginType={facultyInfo.loginType}
@@ -1082,7 +1136,7 @@ export default function ParentPage() {
             />
             <TeacherDocumentUpload/>
             </>
-          )}
+          )} */}
         </>
     )}
             <hr className="my-4" />
@@ -1097,6 +1151,14 @@ export default function ParentPage() {
                   <strong>Committee Total Score: </strong>
                   <span className="text-yellow-600 text-xl font-semibold">
                     {totalCommitteeScore} / 600
+                  </span>
+                  </p>
+                )}
+            {facultyInfo?.loginType === "principal" && (
+                  <p className="mb-6">
+                  <strong>Committee Total Score: </strong>
+                  <span className="text-yellow-600 text-xl font-semibold">
+                    {committeeTotalScore} / 600
                   </span>
                   </p>
                 )}

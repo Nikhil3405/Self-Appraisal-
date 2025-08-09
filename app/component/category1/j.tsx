@@ -7,7 +7,7 @@ interface StudentFeedback {
 interface CategoryJProps {
   initialData: StudentFeedback;
   onFormDataChangeAction: (data: StudentFeedback) => void;
-  loginType: "faculty" | "hod" | "committee";
+  loginType: "faculty" | "hod" | "committee"| "principal";
   employeeId?: string;
   onCommitteeScoreChange?: (score: string) => void; 
 }
@@ -100,7 +100,7 @@ export default function CategoryJ({ initialData, onFormDataChangeAction,
           min={0}
           max={10}
           value={score}
-          disabled={loginType === "hod" || loginType === "committee"}
+          disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
           onChange={(e) => handleScoreChange(String(e.target.value))}
           className="block mt-1 w-32 px-3 py-2 border rounded text-center"
         />
