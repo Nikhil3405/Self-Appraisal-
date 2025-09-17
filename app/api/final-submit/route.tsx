@@ -62,7 +62,8 @@ export async function GET(req: Request) {
 
       const hasSubmitted = result.recordset.length > 0;
       return NextResponse.json({ submitted: hasSubmitted, committeeScore1: result.recordset[0]?.CommitteeScore1
-, committeeScore2: result.recordset[0]?.CommitteeScore2, committeeScore3: result.recordset[0]?.CommitteeScore3}, { status: 200 });
+, committeeScore2: result.recordset[0]?.CommitteeScore2, committeeScore3: result.recordset[0]?.CommitteeScore3,
+committeeScore: result.recordset[0]?.CommitteeScore }, { status: 200 });
     } else if (branch) {
       // Fetch faculty of specific branch
       result = await pool.request()

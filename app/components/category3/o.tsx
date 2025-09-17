@@ -129,7 +129,9 @@ export default function Category3O({ initialData, onFormDataChangeAction,
         type="button"
         onClick={addRow}
         disabled={loginType === "hod" || loginType === "committee"|| loginType === "principal"}
-        className="mt-3 px-3 py-2 rounded text-white bg-indigo-500"
+        className={`mt-2 px-3 py-2 rounded text-white ${
+          loginType === "hod" || loginType === "committee" || loginType === "principal" ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500"
+        }`}
       >
         + Add Row
       </button>
