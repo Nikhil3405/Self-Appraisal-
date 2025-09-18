@@ -65,7 +65,7 @@ const PrincipalDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row items-start space-x-2">
         {/* Sidebar Menu */}
         <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-          <Link href="/principaldash">
+          <Link href="/principal">
             <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Home
             </button>

@@ -17,7 +17,7 @@ const Departmentinfo: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [department, setDepartment] = useState("");
   const [departmentName, setDepartmentName] = useState("");
-const [resultYear, setResultYear] = useState("");
+  const [resultYear, setResultYear] = useState("");
 
   useEffect(() => {
     const storedDepartment = sessionStorage.getItem("department");
@@ -70,7 +70,7 @@ const [resultYear, setResultYear] = useState("");
       <div className="flex flex-col md:flex-row items-start space-x-2">
         {/* Sidebar */}
         <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-          <Link href="/principaldash">
+          <Link href="/principal">
             <button className="w-full text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
               Home
             </button>
@@ -81,7 +81,7 @@ const [resultYear, setResultYear] = useState("");
         <div className="bg-white rounded-xl flex-1 py-4 px-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-4xl font-bold text-indigo-600">{departmentName}</h2>
-            <Link href="/principaldash">
+            <Link href="/principal">
               <button className="px-4 py-2 w-24 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-md shadow">
                 Back
               </button>
@@ -96,78 +96,78 @@ const [resultYear, setResultYear] = useState("");
             placeholder="Search faculty by name or ID"
             className="w-full mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
           />
-{/* Result Year Selector */}
-<div className="mb-6">
-  <label htmlFor="resultYear" className="block mb-2 text-sm font-medium text-gray-700">
-    Select Result Year
-  </label>
-  <select
-    id="resultYear"
-    value={resultYear}
-    onChange={(e) => setResultYear(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
-  >
-    <option value="">-- Select Year --</option>
-    <option value="2025">2025</option>
-    <option value="2026">2026</option>
-    <option value="2027">2027</option>
-    <option value="2028">2028</option>
-    <option value="2029">2029</option>
-    <option value="2030">2030</option>
-  </select>
-    {/* {!resultYear && (
+          {/* Result Year Selector */}
+          <div className="mb-6">
+            <label htmlFor="resultYear" className="block mb-2 text-sm font-medium text-gray-700">
+              Select Result Year
+            </label>
+            <select
+              id="resultYear"
+              value={resultYear}
+              onChange={(e) => setResultYear(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
+            >
+              <option value="">-- Select Year --</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+            </select>
+            {/* {!resultYear && (
     <p className="mt-2 text-sm text-gray-600 font-semibold">
       Please select a result year to view faculty data.
     </p>
   )} */}
-</div>
+          </div>
 
-{/* Faculty table */}
-<table className="w-full table-auto border border-gray-300 rounded-md">
-  <thead className="bg-gray-200">
-    <tr>
-      <th className="border border-gray-300 px-4 py-2 text-left">Faculty ID</th>
-      <th className="border border-gray-300 px-4 py-2 text-left">Faculty Name</th>
-      <th className="border border-gray-300 px-4 py-2 text-left">Action</th>
-    </tr>
-  </thead>
-<tbody>
-  {filteredFaculties.length > 0 ? (
-    filteredFaculties.map((f, index) => (
-      <tr key={index} className="hover:bg-gray-50">
-        <td className="border border-gray-300 px-4 py-2">{f.facultyId}</td>
-        <td className="border border-gray-300 px-4 py-2">{f.facultyName}</td>
-<td className="border border-gray-300 px-4 py-2">
-  <div className="h-10 flex items-center">
-    {resultYear ? (
-      <Link href={`/partb/category-1`}
-      >
-        <button className="px-4 py-2 bg-green-500 hover:bg-green-400 text-white text-sm font-semibold rounded-md shadow">
-          View Data
-        </button>
-      </Link>
-    ) : (
-      <span className="text-gray-400 text-sm">Select result year to view</span>
-    )}
-  </div>
-</td>
+          {/* Faculty table */}
+          <table className="w-full table-auto border border-gray-300 rounded-md">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border border-gray-300 px-4 py-2 text-left">Faculty ID</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Faculty Name</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredFaculties.length > 0 ? (
+                filteredFaculties.map((f, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-300 px-4 py-2">{f.facultyId}</td>
+                    <td className="border border-gray-300 px-4 py-2">{f.facultyName}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      <div className="h-10 flex items-center">
+                        {resultYear ? (
+                          <Link href={`/partb/category-1`}
+                          >
+                            <button className="px-4 py-2 bg-green-500 hover:bg-green-400 text-white text-sm font-semibold rounded-md shadow">
+                              View Data
+                            </button>
+                          </Link>
+                        ) : (
+                          <span className="text-gray-400 text-sm">Select result year to view</span>
+                        )}
+                      </div>
+                    </td>
 
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td
-        colSpan={3}
-        className="border border-gray-300 px-4 py-4 text-center text-gray-500"
-      >
-        No matching faculties found.
-      </td>
-    </tr>
-  )}
-</tbody>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="border border-gray-300 px-4 py-4 text-center text-gray-500"
+                  >
+                    No matching faculties found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
 
 
-</table>
+          </table>
 
         </div>
       </div>

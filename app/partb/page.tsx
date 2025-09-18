@@ -120,10 +120,11 @@ export default function PartB() {
           )}
           {facultyInfo && facultyInfo.loginType === "committee" && (
             <>
-            <Link href="/principal">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Home
-            </button>
+              <Link href="/facultyhome">
+                <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
+                  Home
+                </button>
+              
           </Link>
             <Link href="/partb">
               <button className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center">
