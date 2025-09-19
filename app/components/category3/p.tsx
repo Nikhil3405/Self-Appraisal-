@@ -57,7 +57,7 @@ const UploadSuccessPopup = ({ isOpen, onClose, document }: PopupProps) => {
                         <p><span className="font-medium">Title:</span> {document.documentTitle}</p>
                         <p><span className="font-medium">Type:</span> {document.documentType}</p>
                         <p><span className="font-medium">Date:</span> {document.uploadDate}</p>
-                        <p><span className="font-medium">Status:</span> {document.status}</p>
+                        
                     </div>
                 </div>
 
@@ -114,10 +114,7 @@ const DocumentViewerPopup = ({ isOpen, onClose, document }: PopupProps) => {
                         <p className="text-sm text-gray-600">
                             <span className="font-medium">Type:</span> {document.documentType} |
                             <span className="font-medium"> Uploaded:</span> {document.uploadDate} |
-                            <span className="font-medium"> Status:</span> <span className={`px-2 py-1 rounded-full text-xs font-medium ${document.status === "Verified" ? "bg-green-100 text-green-800" :
-                                    document.status === "Rejected" ? "bg-red-100 text-red-800" :
-                                        "bg-yellow-100 text-yellow-800"
-                                }`}>{document.status}</span>
+                            
                         </p>
                     </div>
                     <div className="flex space-x-2">
@@ -528,29 +525,21 @@ export default function TeacherDocumentUpload() {
                         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="px-4 py-2 text-left border-b">ID</th>
+                                   
                                     <th className="px-4 py-2 text-left border-b">Document Type</th>
                                     <th className="px-4 py-2 text-left border-b">Title</th>
                                     <th className="px-4 py-2 text-left border-b">Upload Date</th>
-                                    <th className="px-4 py-2 text-left border-b">Status</th>
                                     <th className="px-4 py-2 text-center border-b">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {documents.map((doc) => (
                                     <tr key={doc.id} className="hover:bg-gray-50">
-                                        <td className="px-4 py-2 border-b">{doc.id}</td>
+                                        
                                         <td className="px-4 py-2 border-b">{doc.documentType}</td>
                                         <td className="px-4 py-2 border-b">{doc.documentTitle}</td>
                                         <td className="px-4 py-2 border-b">{doc.uploadDate}</td>
-                                        <td className="px-4 py-2 border-b">
-                                            <span className={`px-2 py-1 rounded text-xs font-medium ${doc.status === "Verified" ? "bg-green-100 text-green-800" :
-                                                    doc.status === "Rejected" ? "bg-red-100 text-red-800" :
-                                                        "bg-yellow-100 text-yellow-800"
-                                                }`}>
-                                                {doc.status}
-                                            </span>
-                                        </td>
+                                        
                                         <td className="px-4 py-2 border-b text-center">
                                             <div className="flex justify-center space-x-2">
                                                 <button

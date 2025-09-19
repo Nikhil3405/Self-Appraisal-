@@ -62,23 +62,12 @@ const PrincipalDashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
 
-      <div className="flex flex-col md:flex-row items-start space-x-2">
+      <div className="flex flex-col md:flex-row items-start space-x-2 px-10 pt-7">
         {/* Sidebar Menu */}
-        <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-          <Link href="/principal">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Home
-            </button>
-          </Link>
-          <Link href="/partd">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Part - D
-            </button>
-          </Link>
-        </div>
+
 
         {/* Main Content */}
-        <div className="bg-white rounded-xl flex-1 py-4 p-6">
+        <div className="bg-white rounded-xl flex-1 py-4 p-6 ">
           <div className="p-6 mb-6 mt-2">
             <div className="flex justify-between items-center">
               <h2 className="text-4xl font-bold mb-2 text-indigo-600">

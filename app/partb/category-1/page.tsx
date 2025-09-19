@@ -1,19 +1,19 @@
 "use client";
-import CategoryA from "@/app/component/category1/a";
-import CategoryB from "@/app/component/category1/b";
-import CategoryC from "@/app/component/category1/c";
-import CategoryD from "@/app/component/category1/d";
-import CategoryE from "@/app/component/category1/e";
-import CategoryF from "@/app/component/category1/f";
-import CategoryG from "@/app/component/category1/g";
-import CategoryH from "@/app/component/category1/h";
-import CategoryI from "@/app/component/category1/i";
-import CategoryJ from "@/app/component/category1/j";
-import CategoryK from "@/app/component/category1/k";
-import CategoryL from "@/app/component/category1/l";
-import CategoryM from "@/app/component/category1/m";
-import Navbar from "@/app/navbar/page";
 import Link from "next/link";
+import CategoryA from "@/app/components/category1/a";
+import CategoryB from "@/app/components/category1/b";
+import CategoryC from "@/app/components/category1/c";
+import CategoryD from "@/app/components/category1/d";
+import CategoryE from "@/app/components/category1/e";
+import CategoryF from "@/app/components/category1/f";
+import CategoryG from "@/app/components/category1/g";
+import CategoryH from "@/app/components/category1/h";
+import CategoryI from "@/app/components/category1/i";
+import CategoryJ from "@/app/components/category1/j";
+import CategoryK from "@/app/components/category1/k";
+import CategoryL from "@/app/components/category1/l";
+import CategoryM from "@/app/components/category1/m";
+import Navbar from "@/app/navbar/page";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -26,12 +26,12 @@ interface TeachingActivity {
   mode: string;
   classesPerWeek: string;
   score: string;
-  Semester? : string;
-  CourseCode? : string;
-  Level? : string;
-  TeachingMode ?: string;
-  ClassesPerWeek? : string;
-  SelfAppraisalScore ?: string;
+  Semester?: string;
+  CourseCode?: string;
+  Level?: string;
+  TeachingMode?: string;
+  ClassesPerWeek?: string;
+  SelfAppraisalScore?: string;
 }
 interface StudentPerformance {
   course: string;
@@ -41,13 +41,13 @@ interface StudentPerformance {
   notEligible: string;
   passPercentage: string;
   score: string;
-  CourseName? : string;
-  CourseCode? : string;
-  StudentsRegistered? : string;
-  StudentsPassed? : string;
-  NotEligibleStudents? : string;
-  PassPercentage? : string;
-  SelfAppraisalScore ?: string;
+  CourseName?: string;
+  CourseCode?: string;
+  StudentsRegistered?: string;
+  StudentsPassed?: string;
+  NotEligibleStudents?: string;
+  PassPercentage?: string;
+  SelfAppraisalScore?: string;
 }
 interface RemedialClass {
   semester: string;
@@ -58,24 +58,24 @@ interface RemedialClass {
   numberOfClasses: string;
   hoursSpent: string;
   score: string;
-  Semester? : string;
-  CourseType? : string;
-  CourseName? : string;
-  CourseCode? : string;
-  ClassType? : string;
-  TotalClasses? : string;
-  TotalHoursSpent? : string;
-  SelfAppraisalScore ?: string;
+  Semester?: string;
+  CourseType?: string;
+  CourseName?: string;
+  CourseCode?: string;
+  ClassType?: string;
+  TotalClasses?: string;
+  TotalHoursSpent?: string;
+  SelfAppraisalScore?: string;
 }
 interface TeachingMethodology {
   semester: string;
   course: string;
   description: string;
   score: string;
-  Semester? : string;
-  Course? : string;
-  ShortDescription? : string;
-  SelfAppraisalScore ?: string;
+  Semester?: string;
+  Course?: string;
+  ShortDescription?: string;
+  SelfAppraisalScore?: string;
 }
 interface CounselingRecord {
   semester: string;
@@ -84,11 +84,11 @@ interface CounselingRecord {
   actionTaken: string;
   outcome: string;
   score: string;
-  Semester? : string;
-  StudentsMentored? : string;
-  ActionTaken? : string;
-  Outcome? : string;
-  SelfAppraisalScore ?: string;
+  Semester?: string;
+  StudentsMentored?: string;
+  ActionTaken?: string;
+  Outcome?: string;
+  SelfAppraisalScore?: string;
 }
 interface IndustryInteraction {
   industryName: string;
@@ -96,11 +96,11 @@ interface IndustryInteraction {
   date: string;
   activitiesPlanned: string;
   score: string;
-  IndustryName? : string;
-  IndustryContactDetails? : string;
-  InteractionDate? : string;
-  ActivitiesPlanned? : string;
-  SelfAppraisalScore ?: string;
+  IndustryName?: string;
+  IndustryContactDetails?: string;
+  InteractionDate?: string;
+  ActivitiesPlanned?: string;
+  SelfAppraisalScore?: string;
 }
 interface IndustryVisit {
   semester: string;
@@ -109,12 +109,12 @@ interface IndustryVisit {
   studentsCount: string;
   outcome: string;
   score: string;
-  sem? : string;
-  industryname? : string;
-  visitdate? : string;
-  numberofstudents? : string;
-  Outcome? : string;
-  SelfAppraisalScore ?: string;
+  sem?: string;
+  industryname?: string;
+  visitdate?: string;
+  numberofstudents?: string;
+  Outcome?: string;
+  SelfAppraisalScore?: string;
 }
 interface ExamDuty {
   dutyType: string;
@@ -128,49 +128,49 @@ interface ExamDuty {
   coordination?: string;
   questionPaperSetting?: string;
   score: string;
-  ExamDutyType? : string;
-  DutiesAssigned? : string;
-  Squad? : string;
-  RoomInvigilation? : string;
-  Relief? : string;
-  DCS? : string;
-  BOE? : string;
-  Invigilation? : string;
-  Coordination? : string;
-  QuestionPaperSetting? : string;
-  SelfAppraisalScore ?: string;
+  ExamDutyType?: string;
+  DutiesAssigned?: string;
+  Squad?: string;
+  RoomInvigilation?: string;
+  Relief?: string;
+  DCS?: string;
+  BOE?: string;
+  Invigilation?: string;
+  Coordination?: string;
+  QuestionPaperSetting?: string;
+  SelfAppraisalScore?: string;
 }
 interface PartialDelivery {
   industryExpert: string;
   course: string;
   date: string;
   score: string;
-  IndustryExpert? : string;
-  Course? : string;
-  DeliveryDate? : string; 
-  SelfAppraisalScore ?: string;
+  IndustryExpert?: string;
+  Course?: string;
+  DeliveryDate?: string;
+  SelfAppraisalScore?: string;
 }
 interface StudentFeedback {
   score: string;
-  Score? : string;
+  Score?: string;
 }
 interface DayToDayActivity {
   particulars: string;
   score: string;
-  Particulars? : string;
-  SelfAppraisalScore ?: string;
+  Particulars?: string;
+  SelfAppraisalScore?: string;
 }
 interface MiniProject {
   particulars: string;
   score: string;
-  Particulars? : string;
-  SelfAppraisalScore ?: string;
+  Particulars?: string;
+  SelfAppraisalScore?: string;
 }
 interface AcademicFile {
   details: string;
   score: string;
-  Details? : string;
-  SelfAppraisalScore ?: string;
+  Details?: string;
+  SelfAppraisalScore?: string;
 }
 interface FacultyInfo {
   eid: string;
@@ -197,11 +197,17 @@ interface FetchedDraftData {
 export default function ParentPage() {
   const router = useRouter();
   const [draftCategoryA, setDraftCategoryA] = useState<TeachingActivity[]>([]);
-  const [draftCategoryB, setDraftCategoryB] = useState<StudentPerformance[]>([]);
+  const [draftCategoryB, setDraftCategoryB] = useState<StudentPerformance[]>(
+    []
+  );
   const [draftCategoryC, setDraftCategoryC] = useState<RemedialClass[]>([]);
-  const [draftCategoryD, setDraftCategoryD] = useState<TeachingMethodology[]>([]);
+  const [draftCategoryD, setDraftCategoryD] = useState<TeachingMethodology[]>(
+    []
+  );
   const [draftCategoryE, setDraftCategoryE] = useState<CounselingRecord[]>([]);
-  const [draftCategoryF, setDraftCategoryF] = useState<IndustryInteraction[]>([]);
+  const [draftCategoryF, setDraftCategoryF] = useState<IndustryInteraction[]>(
+    []
+  );
   const [draftCategoryG, setDraftCategoryG] = useState<IndustryVisit[]>([]);
   const [draftCategoryH, setDraftCategoryH] = useState<ExamDuty[]>([]);
   const [draftCategoryI, setDraftCategoryI] = useState<PartialDelivery[]>([]);
@@ -230,91 +236,89 @@ export default function ParentPage() {
   const [employeeId, setEmployeeId] = useState<string>("");
   const category = "category-1";
   const [committeeTotalScore, setCommitteeTotalScore] = useState<number>(0);
-  
+
   useEffect(() => {
     // const fetchFacultyList = async (branch: string) => {
-      // //   try {
-      //   if(facultyInfo?.loginType === "faculty"){
-      //     sessionStorage.setItem("employeeId", facultyInfo.eid);
-      //     setEmployeeId(facultyInfo.eid);
-      //     console.log("Faculty ID: ", facultyInfo.eid);
-      //   }
+    // //   try {
+    //   if(facultyInfo?.loginType === "faculty"){
+    //     sessionStorage.setItem("employeeId", facultyInfo.eid);
+    //     setEmployeeId(facultyInfo.eid);
+    //     console.log("Faculty ID: ", facultyInfo.eid);
+    //   }
     //     let response;
     //     if (facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "principal") {
     //       response = await fetch(`/api/final-submit?branch=${encodeURIComponent(branch)}`);
     //     }  else {
     //       response = await fetch(`/api/final-submit`);
     //     }
-        
+
     //     if (!response.ok) {
     //       throw new Error("Failed to fetch faculty list");
     //     }
-    
+
     //     const data = await response.json();
     //     setFacultyList(data);
     //     console.log("facultyList", data);
     //   } catch (error) {
-      //     console.error("Error fetching faculty list:", error);
-      //   }
+    //     console.error("Error fetching faculty list:", error);
+    //   }
     // };
-  const storedData = sessionStorage.getItem("record");
-  const storedAcademicYear = sessionStorage.getItem("academicYear");
-  const storedEmployeeId = sessionStorage.getItem("employeeId");
+    const storedData = sessionStorage.getItem("record");
+    const storedAcademicYear = sessionStorage.getItem("academicYear");
+    const storedEmployeeId = sessionStorage.getItem("employeeId");
 
-  if (storedAcademicYear) {
-    setAcademicYear(storedAcademicYear);
-    console.log("Academic Year from sessionStorage: ", storedAcademicYear);
-  }
-
-  if (storedData) {
-    const parsedData = JSON.parse(storedData);
-    setFacultyInfo(parsedData);
-
-    if (parsedData.loginType === "principal") {
-      console.log("principal executed");
-
-      const branch = sessionStorage.getItem("department");
-      console.log("branch", branch);
-
-      if (!storedEmployeeId && parsedData.eid) {
-        sessionStorage.setItem("employeeId", parsedData.eid);
-        setEmployeeId(parsedData.eid);
-        console.log("Employee ID from parsedData: ", parsedData.eid);
-      } else if (storedEmployeeId) {
-        setEmployeeId(storedEmployeeId);
-        console.log("Employee ID from sessionStorage: ", storedEmployeeId);
-      }
-
-      const fetchCommitteeScore = async () => {
-        const empIdToUse = storedEmployeeId || parsedData.eid;
-        if (storedAcademicYear && empIdToUse) {
-          const response = await fetch(
-            `/api/final-submit?facultyId=${empIdToUse}&academicYear=${storedAcademicYear}`
-          );
-          if (response.ok) {
-            const json = await response.json();
-            const score = json.committeeScore1 || 0;
-            setCommitteeTotalScore(score);
-            console.log("Committee Score: ", score);
-          }
-        }
-      };
-
-      fetchCommitteeScore();
+    if (storedAcademicYear) {
+      setAcademicYear(storedAcademicYear);
+      console.log("Academic Year from sessionStorage: ", storedAcademicYear);
     }
-  } else {
-    router.push("/");
-  }
-}, [ router, academicYear, employeeId,committeeTotalScore]);
 
-      
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setFacultyInfo(parsedData);
+
+      if (parsedData.loginType === "principal") {
+        console.log("principal executed");
+
+        const branch = sessionStorage.getItem("department");
+        console.log("branch", branch);
+
+        if (!storedEmployeeId && parsedData.eid) {
+          sessionStorage.setItem("employeeId", parsedData.eid);
+          setEmployeeId(parsedData.eid);
+          console.log("Employee ID from parsedData: ", parsedData.eid);
+        } else if (storedEmployeeId) {
+          setEmployeeId(storedEmployeeId);
+          console.log("Employee ID from sessionStorage: ", storedEmployeeId);
+        }
+
+        const fetchCommitteeScore = async () => {
+          const empIdToUse = storedEmployeeId || parsedData.eid;
+          if (storedAcademicYear && empIdToUse) {
+            const response = await fetch(
+              `/api/final-submit?facultyId=${empIdToUse}&academicYear=${storedAcademicYear}`
+            );
+            if (response.ok) {
+              const json = await response.json();
+              const score = json.committeeScore1 || 0;
+              setCommitteeTotalScore(score);
+              console.log("Committee Score: ", score);
+            }
+          }
+        };
+
+        fetchCommitteeScore();
+      }
+    } else {
+      router.push("/");
+    }
+  }, [router, academicYear, employeeId, committeeTotalScore]);
 
   const saveDraft = async (showToast = true) => {
     if (!academicYear) {
       toast.error("Please select an academic year before saving.");
       return;
     }
-  
+
     const formData = {
       employeeId: employeeId,
       category,
@@ -333,9 +337,9 @@ export default function ParentPage() {
         daytodayactivity: draftCategoryK,
         miniproject: draftCategoryL,
         academicfile: draftCategoryM,
-      }
+      },
     };
-  
+
     try {
       // console.log("Saving draft with data:", formData);
       const res = await fetch("/api/drafts/category-1", {
@@ -345,13 +349,13 @@ export default function ParentPage() {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const responseText = await res.text();
       // console.log("API response:", res.status, responseText);
-  
+
       if (res.ok) {
         if (showToast) {
-          toast.success('Draft saved successfully!');
+          toast.success("Draft saved successfully!");
         }
       } else {
         throw new Error(`Failed to save draft: ${res.status} ${responseText}`);
@@ -401,76 +405,90 @@ export default function ParentPage() {
     setDraftCategoryL([]);
     setDraftCategoryM([]);
   };
-useEffect(() => {
-  const fetchFacultyData = async (employeeId: string, academicYear: string) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/fetchData/category-1?employeeId=${employeeId}&academicYear=${academicYear}`);
-      if (res.ok) {
-        const json = await res.json();
-        processFetchedData(json, setDraftCategoryA,
-          setDraftCategoryB,
-          setDraftCategoryC,
-          setDraftCategoryD,
-          setDraftCategoryE,
-          setDraftCategoryF,
-          setDraftCategoryG,
-          setDraftCategoryH,
-          setDraftCategoryI,
-          setDraftCategoryJ,
-          setDraftCategoryK,
-          setDraftCategoryL,
-          setDraftCategoryM,
+  useEffect(() => {
+    const fetchFacultyData = async (
+      employeeId: string,
+      academicYear: string
+    ) => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/fetchData/category-1?employeeId=${employeeId}&academicYear=${academicYear}`
         );
-        // console.log("json:", json);
-      } else {
-        toast.error("Failed to fetch faculty data");
+        if (res.ok) {
+          const json = await res.json();
+          processFetchedData(
+            json,
+            setDraftCategoryA,
+            setDraftCategoryB,
+            setDraftCategoryC,
+            setDraftCategoryD,
+            setDraftCategoryE,
+            setDraftCategoryF,
+            setDraftCategoryG,
+            setDraftCategoryH,
+            setDraftCategoryI,
+            setDraftCategoryJ,
+            setDraftCategoryK,
+            setDraftCategoryL,
+            setDraftCategoryM
+          );
+          // console.log("json:", json);
+        } else {
+          toast.error("Failed to fetch faculty data");
+          resetAllData();
+        }
+      } catch (error) {
+        console.error("Error fetching faculty data:", error);
+        toast.error("An error occurred while fetching faculty data");
         resetAllData();
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching faculty data:", error);
-      toast.error("An error occurred while fetching faculty data");
-      resetAllData();
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  if(academicYear && employeeId && facultyInfo?.loginType !== "faculty") {
-    fetchFacultyData(employeeId, academicYear);
-  }
-}, [academicYear, employeeId, facultyInfo?.loginType]);
+    if (academicYear && employeeId && facultyInfo?.loginType !== "faculty") {
+      fetchFacultyData(employeeId, academicYear);
+    }
+  }, [academicYear, employeeId, facultyInfo?.loginType]);
   useEffect(() => {
     const fetchDraft = async () => {
       if (!academicYear) return;
-      if(!employeeId){
+      if (!employeeId) {
         const data = sessionStorage.getItem("employeeId");
         if (data) {
           setEmployeeId(data);
           console.log("Employee ID from sessionStorage: ", data);
         }
       }
-      
+
       if (academicYear && employeeId) {
         setLoading(true);
         try {
-          console.log(`Fetching draft for employee ${employeeId}, category ${category}, year ${academicYear}`);
-          
-          const res = await fetch(`/api/drafts/category-1?employeeId=${employeeId}&category=${category}&academicYear=${academicYear}`);
-          
+          console.log(
+            `Fetching draft for employee ${employeeId}, category ${category}, year ${academicYear}`
+          );
+
+          const res = await fetch(
+            `/api/drafts/category-1?employeeId=${employeeId}&category=${category}&academicYear=${academicYear}`
+          );
+
           if (!res.ok) {
-            console.error(`Failed to fetch draft: ${res.status} ${res.statusText}`);
+            console.error(
+              `Failed to fetch draft: ${res.status} ${res.statusText}`
+            );
             // toast.error("Failed to fetch saved draft data");
             setLoading(false);
             return;
           }
-          
+
           const json = await res.json();
           // console.log("Fetched draft data:", json);
-          
+
           // Process the fetched data directly without looking for a nested 'data' property
-          processFetchedData(json, 
-            setDraftCategoryA, 
+          processFetchedData(
+            json,
+            setDraftCategoryA,
             setDraftCategoryB,
             setDraftCategoryC,
             setDraftCategoryD,
@@ -495,22 +513,30 @@ useEffect(() => {
         setLoading(false);
       }
     };
-  
+
     fetchDraft();
   }, [employeeId, academicYear]);
 
   const processFetchedData = (
     json: FetchedDraftData,
     setDraftCategoryA: React.Dispatch<React.SetStateAction<TeachingActivity[]>>,
-    setDraftCategoryB: React.Dispatch<React.SetStateAction<StudentPerformance[]>>,
+    setDraftCategoryB: React.Dispatch<
+      React.SetStateAction<StudentPerformance[]>
+    >,
     setDraftCategoryC: React.Dispatch<React.SetStateAction<RemedialClass[]>>,
-    setDraftCategoryD: React.Dispatch<React.SetStateAction<TeachingMethodology[]>>,
+    setDraftCategoryD: React.Dispatch<
+      React.SetStateAction<TeachingMethodology[]>
+    >,
     setDraftCategoryE: React.Dispatch<React.SetStateAction<CounselingRecord[]>>,
-    setDraftCategoryF: React.Dispatch<React.SetStateAction<IndustryInteraction[]>>,
+    setDraftCategoryF: React.Dispatch<
+      React.SetStateAction<IndustryInteraction[]>
+    >,
     setDraftCategoryG: React.Dispatch<React.SetStateAction<IndustryVisit[]>>,
     setDraftCategoryH: React.Dispatch<React.SetStateAction<ExamDuty[]>>,
     setDraftCategoryI: React.Dispatch<React.SetStateAction<PartialDelivery[]>>,
-    setDraftCategoryJ: React.Dispatch<React.SetStateAction<StudentFeedback | undefined>>,
+    setDraftCategoryJ: React.Dispatch<
+      React.SetStateAction<StudentFeedback | undefined>
+    >,
     setDraftCategoryK: React.Dispatch<React.SetStateAction<DayToDayActivity[]>>,
     setDraftCategoryL: React.Dispatch<React.SetStateAction<MiniProject[]>>,
     setDraftCategoryM: React.Dispatch<React.SetStateAction<AcademicFile[]>>
@@ -528,40 +554,50 @@ useEffect(() => {
     const dayToDayActivity: DayToDayActivity[] = [];
     const miniProject: MiniProject[] = [];
     const academicFile: AcademicFile[] = [];
-  
+
     const parseEntry = (entry: FetchedDraftData) => {
       // Process Category A (Teaching Activities)
       if (entry.teachingactivities && Array.isArray(entry.teachingactivities)) {
         entry.teachingactivities.forEach((item: TeachingActivity) => {
           const activity: TeachingActivity = {
             // academicYear: item.AcademicYear || item.academicYear || "",
-            semester: item.Semester || item.semester||"Odd" ,
+            semester: item.Semester || item.semester || "Odd",
             courseCode: item.CourseCode || item.courseCode || "",
-            level : item.Level || item.level || "",
-            mode: item.TeachingMode|| item.mode || "Lecture",
-            classesPerWeek: String(item.ClassesPerWeek || item.classesPerWeek || ""),
+            level: item.Level || item.level || "",
+            mode: item.TeachingMode || item.mode || "Lecture",
+            classesPerWeek: String(
+              item.ClassesPerWeek || item.classesPerWeek || ""
+            ),
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           teachingActivities.push(activity);
         });
       }
-  
+
       // Process Category B (Student Performance)
       if (entry.studentperformance && Array.isArray(entry.studentperformance)) {
         entry.studentperformance.forEach((item: StudentPerformance) => {
           const performance: StudentPerformance = {
-            course: item.CourseName || item.course|| "",
+            course: item.CourseName || item.course || "",
             courseCode: item.CourseCode || item.courseCode || "",
-            studentsRegistered: String(item.StudentsRegistered || item.studentsRegistered || ""),
-            studentsPassed: String(item.StudentsPassed || item.studentsPassed || ""),
-            notEligible: String(item.NotEligibleStudents || item.notEligible || ""),
-            passPercentage: String(item.PassPercentage || item.passPercentage || 0),
+            studentsRegistered: String(
+              item.StudentsRegistered || item.studentsRegistered || ""
+            ),
+            studentsPassed: String(
+              item.StudentsPassed || item.studentsPassed || ""
+            ),
+            notEligible: String(
+              item.NotEligibleStudents || item.notEligible || ""
+            ),
+            passPercentage: String(
+              item.PassPercentage || item.passPercentage || 0
+            ),
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           studentPerformance.push(performance);
         });
       }
-  
+
       // Process Category C (Remedial Classes)
       if (entry.remedialclass && Array.isArray(entry.remedialclass)) {
         entry.remedialclass.forEach((item: RemedialClass) => {
@@ -571,7 +607,9 @@ useEffect(() => {
             course: item.CourseName || item.course || "",
             courseCode: item.CourseCode || item.courseCode || "",
             classtype: item.ClassType || item.classtype || "Remedial",
-            numberOfClasses: String(item.TotalClasses || item.numberOfClasses || ""),
+            numberOfClasses: String(
+              item.TotalClasses || item.numberOfClasses || ""
+            ),
             hoursSpent: String(item.TotalHoursSpent || item.hoursSpent || ""),
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -579,7 +617,10 @@ useEffect(() => {
         });
       }
 
-      if (entry.teachingmethodology && Array.isArray(entry.teachingmethodology)) {
+      if (
+        entry.teachingmethodology &&
+        Array.isArray(entry.teachingmethodology)
+      ) {
         entry.teachingmethodology.forEach((item: TeachingMethodology) => {
           const methodology: TeachingMethodology = {
             semester: item.Semester || item.semester || "Odd",
@@ -596,7 +637,9 @@ useEffect(() => {
           const record: CounselingRecord = {
             semester: item.Semester || item.semester || "Odd",
             // academicYear: item.AcademicYear || item.academicYear || "",
-            studentsMentored: String(item.StudentsMentored || item.studentsMentored || ""),
+            studentsMentored: String(
+              item.StudentsMentored || item.studentsMentored || ""
+            ),
             actionTaken: item.ActionTaken || item.actionTaken || "",
             outcome: item.Outcome || item.outcome || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
@@ -605,13 +648,20 @@ useEffect(() => {
         });
       }
 
-      if (entry.industryinteraction && Array.isArray(entry.industryinteraction)) {
+      if (
+        entry.industryinteraction &&
+        Array.isArray(entry.industryinteraction)
+      ) {
         entry.industryinteraction.forEach((item: IndustryInteraction) => {
           const interaction: IndustryInteraction = {
             industryName: item.IndustryName || item.industryName || "",
-            contactDetails: item.IndustryContactDetails || item.contactDetails || "",
-            date: item.InteractionDate ? item.InteractionDate.split("T")[0] : item.date || "",
-            activitiesPlanned: item.ActivitiesPlanned || item.activitiesPlanned || "",
+            contactDetails:
+              item.IndustryContactDetails || item.contactDetails || "",
+            date: item.InteractionDate
+              ? item.InteractionDate.split("T")[0]
+              : item.date || "",
+            activitiesPlanned:
+              item.ActivitiesPlanned || item.activitiesPlanned || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           industryInteraction.push(interaction);
@@ -623,8 +673,12 @@ useEffect(() => {
           const visit: IndustryVisit = {
             semester: item.sem || item.semester || "Odd",
             industryName: item.industryname || item.industryName || "",
-            date: item.visitdate ? item.visitdate.split("T")[0] : item.date || "",
-            studentsCount: String(item.numberofstudents || item.studentsCount || ""),
+            date: item.visitdate
+              ? item.visitdate.split("T")[0]
+              : item.date || "",
+            studentsCount: String(
+              item.numberofstudents || item.studentsCount || ""
+            ),
             outcome: item.outcome || item.outcome || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
@@ -638,13 +692,15 @@ useEffect(() => {
             dutyType: item.ExamDutyType || item.dutyType || "",
             duties: item.DutiesAssigned || item.duties || "",
             squad: item.Squad || item.squad || "",
-            roomInvigilation: item.RoomInvigilation || item.roomInvigilation || "",
+            roomInvigilation:
+              item.RoomInvigilation || item.roomInvigilation || "",
             relief: item.Relief || item.relief || "",
             dcs: item.DCS || item.dcs || "",
             boe: item.BOE || item.boe || "",
             invigilation: item.Invigilation || item.invigilation || "",
             coordination: item.Coordination || item.coordination || "",
-            questionPaperSetting: item.QuestionPaperSetting || item.questionPaperSetting || "", 
+            questionPaperSetting:
+              item.QuestionPaperSetting || item.questionPaperSetting || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           examDuty.push(duty);
@@ -656,20 +712,29 @@ useEffect(() => {
           const delivery: PartialDelivery = {
             industryExpert: item.IndustryExpert || item.industryExpert || "",
             course: item.Course || item.course || "",
-            date: item.DeliveryDate ? item.DeliveryDate.split("T")[0] : item.date || "",
+            date: item.DeliveryDate
+              ? item.DeliveryDate.split("T")[0]
+              : item.date || "",
             score: String(item.SelfAppraisalScore || item.score || 0),
           };
           partialDelivery.push(delivery);
         });
       }
 
-      if (entry.studentfeedback && Array.isArray(entry.studentfeedback) && entry.studentfeedback.length > 0) {
+      if (
+        entry.studentfeedback &&
+        Array.isArray(entry.studentfeedback) &&
+        entry.studentfeedback.length > 0
+      ) {
         const feedback: StudentFeedback = {
-          score: String(entry.studentfeedback[0].score || entry.studentfeedback[0].score || 0),
+          score: String(
+            entry.studentfeedback[0].score ||
+            entry.studentfeedback[0].score ||
+            0
+          ),
         };
         studentFeedback = feedback;
       }
-      
 
       if (entry.daytodayactivity && Array.isArray(entry.daytodayactivity)) {
         entry.daytodayactivity.forEach((item: DayToDayActivity) => {
@@ -700,9 +765,8 @@ useEffect(() => {
           academicFile.push(file);
         });
       }
-
     };
-  
+
     // Ensure json is an array or object, and proceed with parsing
     if (Array.isArray(json)) {
       json.forEach(parseEntry);
@@ -711,7 +775,7 @@ useEffect(() => {
     } else {
       console.error("Invalid JSON structure:", json);
     }
-  
+
     // Update state after processing the data
     setDraftCategoryA(teachingActivities);
     setDraftCategoryB(studentPerformance);
@@ -770,19 +834,20 @@ useEffect(() => {
   const calculateTotalScore = (items: { score: number | string }[]) =>
     items.reduce((total, item) => total + (Number(item.score) || 0), 0);
 
-  const totalScore = calculateTotalScore(draftCategoryA)+
-  calculateTotalScore(draftCategoryB)+
-  calculateTotalScore(draftCategoryC)+
-  calculateTotalScore(draftCategoryD)+
-  calculateTotalScore(draftCategoryE)+
-  calculateTotalScore(draftCategoryF)+
-  calculateTotalScore(draftCategoryG)+
-  calculateTotalScore(draftCategoryH)+
-  calculateTotalScore(draftCategoryI)+
-  calculateTotalScore(draftCategoryJ ? [draftCategoryJ] : [])+
-  calculateTotalScore(draftCategoryK)+
-  calculateTotalScore(draftCategoryL)+
-  calculateTotalScore(draftCategoryM);
+  const totalScore =
+    calculateTotalScore(draftCategoryA) +
+    calculateTotalScore(draftCategoryB) +
+    calculateTotalScore(draftCategoryC) +
+    calculateTotalScore(draftCategoryD) +
+    calculateTotalScore(draftCategoryE) +
+    calculateTotalScore(draftCategoryF) +
+    calculateTotalScore(draftCategoryG) +
+    calculateTotalScore(draftCategoryH) +
+    calculateTotalScore(draftCategoryI) +
+    calculateTotalScore(draftCategoryJ ? [draftCategoryJ] : []) +
+    calculateTotalScore(draftCategoryK) +
+    calculateTotalScore(draftCategoryL) +
+    calculateTotalScore(draftCategoryM);
 
   useEffect(() => {
     if (!loading && facultyInfo?.loginType === "faculty") {
@@ -804,11 +869,19 @@ useEffect(() => {
         academicfile: draftCategoryM,
       };
       sessionStorage.setItem("category1", JSON.stringify(finalCategory1Data));
-      console.log("category1Summary saved to sessionStorage:", finalCategory1Data);
+      console.log(
+        "category1Summary saved to sessionStorage:",
+        finalCategory1Data
+      );
     }
-  }, [loading,academicYear, totalScore, draftCategoryA,
+  }, [
+    loading,
+    academicYear,
+    totalScore,
+    draftCategoryA,
     draftCategoryB,
-    draftCategoryC, facultyInfo?.loginType,
+    draftCategoryC,
+    facultyInfo?.loginType,
     draftCategoryD,
     draftCategoryE,
     draftCategoryF,
@@ -824,183 +897,46 @@ useEffect(() => {
   // const uniqueFacultyList = Array.from(
   //   new Map(facultyList.map(faculty => [faculty.EmployeeID, faculty])).values()
   // );
-  const totalCommitteeScore = Number(committeeScoreA) + Number(committeeScoreB) + Number(committeeScoreC) + 
-  Number(committeeScoreD) + Number(committeeScoreE) + Number(committeeScoreF) + Number(committeeScoreG) + 
-  Number(committeeScoreH) + Number(committeeScoreI) + Number(committeeScoreJ) + Number(committeeScoreK) + 
-  Number(committeeScoreL) + Number(committeeScoreM);
-  
-return (
-  <div className="min-h-screen flex flex-col">
-    <Navbar />
-    <div className="flex flex-col md:flex-row items-start space-x-2">
-      <div className="text-white font-semibold w-64 p-6 space-y-4 mt-5 md:mt-0">
-        {(facultyInfo && (facultyInfo.loginType === "faculty" )) && (
-          <Link href="/facultyhome">
-            <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-              Home
-            </button>
-          </Link>
-        )}
-        {facultyInfo && facultyInfo.loginType === "faculty" && (
-          <>
-            <Link href="/faculty_part_a">
-              <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-                Part-A
-              </button>
-            </Link>
-            <Link href="/partb/category-1">
-              <button
-                className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-              >
-                Part-B
-              </button>
-            </Link>
-            <Link href="/downloadReport">
-              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-                Download Report
-              </button>
-            </Link>
-          </>
-        )}
-        {facultyInfo && facultyInfo.loginType === "committee" && (
-          <Link href="/partb/category-1">
-            <button
-              className="w-full text-left mb-6 px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 flex justify-between items-center"
-            >
-              Part-B
-            </button>
-          </Link>
-        )}
-        {facultyInfo && facultyInfo.loginType === "hod" && (
-          <>
-            <Link href="/partc/viewreport">
-              <button className="w-full text-left px-4 py-2 mb-6 bg-indigo-600 rounded-md hover:bg-indigo-500">
-                View Report
-              </button>
-            </Link>
-            <Link href="/partc">
-              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-                Part-C
-              </button>
-            </Link>
-            <Link href="/downloadReport">
-              <button className="w-full mb-6 text-left px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500">
-                Download Report
-              </button>
-            </Link>
-          </>
-        )}
-      </div>
+  const totalCommitteeScore = Number(committeeScoreA) + Number(committeeScoreB) + Number(committeeScoreC) +
+    Number(committeeScoreD) + Number(committeeScoreE) + Number(committeeScoreF) + Number(committeeScoreG) +
+    Number(committeeScoreH) + Number(committeeScoreI) + Number(committeeScoreJ) + Number(committeeScoreK) +
+    Number(committeeScoreL) + Number(committeeScoreM);
 
-      <ToastContainer position="top-right" autoClose={3000} />
-      <div className="flex flex-col w-full mt-5">
-        {/* <div className="bg-white shadow-lg rounded-lg p-4 w-full max-w-6xl mb-4">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-              Select Academic Year:
-            </h2>
-            <div className="mb-4">
-              <select
-                id="academic-year-select"
-                value={academicYear}
-                onChange={handleAcademicYearChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="">-- Select Academic Year --</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
-              </select>
-            </div>
-          </div>
-
-          {(facultyInfo?.loginType !== "faculty") && academicYear && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold text-indigo-600 mb-4">
-                Faculty List:
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="py-3 px-4 border-b text-left">Employee ID</th>
-                      <th className="py-3 px-4 border-b text-left">Name</th>
-                      <th className="py-3 px-4 border-b text-left">Department</th>
-                      <th className="py-3 px-4 border-b text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {uniqueFacultyList.map((faculty) => (
-                      <tr 
-                        key={faculty.EmployeeID} 
-                        className={selectedFaculty === faculty.EmployeeID ? "bg-indigo-50" : "hover:bg-gray-50"}
-                      >
-                        <td className="py-2 px-4 border-b">{faculty.EmployeeID}</td>
-                        <td className="py-2 px-4 border-b">{faculty.Name}</td>
-                        <td className="py-2 px-4 border-b">{faculty.Department || "Not specified"}</td>
-                        <td className="py-2 px-4 border-b">
-                        <button
-                            onClick={() => {
-                              // Set the faculty ID in state
-                              setSelectedFaculty(faculty.EmployeeID);
-                              // Save to session storage
-                              sessionStorage.setItem("employeeId", faculty.EmployeeID);
-                              console.log("Selected Faculty ID: ", faculty.EmployeeID);
-                              // Load faculty data if we have an academic year
-                              if (academicYear) {
-                                fetchFacultyData(faculty.EmployeeID, academicYear);
-                                console.log("Selected Faculty ID: ", faculty.EmployeeID);
-                              }
-                            }}
-                            className={`px-4 py-1 rounded ${
-                              selectedFaculty === faculty.EmployeeID
-                                ? "bg-indigo-600 text-white"
-                                : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                            }`}
-                          >
-                            {selectedFaculty === faculty.EmployeeID ? "Selected" : "Select"}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>  */}
-
-        {loading ? (
-          <p className="text-gray-600 p-8">Loading data...</p>
-        ) : (
-          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
-            {facultyInfo?.loginType  && (
-              // <>
-              //   {/* For HOD or Committee: Show faculty performance after selection */}
-              //   {(facultyInfo.loginType !== "faculty") && (
-              //     <>
-              //       {!selectedFaculty || !academicYear ? (
-              //         <div className="text-center p-8 text-gray-500">
-              //           {!academicYear ? (
-              //             "Please select an academic year to view faculty list."
-              //           ) : (
-              //             "Please select a faculty member from the table above to view their data."
-              //           )}
-              //         </div>
-              //       ) : (
-                      <>
-                        <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
-                          PART B: ACADEMIC PERFORMANCE INDICATOR (API)
-                          <br />
-                          CATEGORY I:
-                        </h1>
-                        <h2 className="text-2xl font-bold text-indigo-600 mb-4">
-                          Teaching, Learning & Evaluation Activities
-                        </h2>
-{/*                         
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex justify-between items-center space-x-2">
+        <div className="bg-white rounded-xl flex-1 py-4 p-6 ">
+        <ToastContainer position="top-right" autoClose={3000} />
+          <div className="flex items-center justify-center flex-col w-full mt-5 space-x-2">
+          {loading ? (
+            <p className="text-gray-600 p-8">Loading data...</p>
+          ) : (
+            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-6xl mb-8">
+              {facultyInfo?.loginType && (
+                // <>
+                //   {/* For HOD or Committee: Show faculty performance after selection */}
+                //   {(facultyInfo.loginType !== "faculty") && (
+                //     <>
+                //       {!selectedFaculty || !academicYear ? (
+                //         <div className="text-center p-8 text-gray-500">
+                //           {!academicYear ? (
+                //             "Please select an academic year to view faculty list."
+                //           ) : (
+                //             "Please select a faculty member from the table above to view their data."
+                //           )}
+                //         </div>
+                //       ) : (
+                <>
+                  <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+                    PART B: ACADEMIC PERFORMANCE INDICATOR (API)
+                    <br />
+                    CATEGORY I:
+                  </h1>
+                  <h2 className="text-2xl font-bold text-indigo-600 mb-4">
+                    Teaching, Learning & Evaluation Activities
+                  </h2>
+                  {/*                         
                         <div className="bg-indigo-50 p-4 rounded-lg mb-6">
                           <h3 className="text-lg font-semibold text-indigo-700 mb-2">Selected Faculty:</h3>
                           {uniqueFacultyList.filter(f => f.EmployeeID === selectedFaculty).map(faculty => (
@@ -1016,90 +952,90 @@ return (
                             </div>
                           ))}
                         </div> */}
-                        
-                        <CategoryA
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryA}
-                          onFormDataChangeAction={handleFormDataUpdateA}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
-                        />
-                        <CategoryB
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryB}
-                          onFormDataChangeAction={handleFormDataUpdateB}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreB(score)}
-                        />
-                        <CategoryC
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryC}
-                          onFormDataChangeAction={handleFormDataUpdateC}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
-                        />
-                        <CategoryD
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryD}
-                          onFormDataChangeAction={handleFormDataUpdateD}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
-                        />
-                        <CategoryE
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryE}
-                          onFormDataChangeAction={handleFormDataUpdateE}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
-                        />
-                        <CategoryF
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryF}
-                          onFormDataChangeAction={handleFormDataUpdateF}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
-                        />
-                        <CategoryG
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryG}
-                          onFormDataChangeAction={handleFormDataUpdateG}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
-                        />
-                        <CategoryH
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryH}
-                          onFormDataChangeAction={handleFormDataUpdateH}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
-                        />
-                        <CategoryI
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryI}
-                          onFormDataChangeAction={handleFormDataUpdateI}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
-                        />
-                        <CategoryJ
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryJ || { score: "" }}
-                          onFormDataChangeAction={handleFormDataUpdateJ}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
-                        />
-                        <CategoryK
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryK}
-                          onFormDataChangeAction={handleFormDataUpdateK}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreK(score)}
-                        />
-                        <CategoryL
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryL}
-                          onFormDataChangeAction={handleFormDataUpdateL}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreL(score)}
-                        />
-                        <CategoryM
-                          loginType={facultyInfo.loginType}
-                          initialData={draftCategoryM}
-                          onFormDataChangeAction={handleFormDataUpdateM}
-                          onCommitteeScoreChange={(score) => setCommitteeScoreM(score)}
-                        />
-                  </>
-                )}
 
-                {/* For Faculty: Only check academic year */}
-                {/* {facultyInfo?.loginType === "faculty" && (
+                  <CategoryA
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryA}
+                    onFormDataChangeAction={handleFormDataUpdateA}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreA(score)}
+                  />
+                  <CategoryB
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryB}
+                    onFormDataChangeAction={handleFormDataUpdateB}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreB(score)}
+                  />
+                  <CategoryC
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryC}
+                    onFormDataChangeAction={handleFormDataUpdateC}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreC(score)}
+                  />
+                  <CategoryD
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryD}
+                    onFormDataChangeAction={handleFormDataUpdateD}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreD(score)}
+                  />
+                  <CategoryE
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryE}
+                    onFormDataChangeAction={handleFormDataUpdateE}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreE(score)}
+                  />
+                  <CategoryF
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryF}
+                    onFormDataChangeAction={handleFormDataUpdateF}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreF(score)}
+                  />
+                  <CategoryG
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryG}
+                    onFormDataChangeAction={handleFormDataUpdateG}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreG(score)}
+                  />
+                  <CategoryH
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryH}
+                    onFormDataChangeAction={handleFormDataUpdateH}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreH(score)}
+                  />
+                  <CategoryI
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryI}
+                    onFormDataChangeAction={handleFormDataUpdateI}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreI(score)}
+                  />
+                  <CategoryJ
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryJ || { score: "" }}
+                    onFormDataChangeAction={handleFormDataUpdateJ}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreJ(score)}
+                  />
+                  <CategoryK
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryK}
+                    onFormDataChangeAction={handleFormDataUpdateK}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreK(score)}
+                  />
+                  <CategoryL
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryL}
+                    onFormDataChangeAction={handleFormDataUpdateL}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreL(score)}
+                  />
+                  <CategoryM
+                    loginType={facultyInfo.loginType}
+                    initialData={draftCategoryM}
+                    onFormDataChangeAction={handleFormDataUpdateM}
+                    onCommitteeScoreChange={(score) => setCommitteeScoreM(score)}
+                  />
+                </>
+              )}
+
+              {/* For Faculty: Only check academic year */}
+              {/* {facultyInfo?.loginType === "faculty" && (
                   // <>
                   //   {!academicYear ? (
                   //     <div className="text-center p-8 text-gray-500">
@@ -1184,78 +1120,120 @@ return (
                       {/* </>
                     )}
                   </> */}
-                {/* )} */}
+              {/* )} */}
 
-            {/* Show score summary only if a faculty is selected or for faculty login */}
-                <hr className="my-4" />
+              {/* Show score summary only if a faculty is selected or for faculty login */}
+              <hr className="my-4" />
+              <p className="mb-6">
+                <strong>Combined Total Score: </strong>
+                <span className="text-green-600 text-xl font-semibold">
+                  {totalScore} / 300
+                </span>
+              </p>
+              {facultyInfo?.loginType === "committee" && (
                 <p className="mb-6">
-                  <strong>Combined Total Score: </strong>
-                  <span className="text-green-600 text-xl font-semibold">
-                    {totalScore} / 300
+                  <strong>Committee Total Score: </strong>
+                  <span className="text-yellow-600 text-xl font-semibold">
+                    {totalCommitteeScore} / 300
                   </span>
                 </p>
-                {(facultyInfo?.loginType === "committee") && (
-                  <p className="mb-6">
-                    <strong>Committee Total Score: </strong>
-                    <span className="text-yellow-600 text-xl font-semibold">
-                      {totalCommitteeScore} / 300
-                    </span>
-                  </p>
-                )}
-                {(facultyInfo?.loginType === "principal") && (
-                  <p className="mb-6">
-                    <strong>Committee Total Score: </strong>
-                    <span className="text-yellow-600 text-xl font-semibold">
-                      {committeeTotalScore} / 300
-                    </span>
-                  </p>
-                )}
-                <div className="flex justify-between items-center mt-8">
+              )}
+              {facultyInfo?.loginType === "principal" && (
+                <p className="mb-6">
+                  <strong>Committee Total Score: </strong>
+                  <span className="text-yellow-600 text-xl font-semibold">
+                    {committeeTotalScore} / 300
+                  </span>
+                </p>
+              )}
+              <div className="flex justify-between items-center mt-8">
+                {facultyInfo?.loginType === "faculty" && (
                   <button
                     type="button"
-                    className={`text-white px-6 py-2 rounded ${
-                      facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "principal"
-                        ? "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
-                        : "bg-yellow-500 hover:bg-yellow-600"
-                    }`}
+                    className={`text-white px-6 py-2 rounded
+												bg-yellow-500 hover:bg-yellow-600
+										`}
                     onClick={() => saveDraft(true)}
-                    disabled={facultyInfo?.loginType === "hod" || facultyInfo?.loginType === "committee" || facultyInfo?.loginType === "principal"}
                   >
                     Save Draft
                   </button>
-                  <div className="flex space-x-4">
-                    <button type="button" className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500" onClick={() => router.push("/partb")}>
-                      Back
-                    </button>
+                )}
+                {/* <button
+									type="button"
+									className={`text-white px-6 py-2 rounded ${
+										facultyInfo?.loginType === "hod" ||
+										facultyInfo?.loginType === "committee" ||
+										facultyInfo?.loginType === "principal"
+											? "bg-gray-500 cursor-not-allowed hover:bg-gray-600"
+											: "bg-yellow-500 hover:bg-yellow-600"
+									}`}
+									onClick={() => saveDraft(true)}
+									disabled={
+										facultyInfo?.loginType === "hod" ||
+										facultyInfo?.loginType === "committee" ||
+										facultyInfo?.loginType === "principal"
+									}
+								>
+									Save Draft
+								</button> */}
+                <div className="flex space-x-4">
+                  {facultyInfo?.loginType === 'principal' && (
+
+
                     <button
                       type="button"
                       className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
-                      onClick={async () => {
-                        try {
-                          await saveDraft(false);
-                          
-                          if (academicYear) {
-                            sessionStorage.setItem("academicYear", academicYear);
-                          }
-                          
-                          if (typeof totalCommitteeScore === "number") {
-                            sessionStorage.setItem("committeeScore1", String(totalCommitteeScore));
-                          }
-
-                          router.push('/partb/category-2');
-                        } catch (error) {
-                          console.error("Error during draft save or navigation:", error);
-                        }
-                      }}
+                      onClick={() => router.push("/principal")}
                     >
-                      Next
+                      Back
                     </button>
-                  </div>
+                  )}
+                  {(facultyInfo?.loginType !== 'principal' && (
+                    <button
+                      type="button"
+                      className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
+                      onClick={() => router.push("/facultyhome")}
+                    >
+                      Back
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-500"
+                    onClick={async () => {
+                      try {
+                        await saveDraft(false);
+
+                        if (academicYear) {
+                          sessionStorage.setItem("academicYear", academicYear);
+                        }
+
+                        if (typeof totalCommitteeScore === "number") {
+                          sessionStorage.setItem(
+                            "committeeScore1",
+                            String(totalCommitteeScore)
+                          );
+                        }
+
+                        router.push("/partb/category-2");
+                      } catch (error) {
+                        console.error(
+                          "Error during draft save or navigation:",
+                          error
+                        );
+                      }
+                    }}
+                  >
+                    Next
+                  </button>
                 </div>
-          </div>
-        )}
+              </div>
+            </div>
+          )}
+        </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+
 }
